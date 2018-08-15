@@ -1,3 +1,29 @@
 <resources>
-    <string name="app_name">HeavensFoodAdmin</string>
+    <string name="app_name">Heavens Food</string>
+    <string name="hint_email">Enter email or phone number</string>
+    <string name="hint_password">Enter password</string>
+    <string name="hint_password_confirm">Confirm password</string>
+    <string name="btn_login">Login</string>
+    <string name="btn_signup">Sign Up</string>
+    <string name="text_signup">New here? Sign Up</string>
+    <string name="text_signin">Login</string>
+    <string name="text_forgot_password">Forgot Password?</string>
+    <string name="phone_number_hint">Your Phone number?</string>
+    <string name="enter_otp_hint">Enter OTP</string>
+    <string name="detecting_otp_text">Autodetecting the OTP</string>
+    <string name="send_otp_text">Send OTP</string>
+
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="txt_nike_shoes">Nike Power-Run</string>
+    <string name="txt_buy">Buy</string>
+    <string name="Rupees">₹</string>
+    <string name="nike_power_run">Nike Power-Run</string>
+    <string name="txt_product_price">8000</string>
 </resources>

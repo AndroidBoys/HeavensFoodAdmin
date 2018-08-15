@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/profile"
+            android:title="Profile"/>
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="Home"/>
+        <item
+            android:id="@+id/nav_specialOrder"
+            android:icon="@drawable/ic_restaurant_menu_black_24dp"
+            android:title="Special Order"/>
+        <item
+            android:id="@+id/nav_mySubscription"
+            android:icon="@drawable/ourplan"
+            android:title="My Subscription"/>
+        <item
+            android:id="@+id/nav_weeklyMenu"
+            android:icon="@drawable/weeklymenu"
+            android:title="Weekly Menu"/>
+        <item
+            android:id="@+id/nav_wallet"
+            android:icon="@drawable/wallet"
+            android:title="Wallet"/>
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_contectUs"
+                android:icon="@drawable/contactus"
+                android:title="Contact Us"/>
+
+            <item
+                android:id="@+id/nav_rate"
+                android:icon="@drawable/rate"
+                android:title="Rate"/>
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_exit_to_app_black_24dp"
+                android:title="Log Out"/>
+        </menu>
+    </item>
+
+</menu>
