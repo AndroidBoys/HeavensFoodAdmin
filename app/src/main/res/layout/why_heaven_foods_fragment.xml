@@ -30,11 +30,10 @@
                 android:textSize="@dimen/material_text_headline"
                 android:text="Why HeavenFoods?"/>
             <TextView
-
                 android:layout_margin="8dp"
                 android:id="@+id/aboutTextView1"
                 android:layout_height="wrap_content"
-               android:layout_width="match_parent"
+                android:layout_width="match_parent"
                 android:fontFamily="@fonart/josefin_bold"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                 />
