@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:weightSum="10"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.baoyz.widget.PullRefreshLayout
         android:id="@+id/pullRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_weight="9"
-        android:layout_height="0dp">
+        android:layout_height="match_parent">
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -21,19 +19,16 @@
 
     </com.baoyz.widget.PullRefreshLayout>
 
-
-    <info.hoang8f.widget.FButton
-        android:id="@+id/orderNowButton"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:text="Order Now"
-        android:layout_weight="1"
-        android:layout_marginTop="3dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="3dp"
-        android:fontFamily="@font/josefin_bold"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/specialFoodFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/add_image"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="15dp"
         />
 
 
-</LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
