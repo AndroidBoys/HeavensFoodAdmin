@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:minHeight="300dp"
+    android:minHeight="230dp"
     android:minWidth="250dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -11,10 +11,9 @@
         android:hint="Food Name"
         android:fontFamily="@font/josefin_bold"
         android:textColor="@color/md_black_1000"
-        android:textColorHint="@color/blackColor"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:maxLines="4"
-        android:id="@+id/wantAlertFoodNameEditText"
+        android:id="@+id/alertFoodNameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
@@ -23,10 +22,9 @@
         android:hint="Description"
         android:fontFamily="@font/josefin_bold"
         android:textColor="@color/md_black_1000"
-        android:textColorHint="@color/blackColor"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:maxLines="4"
-        android:id="@+id/wantAlertDescriptionEditText"
+        android:id="@+id/alertDescriptionEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
@@ -44,19 +42,19 @@
 
         <info.hoang8f.widget.FButton
             android:layout_weight="1"
-            android:id="@+id/wantAlertSelectButton"
-            android:layout_width="match_parent"
-            android:layout_marginEnd="20dp"
+            android:id="@+id/alertSelectButton"
+            android:layout_width="0dp"
+            android:layout_marginEnd="15dp"
             android:layout_height="wrap_content"
-            android:text="Select"/>
+            android:text="Select Image"/>
 
         <info.hoang8f.widget.FButton
             android:layout_weight="1"
             android:fontFamily="@font/josefin_bold"
             android:textColor="@color/md_black_1000"
-            android:layout_marginStart="20dp"
-            android:id="@+id/wantAlertUploadButton"
-            android:layout_width="match_parent"
+            android:layout_marginStart="15dp"
+            android:id="@+id/alertUploadButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Upload"/>
 
