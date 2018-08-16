@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:minHeight="230dp"
+    android:minWidth="250dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:hint="Food Name"
+        android:fontFamily="@font/josefin_bold"
+        android:textColor="@color/md_black_1000"
+        android:layout_marginTop="10dp"
+        android:maxLines="4"
+        android:id="@+id/alertFoodNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <EditText
+        android:hint="Description"
+        android:fontFamily="@font/josefin_bold"
+        android:textColor="@color/md_black_1000"
+        android:layout_marginTop="10dp"
+        android:maxLines="4"
+        android:id="@+id/alertDescriptionEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginStart="15dp"
+        android:orientation="horizontal"
+        android:fontFamily="@font/josefin_bold"
+        android:textColor="@color/md_black_1000"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <info.hoang8f.widget.FButton
+            android:layout_weight="1"
+            android:id="@+id/alertSelectButton"
+            android:layout_width="0dp"
+            android:layout_marginEnd="15dp"
+            android:layout_height="wrap_content"
+            android:text="Select Image"/>
+
+        <info.hoang8f.widget.FButton
+            android:layout_weight="1"
+            android:fontFamily="@font/josefin_bold"
+            android:textColor="@color/md_black_1000"
+            android:layout_marginStart="15dp"
+            android:id="@+id/alertUploadButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Upload"/>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
