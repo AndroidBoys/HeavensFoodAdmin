@@ -39,6 +39,7 @@ import java.util.UUID;
 import androidboys.com.heavensfoodadmin.Models.Faq;
 import androidboys.com.heavensfoodadmin.Models.WhyHeavenFood;
 import androidboys.com.heavensfoodadmin.R;
+import androidboys.com.heavensfoodadmin.Utils.ProgressUtils;
 import androidboys.com.heavensfoodadmin.Variables.ContextMenuOptionId;
 import androidboys.com.heavensfoodadmin.ViewHolders.WhyHeavensFoodViewHolder;
 import androidx.annotation.NonNull;
@@ -56,6 +57,7 @@ public class WhyHeavensFoodFragment extends Fragment {
     private EditText aboutEditText;
     private ImageView aboutImageView;
     private  FirebaseRecyclerAdapter<WhyHeavenFood,WhyHeavensFoodViewHolder> adapter;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -98,7 +100,8 @@ public class WhyHeavensFoodFragment extends Fragment {
         builder.setView(view).setPositiveButton("ADD", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-               uploadImage();
+                ProgressUtils.showLoadingDialog(getActivity());
+                uploadImage();
             }
         })
                 .setNegativeButton("Cancel",null)
@@ -117,6 +120,7 @@ public class WhyHeavensFoodFragment extends Fragment {
                 taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
+                        ProgressUtils.cancelLoading();
                         addIntoFDB(uri.toString());
                     }
                 });
@@ -125,7 +129,8 @@ public class WhyHeavensFoodFragment extends Fragment {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
+                        ProgressUtils.cancelLoading();
+                        Toast.makeText(getContext(), ""+e, Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -180,6 +185,7 @@ public class WhyHeavensFoodFragment extends Fragment {
         aboutEditText=view.findViewById(R.id.addAboutEditText);
         aboutImageView=view.findViewById(R.id.addAboutImageView);
         aboutEditText.setText(item.getAbout());
+        imageUri= Uri.parse(item.getImageUrl()); //if user do not choose a different image so we can use this previous image
         Picasso.with(getContext()).load(item.getImageUrl()).into(aboutImageView);
         aboutImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,10 +199,13 @@ public class WhyHeavensFoodFragment extends Fragment {
         builder.setView(view).setPositiveButton("ADD", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+
+                ProgressUtils.showLoadingDialog(getActivity());
                 uploadNewImage(item.imageUrl,key);
             }
         })
                 .setNegativeButton("Cancel",null)
+                .setCancelable(false)
                 .show();
 
     }
@@ -205,13 +214,14 @@ public class WhyHeavensFoodFragment extends Fragment {
     private void uploadNewImage(final String oldImageUrl, final String key) {
         UUID uuid=UUID.randomUUID();
 
-        StorageTask<UploadTask.TaskSnapshot> torageReference = FirebaseStorage.getInstance().getReference().child(uuid.toString()).putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        StorageTask<UploadTask.TaskSnapshot> tarageReference = FirebaseStorage.getInstance().getReference().child(uuid.toString()).putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                 taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
+                        ProgressUtils.cancelLoading();
                         deleteFromStorage(oldImageUrl);
                         updateValueAtKey(key,uri.toString());
                     }
@@ -221,6 +231,11 @@ public class WhyHeavensFoodFragment extends Fragment {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        if(oldImageUrl.equals(imageUri.toString())){
+                            updateValueAtKey(key,imageUri.toString());
+                        }
+                        Toast.makeText(getContext(), ""+e, Toast.LENGTH_SHORT).show();
+                        ProgressUtils.cancelLoading();
 
                     }
                 })
@@ -329,6 +344,7 @@ public class WhyHeavensFoodFragment extends Fragment {
                     }
                 })
                 .setNegativeButton("No",null)
+                .setCancelable(false)
                 .show();
     }
 
