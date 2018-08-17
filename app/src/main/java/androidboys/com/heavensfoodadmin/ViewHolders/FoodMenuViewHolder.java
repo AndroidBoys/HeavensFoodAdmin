@@ -21,6 +21,4 @@ public class FoodMenuViewHolder extends RecyclerView.ViewHolder  {
         foodDescriptionTextView=itemView.findViewById(R.id.foodDescriptionTextView);
 
     }
-
-
 }

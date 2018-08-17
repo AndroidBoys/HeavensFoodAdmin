@@ -234,6 +234,8 @@ public class WantsToEatFragment extends Fragment {
 
         Log.i("key","------------------"+key);
         AlertDialog.Builder alertDialog=new AlertDialog.Builder(context);
+        alertDialog.setCancelable(false);
+
         alertDialog.setTitle("Edit the food details");
         alertDialog.setIcon(R.drawable.thali_graphic);
         LayoutInflater layoutInflater=getLayoutInflater();
@@ -291,6 +293,8 @@ public class WantsToEatFragment extends Fragment {
             final ProgressDialog progressDialog=new ProgressDialog(context);
             progressDialog.setMessage("Uploading...");
             progressDialog.show();
+            progressDialog.setCancelable(false);
+
             String filename= UUID.randomUUID().toString();
             final StorageReference imageFolder=storageReference.child(filename);
             Log.i("imageuri",imageUri.toString());

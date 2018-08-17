@@ -4,21 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:minWidth="250dp"
-    android:minHeight="220dp"
+    android:minHeight="260dp"
     android:orientation="vertical">
 
     <EditText
-        android:id="@+id/alertFoodNameEditText"
+        android:id="@+id/alertPlanNameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/josefin_bold"
-        android:hint="Food Name"
+        android:hint="Plan Name"
         android:maxLines="4"
         android:textColor="@color/md_black_1000"/>
 
     <EditText
-        android:id="@+id/alertDescriptionEditText"
+        android:id="@+id/alertPlanDescriptionEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -27,6 +27,19 @@
         android:maxLines="4"
         android:textColor="@color/md_black_1000"
         />
+
+    <EditText
+        android:id="@+id/alertSingleTimePriceEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/josefin_bold"
+        android:hint="SingleTimePrice"
+        android:maxLines="4"
+        android:inputType="number"
+        android:textColor="@color/md_black_1000"
+        />
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,7 +53,7 @@
 
 
         <info.hoang8f.widget.FButton
-            android:id="@+id/alertSelectButton"
+            android:id="@+id/alertPlanSelectButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="15dp"
@@ -48,7 +61,7 @@
             android:text="Select Image"/>
 
         <info.hoang8f.widget.FButton
-            android:id="@+id/alertUploadButton"
+            android:id="@+id/alertPlanUploadButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
