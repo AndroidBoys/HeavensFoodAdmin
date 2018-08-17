@@ -128,6 +128,8 @@ public class SpecialOrders extends Fragment {
         final AlertDialog.Builder alertDialog=new AlertDialog.Builder(context);
         alertDialog.setTitle("Enter new food details");
         alertDialog.setIcon(R.drawable.thali_graphic);
+        alertDialog.setCancelable(false);
+
         LayoutInflater layoutInflater=getLayoutInflater();
         
         //Since i am using same layout for alertDialog .Hence the id will also same
@@ -200,6 +202,8 @@ public class SpecialOrders extends Fragment {
         alertDialg.setTitle("Delete the food");
         alertDialg.setMessage("Do you really want to delete it ?");
         alertDialg.setIcon(R.drawable.thali_graphic);
+        alertDialg.setCancelable(false);
+
         alertDialg.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -229,6 +233,8 @@ public class SpecialOrders extends Fragment {
         alertDialog.setTitle("Edit the Special food details");
         alertDialog.setIcon(R.drawable.thali_graphic);
         LayoutInflater layoutInflater=getLayoutInflater();
+        alertDialog.setCancelable(false);
+
         View view=layoutInflater.inflate(R.layout.food_edit_alert_dialog,null,false);
         specialFoodDescriptionEditText=view.findViewById(R.id.alertDescriptionEditText);
         specialFoodSelectButton=view.findViewById(R.id.alertSelectButton);
@@ -283,6 +289,8 @@ public class SpecialOrders extends Fragment {
             final ProgressDialog progressDialog=new ProgressDialog(context);
             progressDialog.setMessage("Uploading...");
             progressDialog.show();
+            progressDialog.setCancelable(false);
+
             String filename= UUID.randomUUID().toString();
             final StorageReference imageFolder=storageReference.child(filename);
             Log.i("imageuri",imageUri.toString());
