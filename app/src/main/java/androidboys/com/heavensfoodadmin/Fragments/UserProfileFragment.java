@@ -40,7 +40,6 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
         price=view.findViewById(R.id.priceTextView);
         name=view.findViewById(R.id.userNameEditText);
         email=view.findViewById(R.id.emailEditText);
-        planName=view.findViewById(R.id.userEmailTextView);
         phone=view.findViewById(R.id.phoneEditText);
         address=view.findViewById(R.id.addressEditText);
         editProfileImageView=view.findViewById(R.id.editProfileImageView);
