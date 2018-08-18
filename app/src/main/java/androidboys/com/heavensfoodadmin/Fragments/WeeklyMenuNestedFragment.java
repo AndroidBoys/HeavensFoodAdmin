@@ -239,16 +239,29 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
 
                 switch (chooseFoodType) {
 
+
                     case "BreakFast":
-                        showEditAlertDialog(breakFastAdapter.getRef(item.getOrder()).getKey(), breakFastAdapter.getItem(item.getOrder()), breakFastAdapter);
+                        try {
+                            showEditAlertDialog(breakFastAdapter.getRef(item.getOrder()).getKey(), breakFastAdapter.getItem(item.getOrder()), breakFastAdapter);
+                        }catch (Exception e){
+                            Toast.makeText(context,"Please select that food item which you have checked",Toast.LENGTH_SHORT).show();
+                        }
                         break;
 
                     case "Lunch":
-                        showEditAlertDialog(lunchAdapter.getRef(item.getOrder()).getKey(), lunchAdapter.getItem(item.getOrder()), lunchAdapter);
+                        try {
+                            showEditAlertDialog(lunchAdapter.getRef(item.getOrder()).getKey(), lunchAdapter.getItem(item.getOrder()), lunchAdapter);
+                        }catch(Exception e){
+                            Toast.makeText(context,"Please select that food item which you have checked",Toast.LENGTH_SHORT).show();
+                        }
                         break;
 
                     default:
+                        try{
                         showEditAlertDialog(dinnerAdapter.getRef(item.getOrder()).getKey(), dinnerAdapter.getItem(item.getOrder()), dinnerAdapter);
+                        }catch(Exception e){
+                               Toast.makeText(context,"Please select that food item which you have checked",Toast.LENGTH_SHORT).show();
+                        }
                         break;
 
                 }
@@ -257,15 +270,25 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
                 switch (chooseFoodType){
 
                     case "BreakFast":
+                        try{
                         deleteAlertDialog(breakFastAdapter.getRef(item.getOrder()).getKey(),breakFastAdapter);
-                        break;
+                        }catch(Exception e){
+                            Toast.makeText(context,"Please select that food item which you have checked",Toast.LENGTH_SHORT).show();
+                        }break;
 
                     case "Lunch":
+                        try{
                         deleteAlertDialog(lunchAdapter.getRef(item.getOrder()).getKey(),lunchAdapter);
-                        break;
+                        }catch(Exception e){
+                            Toast.makeText(context,"Please select that food item which you have checked",Toast.LENGTH_SHORT).show();
+                        }break;
 
                     default:
-                        deleteAlertDialog(dinnerAdapter.getRef(item.getOrder()).getKey(),dinnerAdapter);
+                        try {
+                            deleteAlertDialog(dinnerAdapter.getRef(item.getOrder()).getKey(), dinnerAdapter);
+                        }catch(Exception e){
+                            Toast.makeText(context,"Please select that food item which you have checked",Toast.LENGTH_SHORT).show();
+                        }
                         break;
                 }
             }
