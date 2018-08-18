@@ -25,9 +25,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 
 import androidboys.com.heavensfoodadmin.Adapters.FaqArrayAdapter;
+import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Models.Faq;
 import androidboys.com.heavensfoodadmin.R;
-import androidboys.com.heavensfoodadmin.Variables.ContextMenuOptionId;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -59,8 +59,8 @@ public class FaqFragment extends Fragment implements View.OnClickListener,View.O
 
         menu.setHeaderTitle("Select an action!");
         //first argument of the add method is a group, second argument is an id, third order in which you want item to show , foruth title.
-        menu.add(Menu.NONE,ContextMenuOptionId.R_ID_EDIT, 0, "Edit");
-        menu.add(Menu.NONE,ContextMenuOptionId.R_ID_DELETE,0,"Delete");
+        menu.add(Menu.NONE, Common.R_ID_EDIT, 0, "Edit");
+        menu.add(Menu.NONE,Common.R_ID_DELETE,0,"Delete");
     }
 
     @Override
@@ -70,12 +70,12 @@ public class FaqFragment extends Fragment implements View.OnClickListener,View.O
         int position=info.position;
 
         switch (item.getItemId()) {
-            case ContextMenuOptionId.R_ID_EDIT:
+            case Common.R_ID_EDIT:
 //                Toast.makeText(getContext(), "edit is tapped", Toast.LENGTH_SHORT).show();
                 editQA(position);
                 break;
 
-            case ContextMenuOptionId.R_ID_DELETE:
+            case Common.R_ID_DELETE:
 //                Toast.makeText(getContext(), "delete is tapped", Toast.LENGTH_SHORT).show();
                 showDeleteDialog(position);
                 break;

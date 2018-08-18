@@ -36,11 +36,11 @@ import com.squareup.picasso.Picasso;
 
 import java.util.UUID;
 
+import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Models.Faq;
 import androidboys.com.heavensfoodadmin.Models.WhyHeavenFood;
 import androidboys.com.heavensfoodadmin.R;
 import androidboys.com.heavensfoodadmin.Utils.ProgressUtils;
-import androidboys.com.heavensfoodadmin.Variables.ContextMenuOptionId;
 import androidboys.com.heavensfoodadmin.ViewHolders.WhyHeavensFoodViewHolder;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -166,12 +166,12 @@ public class WhyHeavensFoodFragment extends Fragment {
     public boolean onContextItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case ContextMenuOptionId.R_ID_EDIT:
+            case Common.R_ID_EDIT:
 //                Toast.makeText(getContext(), "edit is tapped", Toast.LENGTH_SHORT).show();
                 editDescription(adapter.getRef(item.getOrder()).getKey(),adapter.getItem(item.getOrder()));
                 break;
 
-            case ContextMenuOptionId.R_ID_DELETE:
+            case Common.R_ID_DELETE:
 //                Toast.makeText(getContext(), "delete is tapped", Toast.LENGTH_SHORT).show();
                 showDeleteDialog(adapter.getRef(item.getOrder()).getKey(),adapter.getItem(item.getOrder()));
                 break;
