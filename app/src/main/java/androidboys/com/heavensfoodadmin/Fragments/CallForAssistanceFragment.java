@@ -28,9 +28,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 
 import androidboys.com.heavensfoodadmin.Adapters.CallForAssistanceArrayAdapter;
+import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Models.Assistance;
 import androidboys.com.heavensfoodadmin.R;
-import androidboys.com.heavensfoodadmin.Variables.ContextMenuOptionId;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -75,8 +75,8 @@ public class CallForAssistanceFragment extends Fragment implements View.OnCreate
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
 
         menu.setHeaderTitle("Select an action");
-        menu.add(Menu.NONE,ContextMenuOptionId.R_ID_EDIT,1,"Edit");
-        menu.add(Menu.NONE,ContextMenuOptionId.R_ID_DELETE,2,"Delete");
+        menu.add(Menu.NONE, Common.R_ID_EDIT,1,"Edit");
+        menu.add(Menu.NONE,Common.R_ID_DELETE,2,"Delete");
     }
     @Override
     public boolean onContextItemSelected(MenuItem item) {
@@ -85,12 +85,12 @@ public class CallForAssistanceFragment extends Fragment implements View.OnCreate
         int position=info.position;
 
         switch (item.getItemId()) {
-            case ContextMenuOptionId.R_ID_EDIT:
+            case Common.R_ID_EDIT:
 //                Toast.makeText(getContext(), "edit is tapped", Toast.LENGTH_SHORT).show();
                 editAssistance(position);
                 break;
 
-            case ContextMenuOptionId.R_ID_DELETE:
+            case Common.R_ID_DELETE:
 //                Toast.makeText(getContext(), "delete is tapped", Toast.LENGTH_SHORT).show();
                 showDeleteDialog(position);
                 break;

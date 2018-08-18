@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -38,18 +38,36 @@
                         android:weightSum="10"
                         android:layout_height="match_parent">
 
-                        <TextView
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:textColor="@color/whiteColor"
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_weight="1"
+                            android:weightSum="10"
                             android:background="@color/colorPrimary"
                             android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:text="BreakFast"
-                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/josefin_bold"
-                            android:textStyle="bold"/>
+                            android:layout_height="0dp">
+
+
+                            <TextView
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:textColor="@color/whiteColor"
+                                android:layout_width="0dp"
+                                android:layout_weight="9"
+                                android:layout_height="match_parent"
+                                android:text="BreakFast"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                                android:fontFamily="@font/josefin_bold"
+                                android:textStyle="bold"/>
+
+                            <CheckBox
+                                android:id="@+id/weeklyBreakfastCheckBox"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"/>
+
+
+                        </LinearLayout>
+
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/breakFastRecyclerView"
@@ -75,18 +93,35 @@
                         android:weightSum="10"
                         android:layout_height="match_parent">
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:text="Lunch"
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:textColor="@color/whiteColor"
-                            android:background="@color/colorPrimary"
-                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                            android:fontFamily="@font/josefin_bold"
+                        <LinearLayout
+                            android:orientation="horizontal"
                             android:layout_weight="1"
-                            android:textStyle="bold"/>
+                            android:weightSum="10"
+                            android:background="@color/colorPrimary"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp">
+
+
+                            <TextView
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:textColor="@color/whiteColor"
+                                android:layout_width="0dp"
+                                android:layout_weight="9"
+                                android:layout_height="match_parent"
+                                android:text="Lunch"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                                android:fontFamily="@font/josefin_bold"
+                                android:textStyle="bold"/>
+
+                            <CheckBox
+                                android:id="@+id/weeklyLunchCheckBox"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"/>
+
+
+                        </LinearLayout>
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/lunchRecyclerView"
@@ -111,17 +146,35 @@
                         android:weightSum="10"
                         android:layout_height="match_parent">
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="0dp"                        android:layout_gravity="center"
-                            android:gravity="center"
-                            android:textColor="@color/whiteColor"
-                            android:background="@color/colorPrimary"
-                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                            android:text="Dinner"
-                            android:fontFamily="@font/josefin_bold"
+                        <LinearLayout
+                            android:orientation="horizontal"
                             android:layout_weight="1"
-                            android:textStyle="bold"/>
+                            android:weightSum="10"
+                            android:background="@color/colorPrimary"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp">
+
+
+                            <TextView
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:textColor="@color/whiteColor"
+                                android:layout_width="0dp"
+                                android:layout_weight="9"
+                                android:layout_height="match_parent"
+                                android:text="Dinner"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                                android:fontFamily="@font/josefin_bold"
+                                android:textStyle="bold"/>
+
+                            <CheckBox
+                                android:id="@+id/weeklyDinnerCheckBox"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="match_parent"/>
+
+
+                        </LinearLayout>
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/dinnerRecyclerView"
@@ -140,5 +193,17 @@
          </ScrollView>
     </com.baoyz.widget.PullRefreshLayout>
 
-</LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/weeklyMenuFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/add_image"
+        android:backgroundTint="@color/colorPrimary"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="15dp"
+        />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
 

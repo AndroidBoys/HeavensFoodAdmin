@@ -95,16 +95,6 @@ public class SpecialOrders extends Fragment {
         return view;
     }
 
-//    private void saveDataIntoFirebase() {
-//        FirebaseDatabase.getInstance().getReference("SpecialOrder").child("NewOrders")
-//                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().setValue(specialFoodArrayList).addOnSuccessListener(new OnSuccessListener<Void>() {
-//            @Override
-//            public void onSuccess(Void aVoid) {
-//                Toast.makeText(context,"Save Data into fb",Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
-
     private void showSpecialFoodList() {
         specialFoodAdapter=new FirebaseRecyclerAdapter<SpecialFood, SpecialFoodViewHolder>(SpecialFood.class,
                 R.layout.special_food_raw_layout,SpecialFoodViewHolder.class,specialFoodDatabaseReference) {
@@ -297,11 +287,12 @@ public class SpecialOrders extends Fragment {
             imageFolder.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    progressDialog.dismiss();
-                    Toast.makeText(context,"Uploaded Successfully",Toast.LENGTH_SHORT).show();
+
                     imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
+                            progressDialog.dismiss();
+                            Toast.makeText(context,"Uploaded Successfully",Toast.LENGTH_SHORT).show();
                             specialFood.setImageUrl(uri.toString());
                             Log.i("immageurl", "onSuccess: "+specialFood.getImageUrl());
                         }
@@ -320,7 +311,7 @@ public class SpecialOrders extends Fragment {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                             double progress=(100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                            progressDialog.setMessage("Uploaded "+progress+" %");
+                            progressDialog.setMessage("Uploaded "+(int)progress+" %");
                         }
                     });
         }

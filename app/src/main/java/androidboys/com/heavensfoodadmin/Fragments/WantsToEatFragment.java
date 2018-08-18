@@ -301,11 +301,12 @@ public class WantsToEatFragment extends Fragment {
             imageFolder.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    progressDialog.dismiss();
-                    Toast.makeText(context,"Uploaded Successfully",Toast.LENGTH_SHORT).show();
+
                     imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
+                            progressDialog.dismiss();
+                            Toast.makeText(context,"Uploaded Successfully",Toast.LENGTH_SHORT).show();
                             foodMenu.setImageUrl(uri.toString());
                             Log.i("imageurl:",foodMenu.getImageUrl());
                         }
@@ -324,7 +325,7 @@ public class WantsToEatFragment extends Fragment {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                             double progress=(100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                            progressDialog.setMessage("Uploaded "+progress+" %");
+                            progressDialog.setMessage("Uploaded "+(int)progress+" %");
                         }
                     });
         }

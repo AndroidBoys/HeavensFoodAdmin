@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +20,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import java.text.DateFormatSymbols;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import androidboys.com.heavensfoodadmin.Activities.DescriptionActivity;
@@ -43,7 +46,7 @@ public class SubscribedUserTodaysMenu extends Fragment {
     private FirebaseRecyclerAdapter<FoodMenu, FoodMenuViewHolder> dinnerAdapter;
     private FirebaseRecyclerAdapter<FoodMenu,FoodMenuViewHolder> breakFastAdapter;
     private FirebaseRecyclerAdapter<FoodMenu,FoodMenuViewHolder> lunchAdapter;
-    private FirebaseDatabase FoodMenuFirebaseDatabase;
+    private DatabaseReference foodMenuDatabaseReference;
     private TextView markAbsenceTextView;
     private TextView wantToEatTextView;
     private Button startDateButton;
@@ -62,11 +65,13 @@ public class SubscribedUserTodaysMenu extends Fragment {
         lunchRecyclerView=view.findViewById(R.id.lunchRecyclerView);
         dinnerRecyclerView=view.findViewById(R.id.dinnerRecyclerView);
         markAbsenceTextView=view.findViewById(R.id.markAbsenceTextView);
-
         wantToEatTextView=view.findViewById(R.id.wantToEatTextView);
         context=getContext();
 
-        FoodMenuFirebaseDatabase=FirebaseDatabase.getInstance();
+        String[] weekDays = new String[]{"Sun", "Mon", "Tues", "Wed", "Thrus", "Fri", "Sat"};
+        int day=findTodayDay();
+        foodMenuDatabaseReference=FirebaseDatabase.getInstance().getReference("WeeklyMenu").child(weekDays[day-1]);//since it returns day number from 1 to 7
+
        // linearLayoutManager=new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
         setRecyclerView(breakFastRecyclerView);
         setRecyclerView(lunchRecyclerView);
@@ -74,6 +79,8 @@ public class SubscribedUserTodaysMenu extends Fragment {
         showBreakFastImages();
         showlunchImages();
         showDinnerImages();
+
+        findTodayDay();
 
         markAbsenceTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,6 +113,14 @@ public class SubscribedUserTodaysMenu extends Fragment {
         todayMenuRefreshLayout.setColor(R.color.colorPrimary);
 
         return view;
+    }
+
+    private int findTodayDay() {
+
+        Calendar calendar=Calendar.getInstance(Locale.getDefault());
+        int day=calendar.get(Calendar.DAY_OF_WEEK);
+        return day;
+        //Log.i("Dayname","-------------------"+weekdays[day]+"   "+day);
     }
 
     private void showAbsenceDialog() {
@@ -194,7 +209,7 @@ public class SubscribedUserTodaysMenu extends Fragment {
     }
 
     private void showDinnerImages() {
-        DatabaseReference databaseReference= FoodMenuFirebaseDatabase.getReference("TodayMenu").child("Dinner");
+        DatabaseReference databaseReference=foodMenuDatabaseReference.child("Dinner");
         dinnerAdapter=new FirebaseRecyclerAdapter<FoodMenu, FoodMenuViewHolder>(
                 FoodMenu.class,R.layout.food_menu_row_layout,FoodMenuViewHolder.class,databaseReference) {
             @Override
@@ -216,7 +231,7 @@ public class SubscribedUserTodaysMenu extends Fragment {
     }
 
     private void showlunchImages() {
-        DatabaseReference databaseReference= FoodMenuFirebaseDatabase.getReference("TodayMenu").child("Lunch");
+        DatabaseReference databaseReference=foodMenuDatabaseReference.child("Lunch");
         lunchAdapter=new FirebaseRecyclerAdapter<FoodMenu, FoodMenuViewHolder>(
                 FoodMenu.class,R.layout.food_menu_row_layout,FoodMenuViewHolder.class,databaseReference) {
             @Override
@@ -231,7 +246,7 @@ public class SubscribedUserTodaysMenu extends Fragment {
     }
 
     private void showBreakFastImages() {
-        DatabaseReference databaseReference= FoodMenuFirebaseDatabase.getReference("TodayMenu").child("BreakFast");
+        DatabaseReference databaseReference=foodMenuDatabaseReference.child("BreakFast");
         breakFastAdapter=new FirebaseRecyclerAdapter<FoodMenu, FoodMenuViewHolder>(
                 FoodMenu.class,R.layout.food_menu_row_layout,FoodMenuViewHolder.class,databaseReference) {
             @Override
