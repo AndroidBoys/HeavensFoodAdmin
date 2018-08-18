@@ -13,6 +13,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 import androidboys.com.heavensfoodadmin.Fragments.SubscribedUserFragment;
 import androidboys.com.heavensfoodadmin.Fragments.UnsubscribedUser;
+import androidboys.com.heavensfoodadmin.Fragments.UserListFragment;
+import androidboys.com.heavensfoodadmin.Fragments.UserProfileFragment;
 import androidboys.com.heavensfoodadmin.R;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -41,7 +43,7 @@ public class HomeActivity extends AppCompatActivity
 //                        .setAction("Action", null).show();
 //            }
 
-        addDifferentFragment(UnsubscribedUser.newInstance());
+        addDifferentFragment(UserProfileFragment.newInstance());
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -142,6 +144,7 @@ public class HomeActivity extends AppCompatActivity
                 addDifferentFragment(subscribedUserFragment);
             }else if (id == R.id.nav_rate) {
             }else if (id == R.id.nav_profile) {
+                addDifferentFragment(UserProfileFragment.newInstance());
             }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
