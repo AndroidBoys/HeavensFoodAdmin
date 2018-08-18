@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -36,7 +38,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class SubscribedUserTodaysMenu extends Fragment {
+public class SubscribedUserTodaysMenu extends Fragment implements View.OnCreateContextMenuListener {
 
     private RecyclerView breakFastRecyclerView;
     private RecyclerView lunchRecyclerView;
@@ -111,6 +113,7 @@ public class SubscribedUserTodaysMenu extends Fragment {
             }
         });
         todayMenuRefreshLayout.setColor(R.color.colorPrimary);
+        registerForContextMenu(view);
 
         return view;
     }
@@ -188,19 +191,6 @@ public class SubscribedUserTodaysMenu extends Fragment {
         datePickerDialog.show(getActivity().getFragmentManager(), "Datepickerdialog");
     }
 
-//    @Override
-//    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-//
-//        String date=dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
-//        if(isStartDate){
-//            startDateButton.setText(date);
-//        }else{
-//            endDateButton.setText(date);
-//        }
-//
-//
-//    }
-
     private void setRecyclerView(RecyclerView recyclerView) {
 
         linearLayoutManager=new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
@@ -228,6 +218,23 @@ public class SubscribedUserTodaysMenu extends Fragment {
         foodMenuViewHolder.foodDescriptionTextView.setText(foodMenu.getFoodDescription());
         Picasso.with(context).load(foodMenu.getImageUrl()).placeholder(R.drawable.progress_animation).into(foodMenuViewHolder.foodImageView);
 
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.setHeaderTitle("pagal");
+        Log.i("menuItem","------------"+menu.getItem(0));
+        Log.i("menuItem","------------"+menu.getItem(1));
+
+        //we don't want to give edit and delete option in today's menu fragment.That's why i set the visibility of item false
+        menu.getItem(0).setVisible(false);
+        menu.getItem(1).setVisible(false);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        return super.onContextItemSelected(item);
     }
 
     private void showlunchImages() {

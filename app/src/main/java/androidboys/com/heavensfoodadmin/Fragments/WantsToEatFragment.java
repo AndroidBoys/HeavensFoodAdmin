@@ -48,7 +48,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-public class WantsToEatFragment extends Fragment {
+public class WantsToEatFragment extends Fragment implements View.OnCreateContextMenuListener {
 
     private RecyclerView wantsToEatRecyclerView;
     private RecyclerView.LayoutManager layoutManager;

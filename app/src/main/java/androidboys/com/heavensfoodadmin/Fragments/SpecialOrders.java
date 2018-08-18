@@ -44,7 +44,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class SpecialOrders extends Fragment {
+public class SpecialOrders extends Fragment implements View.OnCreateContextMenuListener {
 
     private RecyclerView specialOrderRecyclerView;
     private RecyclerView.LayoutManager layoutManager;
