@@ -47,7 +47,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class OurPlansFragment extends Fragment {
+public class OurPlansFragment extends Fragment implements View.OnCreateContextMenuListener {
     private ListView ourPlanslistView;
     private DescriptionActivity hostingActivity;
     private ArrayList<Plan> planList =new ArrayList<>();
