@@ -26,4 +26,11 @@
     <string name="Rupees">₹</string>
     <string name="nike_power_run">Nike Power-Run</string>
     <string name="txt_product_price">8000</string>
+
+    <string-array name="foodType">
+        <item>Select</item>
+        <item>BreakFast</item>
+        <item>Lunch</item>
+        <item>Dinner</item>
+    </string-array>
 </resources>

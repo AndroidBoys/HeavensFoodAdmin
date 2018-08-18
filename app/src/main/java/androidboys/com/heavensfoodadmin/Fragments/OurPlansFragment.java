@@ -338,12 +338,13 @@ public class OurPlansFragment extends Fragment {
             imageFolder.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    progressDialog.dismiss();
-                    Toast.makeText(hostingActivity,"Uploaded Successfully",Toast.LENGTH_SHORT).show();
+
                     imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
                             plan.setPlanImageUrl(uri.toString());
+                            progressDialog.dismiss();
+                            Toast.makeText(hostingActivity,"Uploaded Successfully",Toast.LENGTH_SHORT).show();
                             Log.i("imageurl:",plan.getPlanImageUrl());
                         }
                     });
@@ -361,7 +362,7 @@ public class OurPlansFragment extends Fragment {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                             double progress=(100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                            progressDialog.setMessage("Uploaded "+progress+" %");
+                            progressDialog.setMessage("Uploaded "+(int)progress+" %");
                         }
                     });
         }
