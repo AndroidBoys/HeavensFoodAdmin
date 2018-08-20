@@ -11,6 +11,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import androidboys.com.heavensfoodadmin.Fragments.SpecialOrderUsersListFragment;
 import androidboys.com.heavensfoodadmin.Fragments.SubscribedUserFragment;
 import androidboys.com.heavensfoodadmin.Fragments.UnsubscribedUser;
 import androidboys.com.heavensfoodadmin.Fragments.UserListFragment;
@@ -124,12 +125,13 @@ public class HomeActivity extends AppCompatActivity
                 intent.putExtra("ID", R.id.weeklyMenuButton);//since we have to show the weeklyMenu on the screen which will be host by the description activity
                 startActivity(intent);
             }
-            else if (id == R.id.nav_specialOrder) {
-                SubscribedUserFragment subscribedUserFragment=SubscribedUserFragment.newInstance();
-                Bundle bundle=new Bundle();
-                bundle.putInt("POSITION",1);//SINCE position of the special order position is 1 in view pager
-                subscribedUserFragment.setArguments(bundle);
-                addDifferentFragment(subscribedUserFragment);
+            else if (id == R.id.nav_specialOrders) {
+//                SubscribedUserFragment subscribedUserFragment=SubscribedUserFragment.newInstance();
+//                Bundle bundle=new Bundle();
+//                bundle.putInt("POSITION",1);//SINCE position of the special order position is 1 in view pager
+//                subscribedUserFragment.setArguments(bundle);
+
+                addDifferentFragment(SpecialOrderUsersListFragment.newInstance());
             }
             else if (id == R.id.nav_contectUs) {
             }

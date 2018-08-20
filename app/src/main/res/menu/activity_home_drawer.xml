@@ -14,9 +14,9 @@
             android:icon="@drawable/ic_home_black_24dp"
             android:title="Home"/>
         <item
-            android:id="@+id/nav_specialOrder"
+            android:id="@+id/nav_specialOrders"
             android:icon="@drawable/ic_restaurant_menu_black_24dp"
-            android:title="Special Order"/>
+            android:title="Special Orders"/>
         <item
             android:id="@+id/nav_mySubscription"
             android:icon="@drawable/ourplan"
