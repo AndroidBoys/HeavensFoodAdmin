@@ -1,5 +1,6 @@
 package androidboys.com.heavensfoodadmin.Adapters;
 
+import androidboys.com.heavensfoodadmin.Fragments.SpecialFoodListFragment;
 import androidboys.com.heavensfoodadmin.Fragments.SpecialOrders;
 import androidboys.com.heavensfoodadmin.Fragments.SubscribedUserTodaysMenu;
 import androidboys.com.heavensfoodadmin.Fragments.WalletFragment;
@@ -25,7 +26,7 @@ public class ViewPagerAdapter  extends FragmentStatePagerAdapter {
                 return SpecialOrders.newInstance();
 
             case 2:
-                return WalletFragment.newInstance();
+                return SpecialFoodListFragment.newInstance();
         }
         return null;
     }
@@ -47,7 +48,7 @@ public class ViewPagerAdapter  extends FragmentStatePagerAdapter {
                 return "Special Order";
 
             case 2:
-                return "Wallet";
+                return "User Special Order";
 
         }
         return null;

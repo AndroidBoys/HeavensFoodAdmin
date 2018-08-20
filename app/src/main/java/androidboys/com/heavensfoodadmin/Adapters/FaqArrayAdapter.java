@@ -34,7 +34,7 @@ public class FaqArrayAdapter extends ArrayAdapter {
     }
 
     public FaqArrayAdapter(Context context, ArrayList<Faq> faqArrayList) {
-        super(context,R.layout.our_plans_fragment_listview_row,faqArrayList);
+        super(context,0,faqArrayList);
         this.faqArrayList=faqArrayList;
         this.context=context;
     }

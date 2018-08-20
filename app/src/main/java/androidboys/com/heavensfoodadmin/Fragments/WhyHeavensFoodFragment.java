@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -53,16 +54,15 @@ public class WhyHeavensFoodFragment extends Fragment {
     private DatabaseReference databaseReference;
     private FloatingActionButton addDescriptionFloatingActionButton;
     private final int PICK_IMAGE=100;
-    private Uri imageUri;//this variable changes according to image selecte from galary.
+    private Uri imageUri=null;//this variable changes according to image selecte from galary.
     private EditText aboutEditText;
-    private ImageView aboutImageView;
+    private Button chooseImageButton;
     private  FirebaseRecyclerAdapter<WhyHeavenFood,WhyHeavensFoodViewHolder> adapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.why_heaven_foods_fragment,container,false);
-
         addDescriptionFloatingActionButton=view.findViewById(R.id.addWhyHeavensFood);
         whyHeavensFoodRecyclerView=view.findViewById(R.id.whyHeavenFoodsRecyclerView);
         whyHeavensFoodRecyclerView.setHasFixedSize(true);
@@ -72,6 +72,7 @@ public class WhyHeavensFoodFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 addDescription();
+
             }
         });
 
@@ -83,16 +84,17 @@ public class WhyHeavensFoodFragment extends Fragment {
 //    **************************************************************************************************
 
     private void addDescription() {
-
+        imageUri=null;
         LayoutInflater inflater=getLayoutInflater();
         View view=inflater.inflate(R.layout.add_why_heavens_food_description,null,false);
          aboutEditText=view.findViewById(R.id.addAboutEditText);
-         aboutImageView=view.findViewById(R.id.addAboutImageView);
-        aboutImageView.setOnClickListener(new View.OnClickListener() {
+         chooseImageButton=view.findViewById(R.id.addAboutButton);
+        chooseImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 chooseAndSetImage();
-                Picasso.with(getContext()).load(imageUri).into(aboutImageView);
+//                Picasso.with(getContext()).load(imageUri).into(aboutImageView);
             }
         });
 
@@ -100,11 +102,16 @@ public class WhyHeavensFoodFragment extends Fragment {
         builder.setView(view).setPositiveButton("ADD", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                ProgressUtils.showLoadingDialog(getActivity());
-                uploadImage();
+                if(imageUri==null)
+                    Toast.makeText(getActivity(), "Please select an image first!", Toast.LENGTH_SHORT).show();
+                else {
+                    ProgressUtils.showLoadingDialog(getActivity());
+                    uploadImage();
+                }
             }
         })
                 .setNegativeButton("Cancel",null)
+                .setCancelable(false)
                 .show();
 
 
@@ -113,7 +120,7 @@ public class WhyHeavensFoodFragment extends Fragment {
     private void uploadImage() {
         UUID uuid=UUID.randomUUID();
 
-        StorageTask<UploadTask.TaskSnapshot> torageReference = FirebaseStorage.getInstance().getReference().child(uuid.toString()).putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        StorageTask<UploadTask.TaskSnapshot> storageReference = FirebaseStorage.getInstance().getReference().child(uuid.toString()).putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
@@ -182,18 +189,23 @@ public class WhyHeavensFoodFragment extends Fragment {
     public void editDescription(final String key, final WhyHeavenFood item){
         LayoutInflater inflater=getLayoutInflater();
         View view=inflater.inflate(R.layout.add_why_heavens_food_description,null,false);
+
+        chooseImageButton=view.findViewById(R.id.addAboutButton);
         aboutEditText=view.findViewById(R.id.addAboutEditText);
-        aboutImageView=view.findViewById(R.id.addAboutImageView);
         aboutEditText.setText(item.getAbout());
-        imageUri= Uri.parse(item.getImageUrl()); //if user do not choose a different image so we can use this previous image
-        Picasso.with(getContext()).load(item.getImageUrl()).into(aboutImageView);
-        aboutImageView.setOnClickListener(new View.OnClickListener() {
+        imageUri= Uri.parse(item.getImageUrl());//if user do not choose a different image so we can use this previous image
+
+        if(imageUri!=null)
+            chooseImageButton.setText("Image Selected");
+        chooseImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 chooseAndSetImage();
-                Picasso.with(getContext()).load(imageUri).into(aboutImageView);
-            }
+                if(imageUri!=null)
+                    chooseImageButton.setText("Image Selected");
+         }
         });
+
 
         AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
         builder.setView(view).setPositiveButton("ADD", new DialogInterface.OnClickListener() {
@@ -214,7 +226,7 @@ public class WhyHeavensFoodFragment extends Fragment {
     private void uploadNewImage(final String oldImageUrl, final String key) {
         UUID uuid=UUID.randomUUID();
 
-        StorageTask<UploadTask.TaskSnapshot> tarageReference = FirebaseStorage.getInstance().getReference().child(uuid.toString()).putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        StorageTask<UploadTask.TaskSnapshot> starageReference = FirebaseStorage.getInstance().getReference().child(uuid.toString()).putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
@@ -296,7 +308,7 @@ public class WhyHeavensFoodFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==PICK_IMAGE && resultCode==getActivity().RESULT_OK && data!=null){
             imageUri= data.getData();
-
+                chooseImageButton.setText("Image Selected");
         }
     }
 

@@ -20,6 +20,7 @@ import androidboys.com.heavensfoodadmin.ViewHolders.UserListViewHolder;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -48,7 +49,7 @@ public class UnsubscribeUserListFragment extends Fragment {
        DatabaseReference databaseReference=FirebaseDatabase.getInstance().getReference("Users");
        adapter=new FirebaseRecyclerAdapter<User, UserListViewHolder>(User.class,R.layout.user_list_row_layout,UserListViewHolder.class,databaseReference) {
            @Override
-           protected void populateViewHolder(final UserListViewHolder userListViewHolder, User user, int i) {
+           protected void populateViewHolder(final UserListViewHolder userListViewHolder, final User user, int i) {
 
                if(user.subscribedPlan==null) {
                    userListViewHolder.NameTextView.setText(user.email);
@@ -70,6 +71,7 @@ public class UnsubscribeUserListFragment extends Fragment {
                        public void onClick(View view) {
                            //GO TO THE PROFILE
                            Toast.makeText(getContext(), "layoutpressed", Toast.LENGTH_SHORT).show();
+                           showProfile(user);
                        }
                    });
 
@@ -85,6 +87,12 @@ public class UnsubscribeUserListFragment extends Fragment {
 
     }
 
+    private void showProfile(User user) {
+        UserProfileFragment userProfileFragment=UserProfileFragment.newInstance(user);
+        FragmentManager fragmentManager=getFragmentManager();
+        userProfileFragment.show(fragmentManager,"Profile");
+
+    }
 
     public static UnsubscribeUserListFragment newInstance() {
 
