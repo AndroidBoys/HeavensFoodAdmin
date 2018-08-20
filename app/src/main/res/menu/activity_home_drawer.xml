@@ -26,9 +26,9 @@
             android:icon="@drawable/weeklymenu"
             android:title="Weekly Menu"/>
         <item
-            android:id="@+id/nav_wallet"
-            android:icon="@drawable/wallet"
-            android:title="Wallet"/>
+            android:id="@+id/nav_users"
+            android:icon="@drawable/contactus"
+            android:title="Users"/>
     </group>
 
     <item android:title="Communicate">
