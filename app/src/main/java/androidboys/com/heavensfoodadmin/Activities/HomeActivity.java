@@ -43,7 +43,7 @@ public class HomeActivity extends AppCompatActivity
 //                        .setAction("Action", null).show();
 //            }
 
-        addDifferentFragment(UserProfileFragment.newInstance());
+        addDifferentFragment(SubscribedUserFragment.newInstance());
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -136,15 +136,11 @@ public class HomeActivity extends AppCompatActivity
             else if (id == R.id.nav_logout) {
                 logOutDialog();
             }
-            else if (id == R.id.nav_wallet) {
-                SubscribedUserFragment subscribedUserFragment=SubscribedUserFragment.newInstance();
-                Bundle bundle=new Bundle();
-                bundle.putInt("POSITION",2);//SINCE position of the wallet position is 1 in view pager
-                subscribedUserFragment.setArguments(bundle);
-                addDifferentFragment(subscribedUserFragment);
+            else if (id == R.id.nav_users) {
+                addDifferentFragment(UserListFragment.newInstance());
             }else if (id == R.id.nav_rate) {
             }else if (id == R.id.nav_profile) {
-                addDifferentFragment(UserProfileFragment.newInstance());
+//                addDifferentFragment(UserProfileFragment.newInstance());
             }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

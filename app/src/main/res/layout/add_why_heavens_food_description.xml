@@ -22,13 +22,14 @@
         android:text="Touch below to choose an image"
         android:layout_margin="8dp"/>
 
-    <ImageView
-
+    <com.google.android.material.button.MaterialButton
         android:layout_margin="8dp"
-        android:id="@+id/addAboutImageView"
-        android:src="@drawable/ic_cloud_upload_black_24dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+        android:id="@+id/addAboutButton"
         android:layout_width="match_parent"
-        android:layout_height="240dp" />
+        android:text="Select an Image"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
 
     <EditText
         android:id="@+id/addAboutEditText"

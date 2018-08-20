@@ -10,15 +10,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
+import androidboys.com.heavensfoodadmin.Models.Plan;
+import androidboys.com.heavensfoodadmin.Models.User;
 import androidboys.com.heavensfoodadmin.R;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-public class UserProfileFragment extends Fragment implements View.OnClickListener{
-    private ImageView userImage,editProfileImageView,doneEditingImageView;
+public class UserProfileFragment extends DialogFragment{
+    private ImageView userImage;
     private TextView userNameTextViewHeader,
             userEmailTextViewHeader,
     planName,lunch,dinner,breakfast,days,price;
@@ -42,69 +46,45 @@ public class UserProfileFragment extends Fragment implements View.OnClickListene
         email=view.findViewById(R.id.emailEditText);
         phone=view.findViewById(R.id.phoneEditText);
         address=view.findViewById(R.id.addressEditText);
-        editProfileImageView=view.findViewById(R.id.editProfileImageView);
-        doneEditingImageView=view.findViewById(R.id.doneImageView);
-        
-        editProfileImageView.setOnClickListener(this);
-        doneEditingImageView.setOnClickListener(this);
 
-
+        Bundle bundle=getArguments();
+        User user= (User) bundle.getSerializable("USER");
+        setUsersProfile(user);
 
 
         return view;
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.editProfileImageView:
-                setNeddedContentsVisibility(1);
-                break;
-            case R.id.doneImageView:
-                doneEditingImageView.setVisibility(View.GONE);
-                setNeddedContentsVisibility(2);
-                //UPDATE DATA INTO FIREBASE
-                break;
-        }
-    }
+    private void setUsersProfile(User user) {
+        Plan plan=user.getSubscribedPlan();
 
-    private void setNeddedContentsVisibility(int pressed) {
-        switch (pressed) {
-            case 1:
+        userEmailTextViewHeader.setText(user.getEmail());
+        phone.setText(user.getPhoneNumber());
+        email.setText(user.getEmail());
 
-                name.setFocusable(true);
-                phone.setFocusable(true);
-                email.setFocusable(true);
-                address.setFocusable(true);
 
-                name.setFocusableInTouchMode(true);
-                phone.setFocusableInTouchMode(true);
-                email.setFocusableInTouchMode(true);
-                address.setFocusableInTouchMode(true);
-                doneEditingImageView.setVisibility(View.VISIBLE);
-                break;
 
-            case 2:
-                name.setFocusableInTouchMode(false);
-                phone.setFocusableInTouchMode(false);
-                email.setFocusableInTouchMode(false);
-                address.setFocusableInTouchMode(false);
-                doneEditingImageView.setVisibility(View.GONE);
-
-                name.setFocusable(false);
-                phone.setFocusable(false);
-                email.setFocusable(false);
-                address.setFocusable(false);
-
-                break;
+        if(plan!=null) {
+            planName.setText(plan.getPlanName());
+            lunch.setText(checkBool(plan.isIncludesLunch()));
+            dinner.setText(checkBool(plan.includesDinner));
+            breakfast.setText(checkBool(plan.includesBreakFast));
+            days.setText(plan.noOfDays);
+            int totalPrice = Integer.parseInt(plan.getFrequencyPerDay()) * Integer.parseInt(plan.getSingleTimePrice());
+            price.setText("" + totalPrice);
         }
 
     }
-
-    public static UserProfileFragment newInstance() {
+    private String checkBool(boolean bool) {
+        if(bool==true)
+            return "Included";
+        else
+            return "Not Included";
+    }
+    public static UserProfileFragment newInstance(User user) {
         
         Bundle args = new Bundle();
-        
+      args.putSerializable("USER",user);
         UserProfileFragment fragment = new UserProfileFragment();
         fragment.setArguments(args);
         return fragment;
