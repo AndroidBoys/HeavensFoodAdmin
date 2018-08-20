@@ -72,7 +72,7 @@ public class SpecialOrders extends Fragment implements View.OnCreateContextMenuL
         specialFoodFloatingActionButton=view.findViewById(R.id.specialFoodFloatingActionButton);
         layoutManager=new LinearLayoutManager(context);
         specialFoodDatabaseReference= FirebaseDatabase.getInstance().getReference("SpecialOrder").child("FoodImages");
-//        elegantNumberButton=view.findViewById(R.id.elegantNumberButton);
+//      elegantNumberButton=view.findViewById(R.id.elegantNumberButton);
         PullRefreshLayout pullRefreshLayout=view.findViewById(R.id.pullRefreshLayout);
         specialOrderRecyclerView.setHasFixedSize(true);
         specialOrderRecyclerView.setLayoutManager(layoutManager);

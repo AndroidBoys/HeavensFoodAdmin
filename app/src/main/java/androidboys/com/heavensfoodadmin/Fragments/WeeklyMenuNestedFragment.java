@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -131,6 +132,11 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b && !weeklyDinnerCheckBox.isChecked() && !weeklyLunchCheckBox.isChecked()){
                     chooseFoodType="BreakFast";
+                    View newView=weeklyDinnerCheckBox.getRootView();
+                    View newView1=weeklyLunchCheckBox.getRootView();
+                    unregisterForContextMenu(newView1);
+                    unregisterForContextMenu(newView);
+
                 }else if(!b){
                     chooseFoodType=null;
                 }else{
@@ -167,6 +173,9 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
                 }
             }
         });
+
+        registerForContextMenu(view);
+
         return view;
     }
 
@@ -238,7 +247,6 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
             if (item.getTitle().equals(Common.EDIT)) {
 
                 switch (chooseFoodType) {
-
 
                     case "BreakFast":
                         try {
