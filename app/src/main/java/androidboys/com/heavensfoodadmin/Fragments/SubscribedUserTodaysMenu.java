@@ -276,6 +276,4 @@ public class SubscribedUserTodaysMenu extends Fragment implements View.OnCreateC
         fragment.setArguments(args);
         return fragment;
     }
-
-
 }

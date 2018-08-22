@@ -89,7 +89,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    public void registerUser()
+    private void registerUser()
     {
         mobileNumber = phoneEditText.getText().toString().trim();
         email = emailEditText.getText().toString();
@@ -124,7 +124,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    public void verifyPhoneNumber()
+    private void verifyPhoneNumber()
     {
 
         hostingActivity.addDifferentFragment(VerificationFragment.newInstance(email,mobileNumber,password));
@@ -136,7 +136,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         return PushPullAnimation.create(PushPullAnimation.LEFT,enter,1000);
     }
 
-    public void fetchUsers()
+    private void fetchUsers()
     {
         users = new ArrayList<>();
 
@@ -169,7 +169,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    public boolean checkAlreadyExists()
+    private boolean checkAlreadyExists()
     {
         for(int i=0;i<users.size();i++)
         {

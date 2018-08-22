@@ -1,15 +1,22 @@
 package androidboys.com.heavensfoodadmin.Models;
 
-import java.io.Serializable;
-
-public class User implements Serializable {
+public class User {
 
     public String name;
     public String email;
     public String phoneNumber;
+    public Address userAddress;
     public String password;
     public Plan subscribedPlan;
     public Wallet wallet;
+
+    public Address getUserAddress() {
+        return userAddress;
+    }
+
+    public void setUserAddress(Address userAddress) {
+        this.userAddress = userAddress;
+    }
 
     public User() {
     }
@@ -17,6 +24,8 @@ public class User implements Serializable {
     public String getName() {
         return name;
     }
+
+
 
     public void setName(String name) {
         this.name = name;

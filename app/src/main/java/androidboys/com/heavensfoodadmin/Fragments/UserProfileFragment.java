@@ -84,7 +84,7 @@ public class UserProfileFragment extends DialogFragment{
     public static UserProfileFragment newInstance(User user) {
         
         Bundle args = new Bundle();
-      args.putSerializable("USER",user);
+        args.putSerializable("USER", (Serializable) user);
         UserProfileFragment fragment = new UserProfileFragment();
         fragment.setArguments(args);
         return fragment;

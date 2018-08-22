@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+
 import androidboys.com.heavensfoodadmin.Notification.APIService;
 import androidboys.com.heavensfoodadmin.Notification.Common;
 import androidboys.com.heavensfoodadmin.Notification.MyResponse;
@@ -55,7 +56,7 @@ public class SendNotificationFragment extends Fragment {
         return view;
     }
 
-    public void sendNotification(){
+    private void sendNotification(){
 
         Notification notification = new Notification(notificationMessageEditText.getText().toString(),"Notification from firebase");
         Sender content = new Sender("/topics/subscribed",notification);
@@ -70,7 +71,7 @@ public class SendNotificationFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<MyResponse> call, Throwable t) {
+            public void onFailure(retrofit2.Call<MyResponse> call, Throwable t) {
                 Log.i("notification", "onFailure: "+t.getMessage());
             }
         });
