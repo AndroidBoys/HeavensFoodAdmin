@@ -11,6 +11,8 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+
+import androidboys.com.heavensfoodadmin.Fragments.SendNotificationFragment;
 import androidboys.com.heavensfoodadmin.Fragments.SpecialOrderUsersListFragment;
 import androidboys.com.heavensfoodadmin.Fragments.SubscribedUserFragment;
 import androidboys.com.heavensfoodadmin.Fragments.UnsubscribedUser;
@@ -147,6 +149,8 @@ public class HomeActivity extends AppCompatActivity
 
             }else if (id == R.id.nav_rate) {
 
+                addDifferentFragment(SendNotificationFragment.newInstance());
+                
             }else if (id == R.id.nav_profile) {
 //                addDifferentFragment(UserProfileFragment.newInstance());
             }

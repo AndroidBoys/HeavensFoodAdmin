@@ -67,5 +67,13 @@ dependencies {
 
     implementation 'com.baoyz.pullrefreshlayout:library:1.2.0'
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
+
+
+    implementation 'com.google.firebase:firebase-messaging:17.3.0'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+
 }
 apply plugin: 'com.google.gms.google-services'
