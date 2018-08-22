@@ -140,7 +140,13 @@ public class HomeActivity extends AppCompatActivity
             }
             else if (id == R.id.nav_users) {
                 addDifferentFragment(UserListFragment.newInstance());
+            }else if(id==R.id.nav_wantsToEat){
+                Intent intent = new Intent(HomeActivity.this, DescriptionActivity.class);
+                intent.putExtra("ID", R.id.nav_wantsToEat);//since we have to show the weeklyMenu on the screen which will be host by the description activity
+                startActivity(intent);
+
             }else if (id == R.id.nav_rate) {
+
             }else if (id == R.id.nav_profile) {
 //                addDifferentFragment(UserProfileFragment.newInstance());
             }

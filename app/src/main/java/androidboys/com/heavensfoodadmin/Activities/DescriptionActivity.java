@@ -11,6 +11,7 @@ import androidboys.com.heavensfoodadmin.Fragments.CallForAssistanceFragment;
 import androidboys.com.heavensfoodadmin.Fragments.FaqFragment;
 import androidboys.com.heavensfoodadmin.Fragments.OurPlansFragment;
 import androidboys.com.heavensfoodadmin.Fragments.WantsToEatFragment;
+import androidboys.com.heavensfoodadmin.Fragments.WantsToUserListFragment;
 import androidboys.com.heavensfoodadmin.Fragments.WeeklyMenuFragment;
 import androidboys.com.heavensfoodadmin.Fragments.WeeklyMenuNestedFragment;
 import androidboys.com.heavensfoodadmin.Fragments.WhyHeavensFoodFragment;
@@ -54,7 +55,9 @@ public class DescriptionActivity extends AppCompatActivity {
             case R.id.wantToEatTextView:
                 addDifferentFragment(WantsToEatFragment.newInstance());
                 break;
-
+            case R.id.nav_wantsToEat:
+                addDifferentFragment(WantsToUserListFragment.newInstance());
+                break;
         }
 
     }
@@ -71,7 +74,6 @@ public class DescriptionActivity extends AppCompatActivity {
     public void showTodaysMenu(View view){
         Toast.makeText(this, view.getTag().toString()+" selected", Toast.LENGTH_SHORT).show();
         addDifferentFragment(WeeklyMenuNestedFragment.newInstance(view.getTag().toString()));
-
     }
 
 }
