@@ -9,10 +9,27 @@
       "startDate" : "13/8/2018"
     }
   },
+  "Admin" : {
+    "8SjyFfGfKqfaPAjowi6nNaAcvxZ2" : {
+      "email" : "sohan.cse16@gmail.com",
+      "name" : "sohan",
+      "password" : "1234567",
+      "phoneNumber" : "8126583671",
+      "userAddress" : {
+        "address" : "Pauri Garhwal, Uttarakhand, India",
+        "latitude" : "29.86876819999999",
+        "longitude" : "78.8382644"
+      }
+    }
+  },
   "Assistances" : {
     "-LK38gKrbIJVfCAwIDhy" : {
       "center" : "if7f",
       "phoneNo" : "58505"
+    },
+    "-LKPbr-itSiR7ILn9J3y" : {
+      "center" : "pauri",
+      "phoneNo" : "8126583671"
     }
   },
   "AttractiveQuotes" : "attrctive text herelsdkfjalsdf",
@@ -59,7 +76,7 @@
         "imageUrl" : "http://medifoods.my/wp-content/uploads/2015/03/cover-menu-westernsoup1.jpg"
       }
     },
-    "maxLimit" : 1
+    "maxLimit" : 2
   },
   "OurPlans" : {
     "01" : {
@@ -142,64 +159,11 @@
         "foodName" : "Apna Food1",
         "foodQuantity" : "4",
         "imageUrl" : "http://medifoods.my/wp-content/uploads/2015/03/cover-menu-fingerfoods2.jpg"
-      }
-    },
-    "NewOrders" : {
-      "Chowmin":{
-        "4VLxrhpFmQdb4Qd4pyRMqvG1jt1" : {
-          "foodDescription" : "good food",
-          "foodName" : "FINGER FOOD",
-          "foodQuantity" : "2",
-          "imageUrl" : "http://medifoods.my/wp-content/uploads/2015/03/cover-menu-westernsoup1.jpg"
-        },
-        "4oVLxrhpFmQdb4Qd4pyRMqvG1jt1" : {
-          "foodDescription" : "good food",
-          "foodName" : "FINGER FOOD",
-          "foodQuantity" : "2",
-          "imageUrl" : "http://medifoods.my/wp-content/uploads/2015/03/cover-menu-westernsoup1.jpg"
-        }
       },
-      "Maggi":{
-        "4VLxrhpFmQdb4Qd4pyRMqvG1jt1" : {
-          "foodDescription" : "good food",
-          "foodName" : "FINGER FOOD",
-          "foodQuantity" : "2",
-          "imageUrl" : "http://medifoods.my/wp-content/uploads/2015/03/cover-menu-westernsoup1.jpg"
-        },
-        "4oVLxrhpFmQdb4Qd4pyRMqvG1jt1" : {
-          "foodDescription" : "good food",
-          "foodName" : "FINGER FOOD",
-          "foodQuantity" : "2",
-          "imageUrl" : "http://medifoods.my/wp-content/uploads/2015/03/cover-menu-westernsoup1.jpg"
-        }
-      },
-      "Soup":{
-        "4VLxrhpFmQdb4Qd4pyRMqvG1jt1" : {
-          "foodDescription" : "good food",
-          "foodName" : "FINGER FOOD",
-          "foodQuantity" : "23",
-          "imageUrl" : "http://medifoods.my/wp-content/uploads/2015/03/cover-menu-westernsoup1.jpg"
-        },
-        "4oVLxrhpFmQdb4Qd4pyRMqvG1jt1" : {
-          "foodDescription" : "good food",
-          "foodName" : "FINGER FOOD",
-          "foodQuantity" : "78",
-          "imageUrl" : "http://medifoods.my/wp-content/uploads/2015/03/cover-menu-westernsoup1.jpg"
-        }
-      },
-      "Potato":{
-        "4VLxrhpFmQdb4Qd4pyRMqvG1jt1" : {
-          "foodDescription" : "good food",
-          "foodName" : "FINGER FOOD",
-          "foodQuantity" : "3",
-          "imageUrl" : "http://medifoods.my/wp-content/uploads/2015/03/cover-menu-westernsoup1.jpg"
-        },
-        "4oVLxrhpFmQdb4Qd4pyRMqvG1jt1" : {
-          "foodDescription" : "good food",
-          "foodName" : "FINGER FOOD",
-          "foodQuantity" : "5",
-          "imageUrl" : "http://medifoods.my/wp-content/uploads/2015/03/cover-menu-westernsoup1.jpg"
-        }
+      "-LKS89o4ZHo03tHGdBto" : {
+        "foodDescription" : "yjeyjd",
+        "foodName" : "hdymydmdy",
+        "imageUrl" : "https://firebasestorage.googleapis.com/v0/b/foodheaven-b91b6.appspot.com/o/images%2F11b97512-dfcf-4f89-a337-ae58993ba3f2?alt=media&token=3b0cd4af-db95-4135-b836-7fff171d762a"
       }
     }
   },
@@ -272,72 +236,85 @@
     }
   },
   "Users" : {
-    "4VLxrhpFmQdb4Qd4pyRMqvG1jt1" : {
-      "email" : "abxdmhraturi@gmail.com",
-      "password" : "jaimatade",
-      "phoneNumber" : "9557491531",
-      "subscribedPlan" : {
-        "description" : "'heloldsfasdlkfjjlksdfjoaksd",
-        "frequencyPerDay" : "2",
-        "includesBreakFast" : true,
-        "includesDinner" : true,
-        "includesLunch" : false,
-        "noOfDays" : "15",
-        "planImageUrl" : "http://medifoods.my/wp-content/uploads/2015/03/cover-menu-westernsoup1.jpg",
-        "planName" : "Mini Bonanza Plan",
-        "singleTimePrice" : "1000"
-      },
-      "wallet" : {
-        "availableBalance" : "2000",
-        "creditedAmount" : "2000",
-        "dueDate" : "09/01/2018"
-      }
-    },
-    "4oVLxrhpFmQdb4Qd4pyRMqvG1jt1" : {
-      "email" : "mhraturi@gmail.com",
-      "password" : "jaimatade",
-      "phoneNumber" : "9557491531",
-      "subscribedPlan" : {
-        "description" : "'heloldsfasdlkfjjlksdfjoaksd",
-        "frequencyPerDay" : "2",
-        "includesBreakFast" : true,
-        "includesDinner" : true,
-        "includesLunch" : false,
-        "noOfDays" : "15",
-        "planImageUrl" : "http://medifoods.my/wp-content/uploads/2015/03/cover-menu-westernsoup1.jpg",
-        "planName" : "Mini Bonanza Plan",
-        "singleTimePrice" : "1000"
-      },
-      "wallet" : {
-        "availableBalance" : "2000",
-        "creditedAmount" : "2000",
-        "dueDate" : "09/01/2018"
-      }
-    },
-    "Bx7kkLe5dwcI9ZFsRnQPjvEalEm2" : {
-      "email" : "wertd@gmail.com",
-      "password" : "123456",
-      "phoneNumber" : "7895922259"
-    },
-    "loWKAzhG4IQf3YfObQCT8Wo9RM42" : {
-      "email" : "1234sohan.kathait@gmail.com",
+    "kxeBjVBa8aes0OiXSZUyBJ3ezvZ2" : {
+      "email" : "sohan.kathait@gmail.com",
+      "name" : "sl",
       "password" : "1234567",
       "phoneNumber" : "8126583671",
+      "userAddress" : {
+        "address" : "Delhi, India",
+        "latitude" : "28.686273800000006",
+        "longitude" : "77.2217831"
+      },
       "subscribedPlan" : {
-        "description" : "'heloldsfasdlkfjjlksdfjoaksd",
+        "description" : "'heloldsfasdlkfjjlksdfjoaks",
         "frequencyPerDay" : "2",
         "includesBreakFast" : true,
         "includesDinner" : true,
-        "includesLunch" : false,
+        "includesLunch" : true,
         "noOfDays" : "15",
         "planImageUrl" : "http://medifoods.my/wp-content/uploads/2015/03/cover-menu-westernsoup1.jpg",
-        "planName" : "Mini Bonanza Plan",
-        "singleTimePrice" : "1000"
+        "planName" : "Mini Bonanza Plang",
+        "singleTimePrice" : "10"
       },
       "wallet" : {
-        "availableBalance" : "2000",
-        "creditedAmount" : "2000",
-        "dueDate" : "09/01/2018"
+        "availableBalance" : "20",
+        "creditedAmount" : "20",
+        "dueDate" : "09/06/2018"
+      }
+    },
+    "piSW2DLrxBM8ZI3ZZh3dtnhIm572" : {
+      "email" : "negiarvind229@gmail.com",
+      "name" : "arvind",
+      "password" : "123456",
+      "phoneNumber" : "7895922259",
+      "userAddress" : {
+        "address" : "Delhi, India",
+        "latitude" : "28.686273800000006",
+        "longitude" : "77.2217831"
+      },
+      "subscribedPlan" : {
+        "description" : "'heloldsfasdlkfjjlksdfjoaks",
+        "frequencyPerDay" : "2",
+        "includesBreakFast" : true,
+        "includesDinner" : true,
+        "includesLunch" : true,
+        "noOfDays" : "15",
+        "planImageUrl" : "http://medifoods.my/wp-content/uploads/2015/03/cover-menu-westernsoup1.jpg",
+        "planName" : "Mini Bonanza Plang",
+        "singleTimePrice" : "10"
+      },
+      "wallet" : {
+        "availableBalance" : "20",
+        "creditedAmount" : "20",
+        "dueDate" : "09/06/2018"
+      }
+    },
+    "wIVSmK6hXzR9sGHuoyiUjnQGEqu2" : {
+      "email" : "mhraturi@gmail.com",
+      "name" : "Amit Kishor Raturi",
+      "password" : "jaimatade",
+      "phoneNumber" : "9557491531",
+      "subscribedPlan" : {
+        "description" : "'heloldsfasdlkfjjlksdfjoaks",
+        "frequencyPerDay" : "2",
+        "includesBreakFast" : true,
+        "includesDinner" : true,
+        "includesLunch" : true,
+        "noOfDays" : "15",
+        "planImageUrl" : "http://medifoods.my/wp-content/uploads/2015/03/cover-menu-westernsoup1.jpg",
+        "planName" : "Mini Bonanza Plang",
+        "singleTimePrice" : "10"
+      },
+      "userAddress" : {
+        "address" : "Takoli Challannsyun, Uttarakhand 246147, India",
+        "latitude" : "30.209169199999995",
+        "longitude" : "78.86577729999999"
+      },
+      "wallet" : {
+        "availableBalance" : "20",
+        "creditedAmount" : "20",
+        "dueDate" : "09/06/2018"
       }
     }
   },
@@ -738,6 +715,14 @@
     "-LKLG7_IBz9pBqEdRgLN" : {
       "about" : "7990",
       "imageUrl" : "https://firebasestorage.googleapis.com/v0/b/foodheaven-b91b6.appspot.com/o/6ac71268-9ede-431c-8367-510b4c7864b6?alt=media&token=3ecc0c8d-4e9b-4a10-8654-c33370a76958"
+    },
+    "-LKPdMYKjPtODaA4sDf8" : {
+      "about" : "negi",
+      "imageUrl" : "https://firebasestorage.googleapis.com/v0/b/foodheaven-b91b6.appspot.com/o/ba533aba-0be7-440e-bfd6-8ca1795bdb43?alt=media&token=17a62aac-33a0-4803-bc01-9d44aceb094d"
     }
+  },
+  "notification" : {
+    "id" : "cc85e8d4-3821-4c30-b215-6f0d6977dc20",
+    "message" : "hi"
   }
 }

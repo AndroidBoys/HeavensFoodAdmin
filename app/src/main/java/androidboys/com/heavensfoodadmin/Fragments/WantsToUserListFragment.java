@@ -126,7 +126,6 @@ public class WantsToUserListFragment extends Fragment implements AdapterView.OnI
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
 
-
         AlertDialog.Builder alertDialog=new AlertDialog.Builder(context,android.R.style.Theme_Black_NoTitleBar_Fullscreen);
         LayoutInflater layoutInflater=getLayoutInflater();
         View newView=layoutInflater.inflate(R.layout.special_order_user_nested_list,null,false);
