@@ -35,7 +35,6 @@
 
 
         <TextView
-            android:text="Quantity : 10"
             android:layout_marginLeft="3dp"
             android:layout_marginTop="5dp"
             android:fontFamily="@font/josefin_bold"

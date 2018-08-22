@@ -26,7 +26,7 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
 
         callImageView.setOnClickListener(this);
 
-       layout =(LinearLayout)itemView.findViewById(R.id.superLinearLayout);
+       layout = itemView.findViewById(R.id.superLinearLayout);
        params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                ViewGroup.LayoutParams.WRAP_CONTENT);
     }

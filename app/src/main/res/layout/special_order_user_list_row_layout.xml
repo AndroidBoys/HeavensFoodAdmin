@@ -27,9 +27,9 @@
 
         <ImageView
             android:id="@+id/specialFoodCountImageview"
-            android:layout_width="35dp"
+            android:layout_width="28dp"
             android:layout_gravity="center"
-            android:layout_height="35dp"/>
+            android:layout_height="28dp"/>
 
         <ImageView
             android:layout_weight="1"
