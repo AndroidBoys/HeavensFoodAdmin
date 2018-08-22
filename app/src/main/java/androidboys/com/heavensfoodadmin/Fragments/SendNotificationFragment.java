@@ -58,7 +58,7 @@ public class SendNotificationFragment extends Fragment {
     public void sendNotification(){
 
         Notification notification = new Notification(notificationMessageEditText.getText().toString(),"Notification from firebase");
-        Sender content = new Sender("/topics/subscribe",notification);
+        Sender content = new Sender("/topics/subscribed",notification);
         fcmService.sendNotification(content).enqueue(new Callback<MyResponse>() {
             @Override
             public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
