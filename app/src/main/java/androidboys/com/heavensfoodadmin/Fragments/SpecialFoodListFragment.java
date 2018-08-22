@@ -84,13 +84,10 @@ public class SpecialFoodListFragment extends Fragment {
 
             }
         });
-
     }
 
     public static SpecialFoodListFragment newInstance() {
-        
         Bundle args = new Bundle();
-        
         SpecialFoodListFragment fragment = new SpecialFoodListFragment();
         fragment.setArguments(args);
         return fragment;

@@ -25,6 +25,11 @@
         <activity android:name=".Activities.DescriptionActivity"></activity>
         <activity android:name=".Payments.PaymentsActivity">
         </activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDJXfecI2zkSHV8HdqRqBrkkeRE2MDyoIA"/>
+
+
     </application>
 
 </manifest>

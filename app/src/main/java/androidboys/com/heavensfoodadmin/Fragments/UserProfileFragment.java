@@ -10,6 +10,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -32,7 +35,6 @@ public class UserProfileFragment extends DialogFragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.user_profile,container,false);
-
        userImage=view.findViewById(R.id.profile_image);
         userNameTextViewHeader=view.findViewById(R.id.userNameTextView);
         userEmailTextViewHeader=view.findViewById(R.id.userEmailTextView);
@@ -56,12 +58,19 @@ public class UserProfileFragment extends DialogFragment{
     }
 
     private void setUsersProfile(User user) {
-        Plan plan=user.getSubscribedPlan();
-
         userEmailTextViewHeader.setText(user.getEmail());
         phone.setText(user.getPhoneNumber());
         email.setText(user.getEmail());
+        userNameTextViewHeader.setText(user.getName());
+        name.setText(user.getName());
+        address.setText(user.getUserAddress().address);
 
+        ColorGenerator generator=ColorGenerator.MATERIAL;
+
+        TextDrawable textDrawable = TextDrawable.builder()
+                .buildRound(""+"" + user.getName().charAt(0), generator.getRandomColor());//setting first letter of the user name
+        userImage.setImageDrawable(textDrawable);
+        Plan plan=user.getSubscribedPlan();
 
 
         if(plan!=null) {

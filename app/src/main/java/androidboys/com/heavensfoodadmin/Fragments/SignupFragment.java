@@ -1,6 +1,17 @@
 package androidboys.com.heavensfoodadmin.Fragments;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,21 +21,35 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.labo.kaji.fragmentanimations.PushPullAnimation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import androidboys.com.heavensfoodadmin.Activities.AuthenticationActivity;
+import androidboys.com.heavensfoodadmin.Models.Address;
 import androidboys.com.heavensfoodadmin.Models.User;
 import androidboys.com.heavensfoodadmin.R;
 import androidboys.com.heavensfoodadmin.Utils.AuthUtil;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 public class SignupFragment extends Fragment implements View.OnClickListener {
@@ -32,14 +57,17 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     private AuthenticationActivity hostingActivity;
     private EditText emailEditText;
     private EditText phoneEditText;
-    private EditText passwordEditText;
+    private EditText passwordEditText,
+            nameEditText;
     private Button signupButton;
     private TextView loginTextview;
 
     private String mobileNumber;
     private String email;
-    private String password;
+    private String password,name;
+    private Address userAddress;
 
+    private PlaceAutocompleteFragment placeAutocompleteFragment;
     private List<User> users;
 
 
@@ -57,8 +85,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_signup,container,false);
-        hostingActivity=(AuthenticationActivity)getActivity();
+        View view = inflater.inflate(R.layout.fragment_signup, container, false);
+        hostingActivity = (AuthenticationActivity) getActivity();
 
 
         fetchUsers();
@@ -69,6 +97,28 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         passwordEditText = view.findViewById(R.id.passwordEdittext);
         signupButton = view.findViewById(R.id.signupButton);
         loginTextview = view.findViewById(R.id.loginTextview);
+        nameEditText = view.findViewById(R.id.nameEdittext);
+
+        placeAutocompleteFragment=(PlaceAutocompleteFragment)getActivity().getFragmentManager().findFragmentById(R.id.addressAutoCompleteFragment);
+        //hiding search button before fragment
+        placeAutocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_button).setVisibility(View.GONE);
+        //setting hint for ediittext
+        EditText place;
+        place= ((EditText)placeAutocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_input));
+        place.setHint("Enter Your Address");
+        place.setTextColor(Color.WHITE);
+        placeAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                userAddress= new Address((String) place.getAddress(),String.valueOf(place.getLatLng().longitude),String.valueOf(place.getLatLng().latitude));
+            }
+
+            @Override
+            public void onError(Status status) {
+
+                Toast.makeText(getActivity(), ""+status.getStatusMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         signupButton.setOnClickListener(this);
         loginTextview.setOnClickListener(this);
@@ -77,23 +127,33 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        switch (view.getId())
-        {
+        switch (view.getId()) {
             case R.id.signupButton:
-                 registerUser();
-                 break;
+                removePlaceFragment();
+                registerUser();
+                break;
             case R.id.loginTextview:
-                 hostingActivity.addDifferentFragment(SigninFragment.newInstance());
-                 break;
+
+                removePlaceFragment();
+                hostingActivity.addDifferentFragment(SigninFragment.newInstance());
+                break;
+
         }
 
     }
+
+    private void removePlaceFragment() {
+
+        getActivity().getFragmentManager().beginTransaction().remove(getActivity().getFragmentManager().findFragmentById(R.id.addressAutoCompleteFragment)).commit();
+    }
+
 
     public void registerUser()
     {
         mobileNumber = phoneEditText.getText().toString().trim();
         email = emailEditText.getText().toString();
         password = passwordEditText.getText().toString();
+        name=nameEditText.getText().toString();
 
         if( !(AuthUtil.isValidEmail(email)))
         {
@@ -127,7 +187,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     public void verifyPhoneNumber()
     {
 
-        hostingActivity.addDifferentFragment(VerificationFragment.newInstance(email,mobileNumber,password));
+        hostingActivity.addDifferentFragment(VerificationFragment.newInstance(email,mobileNumber,password,userAddress,name));
 
     }
 
@@ -140,7 +200,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     {
         users = new ArrayList<>();
 
-        FirebaseDatabase.getInstance().getReference("Users").addChildEventListener(new ChildEventListener() {
+        FirebaseDatabase.getInstance().getReference("Admin").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 User user = dataSnapshot.getValue(User.class);
