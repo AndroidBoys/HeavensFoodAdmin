@@ -1,6 +1,5 @@
 package androidboys.com.heavensfoodadmin.Fragments;
 
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,9 +21,11 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 import androidboys.com.heavensfoodadmin.Activities.AuthenticationActivity;
+import androidboys.com.heavensfoodadmin.Models.Address;
 import androidboys.com.heavensfoodadmin.Models.User;
 import androidboys.com.heavensfoodadmin.R;
 import androidx.annotation.NonNull;
@@ -46,17 +47,19 @@ public class VerificationFragment extends Fragment implements View.OnClickListen
     private ProgressBar progressBar;
     private KProgressHUD kProgressHUD;
 
-    private String mobile;
+    private String mobile,name;
     private String email;
     private String password;
+    private Address address;
 
-    public static VerificationFragment newInstance(String email,String mobile,String password) {
+    public static VerificationFragment newInstance(String email,String mobile,String password,Address userAddress,String name) {
 
         Bundle args = new Bundle();
         args.putString("mobile",mobile);
         args.putString("email",email);
         args.putString("password",password);
-
+        args.putSerializable("userAddress", userAddress);
+        args.putString("name",name);
         VerificationFragment fragment = new VerificationFragment();
         fragment.setArguments(args);
         return fragment;
@@ -83,6 +86,9 @@ public class VerificationFragment extends Fragment implements View.OnClickListen
         mobile= getArguments().getString("mobile");
         email = getArguments().getString("email");
         password = getArguments().getString("password");
+        address= (Address) getArguments().getSerializable("userAddress");
+        name=getArguments().getString("name");
+
 
         sendVerificationCode();
 
@@ -154,7 +160,7 @@ public class VerificationFragment extends Fragment implements View.OnClickListen
         public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
             super.onCodeSent(s, forceResendingToken);
             mVerificationId = s;
-           // mResendToken = forceResendingToken;
+            // mResendToken = forceResendingToken;
         }
     };
 
@@ -195,12 +201,16 @@ public class VerificationFragment extends Fragment implements View.OnClickListen
     {
         User user = new User();
         user.setEmail(email);
+        user.setName(name);
         user.setPhoneNumber(mobile);
         user.setPassword(password);
+        user.setUserAddress(address);
+        user.setSubscribedPlan(null);
+        user.setWallet(null);
 
         // Entry into Users table
         FirebaseDatabase.getInstance()
-                .getReference("Users")
+                .getReference("Admin")
                 .child(mAuth.getCurrentUser().getUid())
                 .setValue(user);
         kProgressHUD.dismiss();

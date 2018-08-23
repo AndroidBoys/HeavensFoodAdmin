@@ -96,6 +96,7 @@ public class SubscribeUserListFragment extends Fragment {
     private void showProfile(User user) {
        UserProfileFragment userProfileFragment=UserProfileFragment.newInstance(user);
        FragmentManager fragmentManager=getFragmentManager();
+
        userProfileFragment.show(fragmentManager,"Profile");
     }
 

@@ -1,10 +1,10 @@
 <LinearLayout
-    android:minHeight="240dp"
-    android:minWidth="240dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 <ScrollView
+    android:minWidth="1000dp"
+    android:minHeight="1000dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:scrollbarAlwaysDrawVerticalTrack="true"
@@ -37,16 +37,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <de.hdodenhof.circleimageview.CircleImageView
+                    <ImageView
                         xmlns:app="http://schemas.android.com/apk/res-auto"
                         android:id="@+id/profile_image"
                         android:layout_width="96dp"
                         android:layout_height="96dp"
-                        android:background="@color/colorPrimary"
-                        android:src="@drawable/profile"
                         android:layout_gravity="center"
-                        app:civ_border_width="2dp"
-                        app:civ_border_color="@color/colorPrimary"/>
+                        />
                     <TextView
                         android:layout_marginTop="16dp"
                         android:gravity="center"
@@ -200,6 +197,7 @@
 
 
 
+
                 <LinearLayout
                     android:layout_marginTop="8dp"
                     android:orientation="horizontal"
@@ -221,7 +219,7 @@
                         android:id="@+id/planNameTextView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Sohan.kathait@gmail.com"/>
+                        android:text="None"/>
 
                 </LinearLayout>
 
@@ -246,7 +244,7 @@
                         android:id="@+id/priceTextView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Sohan.kathait@gmail.com"/>
+                        android:text="None"/>
 
                 </LinearLayout>
                 <LinearLayout
@@ -270,7 +268,7 @@
                         android:id="@+id/breakfastTextView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Sohan.kathait@gmail.com"/>
+                        android:text="None"/>
 
                 </LinearLayout>
                 <LinearLayout
@@ -294,7 +292,7 @@
                         android:id="@+id/lunchTextView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Sohan.kathait@gmail.com"/>
+                        android:text="None"/>
 
                 </LinearLayout>
                 <LinearLayout
@@ -318,7 +316,7 @@
                         android:id="@+id/dinnerTextView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Sohan.kathait@gmail.com"/>
+                        android:text="None"/>
 
                 </LinearLayout>
                 <LinearLayout
@@ -342,9 +340,10 @@
                         android:id="@+id/daysTextView"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Sohan.kathait@gmail.com"/>
+                        android:text="None"/>
 
                 </LinearLayout>
+
 
 
             </LinearLayout>
