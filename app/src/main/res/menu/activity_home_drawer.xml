@@ -29,6 +29,12 @@
             android:id="@+id/nav_users"
             android:icon="@drawable/contactus"
             android:title="Users"/>
+
+        <item
+            android:id="@+id/nav_wantsToEat"
+            android:icon="@drawable/ic_thumb_up_black_24dp"
+            android:title="Users Liked Food"/>
+
     </group>
 
     <item android:title="Communicate">

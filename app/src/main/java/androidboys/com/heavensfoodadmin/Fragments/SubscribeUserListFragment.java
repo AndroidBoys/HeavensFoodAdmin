@@ -46,7 +46,6 @@ public class SubscribeUserListFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         fetchAboutDataFromFirebase();
-
         return view;
     }
 
@@ -99,13 +98,10 @@ public class SubscribeUserListFragment extends Fragment {
        FragmentManager fragmentManager=getFragmentManager();
 
        userProfileFragment.show(fragmentManager,"Profile");
-
     }
 
     public static SubscribeUserListFragment newInstance() {
-
         Bundle args = new Bundle();
-
         SubscribeUserListFragment fragment = new SubscribeUserListFragment();
         fragment.setArguments(args);
         return fragment;

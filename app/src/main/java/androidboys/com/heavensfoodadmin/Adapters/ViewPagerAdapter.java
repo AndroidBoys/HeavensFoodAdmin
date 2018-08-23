@@ -1,9 +1,8 @@
 package androidboys.com.heavensfoodadmin.Adapters;
 
-import androidboys.com.heavensfoodadmin.Fragments.SpecialFoodListFragment;
 import androidboys.com.heavensfoodadmin.Fragments.SpecialOrders;
 import androidboys.com.heavensfoodadmin.Fragments.SubscribedUserTodaysMenu;
-import androidboys.com.heavensfoodadmin.Fragments.WalletFragment;
+import androidboys.com.heavensfoodadmin.Fragments.UsersLocationFragment;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -26,7 +25,7 @@ public class ViewPagerAdapter  extends FragmentStatePagerAdapter {
                 return SpecialOrders.newInstance();
 
             case 2:
-                return SpecialFoodListFragment.newInstance();
+                return UsersLocationFragment.newInstance();
         }
         return null;
     }
@@ -48,11 +47,9 @@ public class ViewPagerAdapter  extends FragmentStatePagerAdapter {
                 return "Special Order";
 
             case 2:
-                return "User Special Order";
+                return "User's Location";
 
         }
         return null;
     }
-
-
 }

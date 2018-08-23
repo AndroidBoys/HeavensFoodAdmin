@@ -3,6 +3,7 @@ package androidboys.com.heavensfoodadmin.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 
+
 import androidboys.com.heavensfoodadmin.R;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,6 +14,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
+
+
+
         startActivity(new Intent(this, AuthenticationActivity.class));
 
 //        DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("todayMenu");

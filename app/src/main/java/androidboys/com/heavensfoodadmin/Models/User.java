@@ -1,9 +1,6 @@
 package androidboys.com.heavensfoodadmin.Models;
 
-
-import java.io.Serializable;
-
-public class User implements Serializable {
+public class User {
 
     public String name;
     public String email;

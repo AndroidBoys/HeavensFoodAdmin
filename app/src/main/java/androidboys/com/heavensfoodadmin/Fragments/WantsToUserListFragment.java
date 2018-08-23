@@ -21,8 +21,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import androidboys.com.heavensfoodadmin.Adapters.SpecialOrderUserListCustomAdapter;
-import androidboys.com.heavensfoodadmin.Models.SpecialFood;
+import androidboys.com.heavensfoodadmin.Adapters.WantsToEatCustomAdapter;
+import androidboys.com.heavensfoodadmin.Models.FoodMenu;
 import androidboys.com.heavensfoodadmin.Models.User;
 import androidboys.com.heavensfoodadmin.R;
 import androidboys.com.heavensfoodadmin.Utils.ProgressUtils;
@@ -33,64 +33,58 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class SpecialOrderUsersListFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class WantsToUserListFragment extends Fragment implements AdapterView.OnItemClickListener {
 
-    private ListView listView;
-    private RecyclerView.LayoutManager layoutManager;
+    private ListView wantsToEatListView;
     private Context context;
-    private DatabaseReference specialFoodReference;
-    private ArrayList<String> usersUidArrayList;
-    private ArrayList<SpecialFood> expectedArrayList;
-    private ArrayList<String> specialFoodArrayList;
-    private ArrayList<String> countTotalFoodList;
-    private SpecialOrderUserListCustomAdapter specialOrderUserListCustomAdapter;
-    private FirebaseRecyclerAdapter<SpecialFood, SpecialFoodUsersViewHolder> firebaseSpecialUserAdapter;
+    private ArrayList<String> wantsFoodNameArrayList;
+    private ArrayList<String> countFoodArrayList;
+    private DatabaseReference wantsToEatFoodReference;
+    private WantsToEatCustomAdapter wantsToEatCustomAdapter;
     private RecyclerView nestedRecyclerView;
-//    private boolean isCompleted;
+    private PullRefreshLayout pullRefreshLayout;
     private DatabaseReference databaseReference;
+    private FirebaseRecyclerAdapter<FoodMenu,SpecialFoodUsersViewHolder> firebaseSpecialUserAdapter;
     private FirebaseDatabase firebaseDatabase;
     private String phone,email;
-    private PullRefreshLayout pullRefreshLayout;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        //Since special order and wantsTo eat have same Ui so i am using specialOrder xml here also.So Don't get confused
         View view=inflater.inflate(R.layout.special_order_user_list_fragment,container,false);
-
         context=getContext();
-        listView=view.findViewById(R.id.specialOrderUsersListView);
-        layoutManager=new LinearLayoutManager(getContext());
-        specialFoodArrayList=new ArrayList<>();
-        countTotalFoodList=new ArrayList<>();
-        firebaseDatabase=FirebaseDatabase.getInstance();
-        specialFoodReference= firebaseDatabase.getReference("SpecialOrder").child("NewOrders");
-        fetchSpecialFood();
+        wantsFoodNameArrayList=new ArrayList<>();
+        countFoodArrayList=new ArrayList<>();
         ProgressUtils.showLoadingDialog(context);
-        specialOrderUserListCustomAdapter = new SpecialOrderUserListCustomAdapter(context, specialFoodArrayList, countTotalFoodList);
-        listView.setAdapter(specialOrderUserListCustomAdapter);
-        listView.setOnItemClickListener(this);
-//        fetchSpecialFood();
-
+        wantsToEatListView=view.findViewById(R.id.specialOrderUsersListView);
+        firebaseDatabase=FirebaseDatabase.getInstance();
+        wantsToEatFoodReference=firebaseDatabase.getReference("FavouriteFood").child("LikedFood");
+        fetchWantsToEatFood();
+        wantsToEatCustomAdapter=new WantsToEatCustomAdapter(context,wantsFoodNameArrayList,countFoodArrayList);
+        wantsToEatListView.setAdapter(wantsToEatCustomAdapter);
+        wantsToEatListView.setOnItemClickListener(this);
         return view;
+
     }
 
-    private void fetchSpecialFood() {
-        specialFoodReference.addChildEventListener(new ChildEventListener() {
+
+    private void fetchWantsToEatFood() {
+        wantsToEatFoodReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                specialFoodArrayList.add(dataSnapshot.getKey());
+                wantsFoodNameArrayList.add(dataSnapshot.getKey());
                 Log.i("Key",dataSnapshot.getKey());
-                int count=0;
-                for(DataSnapshot itemSnapshot:dataSnapshot.getChildren()){
-                    //Log.i("itemSnapshot","-------------------"+itemSnapshot.getValue(String.class));
-                    Log.i("itemSnapshot key","-------------------"+itemSnapshot.getKey());
-                    SpecialFood specialFood=itemSnapshot.getValue(SpecialFood.class);
-                    count+=Integer.parseInt(specialFood.getFoodQuantity());
+//                for(DataSnapshot itemSnapshot:dataSnapshot.getChildren()){
+//                    //Log.i("itemSnapshot","-------------------"+itemSnapshot.getValue(String.class));
+//                    Log.i("itemSnapshot key","-------------------"+itemSnapshot.getKey());
+//                    FoodMenu foodMenu=itemSnapshot.getValue(FoodMenu.class);
+//                }
+                if(wantsToEatCustomAdapter!=null){
+                    wantsToEatCustomAdapter.notifyDataSetChanged();
                 }
-                if(specialOrderUserListCustomAdapter!=null){
-                    specialOrderUserListCustomAdapter.notifyDataSetChanged();
-                }
-                countTotalFoodList.add(String.valueOf(count));
+                countFoodArrayList.add(String.valueOf(dataSnapshot.getChildrenCount()));
             }
 
             @Override
@@ -116,7 +110,7 @@ public class SpecialOrderUsersListFragment extends Fragment implements AdapterVi
         //Value events are always triggered last and are guaranteed
         // to contain updates from any other events which occurred before that snapshot was taken.
         //That's why i initialize that adapter here. Till below this method call arrayList will be filled with all data
-        specialFoodReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        wantsToEatFoodReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ProgressUtils.cancelLoading();
@@ -127,15 +121,6 @@ public class SpecialOrderUsersListFragment extends Fragment implements AdapterVi
 
             }
         });
-    }
-
-    public static SpecialOrderUsersListFragment newInstance() {
-        
-        Bundle args = new Bundle();
-        
-        SpecialOrderUsersListFragment fragment = new SpecialOrderUsersListFragment();
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -150,36 +135,33 @@ public class SpecialOrderUsersListFragment extends Fragment implements AdapterVi
         nestedRecyclerView.setLayoutManager(layoutManager);
 
         //The below method will fetch the detail of user who have ordered the special food;
-        fetchSpecialFoodUsers(i);
+        fetchWantsToEatFoodUsers(i);
         pullRefreshLayout=newView.findViewById(R.id.nestedSpecialRefreshLayout);
         pullRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                fetchSpecialFoodUsers(i);
+                fetchWantsToEatFoodUsers(i);
             }
         });
         alertDialog.setView(newView);
         alertDialog.show();
     }
 
+    private void fetchWantsToEatFoodUsers(int position) {
 
-    private void fetchSpecialFoodUsers(int position) {
         Log.i("position",String.valueOf(position));
-        Log.i("food","-----------------"+specialFoodArrayList.get(position));
-        databaseReference=specialFoodReference.child(specialFoodArrayList.get(position));
-        firebaseSpecialUserAdapter=new FirebaseRecyclerAdapter<SpecialFood, SpecialFoodUsersViewHolder>(SpecialFood.class,R.layout.special_order_user_nested_list_row_layout,SpecialFoodUsersViewHolder.class,databaseReference) {
+        Log.i("food","-----------------"+wantsFoodNameArrayList.get(position));
+        databaseReference=wantsToEatFoodReference.child(wantsFoodNameArrayList.get(position));
+        firebaseSpecialUserAdapter=new FirebaseRecyclerAdapter<FoodMenu, SpecialFoodUsersViewHolder>(FoodMenu.class,R.layout.special_order_user_nested_list_row_layout,SpecialFoodUsersViewHolder.class,databaseReference) {
             @Override
-            protected void populateViewHolder(final SpecialFoodUsersViewHolder specialFoodUsersViewHolder, final SpecialFood specialFood, int i) {
+            protected void populateViewHolder(final SpecialFoodUsersViewHolder specialFoodUsersViewHolder, final FoodMenu foodMenu, int i) {
                 firebaseDatabase.getReference("Users").child(firebaseSpecialUserAdapter.getRef(i).getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         User user=dataSnapshot.getValue(User.class);
-                        try {
-                            phone = user.getPhoneNumber();
-                            email = user.getEmail();
-                        }catch(Exception e){
-                            e.printStackTrace();
-                        }
+                        phone=user.getPhoneNumber();
+                        email=user.getEmail();
+
                         if(phone!=null){
                             specialFoodUsersViewHolder.specialNestedPhoneNumber.setText(phone);
                         }
@@ -188,7 +170,9 @@ public class SpecialOrderUsersListFragment extends Fragment implements AdapterVi
                         }
 
                         //need to add address here
-                        specialFoodUsersViewHolder.specialNestedQuantity.setText("Quantity : "+specialFood.getFoodQuantity());
+
+                        specialFoodUsersViewHolder.specialNestedQuantity.setVisibility(View.GONE);
+
                         if(firebaseSpecialUserAdapter!=null){
                             firebaseSpecialUserAdapter.notifyDataSetChanged();
                         }
@@ -202,6 +186,13 @@ public class SpecialOrderUsersListFragment extends Fragment implements AdapterVi
             }
         };
         nestedRecyclerView.setAdapter(firebaseSpecialUserAdapter);
-//        firebaseSpecialUserAdapter.notifyDataSetChanged();
+    }
+
+    public static WantsToUserListFragment newInstance() {
+
+        Bundle args = new Bundle();
+        WantsToUserListFragment fragment = new WantsToUserListFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 }

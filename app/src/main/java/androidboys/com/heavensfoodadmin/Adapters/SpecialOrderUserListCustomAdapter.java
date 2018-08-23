@@ -57,7 +57,7 @@ public class SpecialOrderUserListCustomAdapter extends ArrayAdapter  {
                 .beginConfig().textColor(Color.WHITE)
                 .bold()
                 .endConfig()
-                .buildRound(foodCountArrayList.get(position),Color.GREEN);//setting first letter of the user name
+                .buildRound(foodCountArrayList.get(position),context.getResources().getColor(R.color.md_green_600));//setting first letter of the user name
         //textDrawable.setTint(context.getResources().getColor(R.color.blackColor,null));
         specialFoodCountImageView.setImageDrawable(textDrawable);
         return view;
