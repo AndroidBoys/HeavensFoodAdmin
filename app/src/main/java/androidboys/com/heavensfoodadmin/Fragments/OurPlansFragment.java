@@ -39,6 +39,7 @@ import java.util.UUID;
 import androidboys.com.heavensfoodadmin.Activities.DescriptionActivity;
 import androidboys.com.heavensfoodadmin.Adapters.OurPlansCustomArrayAdapter;
 import androidboys.com.heavensfoodadmin.Common.Common;
+import androidboys.com.heavensfoodadmin.Common.FirebaseStorageDeletion;
 import androidboys.com.heavensfoodadmin.Models.FoodMenu;
 import androidboys.com.heavensfoodadmin.Models.Plan;
 import androidboys.com.heavensfoodadmin.Models.SpecialFood;
@@ -50,8 +51,8 @@ import androidx.fragment.app.Fragment;
 public class OurPlansFragment extends Fragment implements View.OnCreateContextMenuListener {
     private ListView ourPlanslistView;
     private DescriptionActivity hostingActivity;
-    private ArrayList<Plan> planList =new ArrayList<>();
-    private ArrayList<String> planKeyList=new ArrayList<>();
+    private ArrayList<Plan> planList;
+    private ArrayList<String> planKeyList;
     private OurPlansCustomArrayAdapter ourPlansCustomArrayAdapter;
     private PullRefreshLayout ourPlansRefreshLayout;
     private FloatingActionButton ourPlansFloatingActionButton;
@@ -64,7 +65,6 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
     private StorageReference storageReference;
     private DatabaseReference planDatabaseReference;
     private Context context;
-    private String planKey;
 
     @Nullable
     @Override
@@ -127,6 +127,7 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
             showEditAlertDialog(planKeyList.get(position),planList.get(position));
         }else{
             deleteAlertDialog(position);
+            ourPlansCustomArrayAdapter.notifyDataSetChanged();
         }
         return super.onContextItemSelected(item);
     }
@@ -146,6 +147,13 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
             public void onClick(DialogInterface dialogInterface, int i) {
                 planDatabaseReference.child(planKeyList.get(position)).removeValue();
                 Toast.makeText(context,"Deleted Successfully",Toast.LENGTH_SHORT).show();
+
+                try {
+                    FirebaseStorageDeletion.deleteFileFromStorage(planList.get(position).getPlanImageUrl(), context);
+                }catch (Exception e){
+                    Toast.makeText(context,"This image url is not present in our server",Toast.LENGTH_SHORT).show();
+                }
+
                 ourPlansCustomArrayAdapter.notifyDataSetChanged();
                 dialogInterface.dismiss();
             }
@@ -227,6 +235,8 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
     }
 
     private void fetchOurPlansListFromFirebase() {
+        planList=new ArrayList<>();
+        planKeyList=new ArrayList<>();
         planDatabaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -327,6 +337,14 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
 
     private void uploadImage(final Plan plan){
         if(imageUri!=null){
+
+            //if user edited image then we have to delete first previous image
+            try {
+                FirebaseStorageDeletion.deleteFileFromStorage(plan.getPlanImageUrl(), context);
+            }catch (Exception e){
+                //Toast.makeText(context,"This image url is not present in our server",Toast.LENGTH_SHORT).show();
+            }
+
             final ProgressDialog progressDialog=new ProgressDialog(hostingActivity);
             progressDialog.setMessage("Uploading...");
             progressDialog.show();
