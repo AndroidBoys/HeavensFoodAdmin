@@ -4,16 +4,12 @@ public class FoodMenu {
     public String imageUrl;
     public String foodName;
     public String foodDescription;
+    public String foodQuantity;
 
 
     public FoodMenu() {
     }
 
-    public FoodMenu(String imageUrl, String foodName, String foodDescription) {
-        this.imageUrl = imageUrl;
-        this.foodName = foodName;
-        this.foodDescription = foodDescription;
-    }
 
     public String getImageUrl() {
         return imageUrl;
@@ -38,5 +34,11 @@ public class FoodMenu {
     public void setFoodDescription(String foodDescription) {
         this.foodDescription = foodDescription;
     }
+    public String getFoodQuantity() {
+        return foodQuantity;
+    }
 
+    public void setFoodQuantity(String foodQuantity) {
+        this.foodQuantity = foodQuantity;
+    }
 }
