@@ -203,6 +203,7 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
                 uploadImage(plan);
             }
         });
+        //
         alertDialog.setView(view);
 
         alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
