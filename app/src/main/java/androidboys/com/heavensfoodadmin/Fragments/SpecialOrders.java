@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import androidboys.com.heavensfoodadmin.Common.Common;
+import androidboys.com.heavensfoodadmin.Common.FirebaseStorageDeletion;
 import androidboys.com.heavensfoodadmin.Models.FoodMenu;
 import androidboys.com.heavensfoodadmin.Models.SpecialFood;
 import androidboys.com.heavensfoodadmin.R;
@@ -197,8 +198,9 @@ public class SpecialOrders extends Fragment implements View.OnCreateContextMenuL
         alertDialg.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                deleteFood(specialFoodAdapter.getRef(item.getOrder()).getKey());
+                deleteFood(specialFoodAdapter.getItem(item.getOrder()),specialFoodAdapter.getRef(item.getOrder()).getKey());
                 dialogInterface.dismiss();
+                specialFoodAdapter.notifyDataSetChanged();
             }
         });
         alertDialg.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -210,9 +212,14 @@ public class SpecialOrders extends Fragment implements View.OnCreateContextMenuL
         alertDialg.show();
     }
 
-    private void deleteFood(String key) {
+    private void deleteFood(SpecialFood specialFood,String key) {
         specialFoodDatabaseReference.child(key).removeValue();
         Toast.makeText(context,"Deleted Successfully",Toast.LENGTH_SHORT).show();
+        try {
+            FirebaseStorageDeletion.deleteFileFromStorage(specialFood.getImageUrl(), context);
+        }catch (Exception e){
+            Toast.makeText(context,"This image url is not present in our server",Toast.LENGTH_SHORT).show();
+        }
         specialFoodAdapter.notifyDataSetChanged();
     }
 
@@ -276,6 +283,15 @@ public class SpecialOrders extends Fragment implements View.OnCreateContextMenuL
 
     private void uploadImage(final SpecialFood specialFood){
         if(imageUri!=null){
+
+            //
+            //if user edited image then we have to delete first previous image
+            try {
+                FirebaseStorageDeletion.deleteFileFromStorage(specialFood.getImageUrl(), context);
+            }catch (Exception e){
+                //Toast.makeText(context,"This image url is not present in our server",Toast.LENGTH_SHORT).show();
+            }
+
             final ProgressDialog progressDialog=new ProgressDialog(context);
             progressDialog.setMessage("Uploading...");
             progressDialog.show();
