@@ -1,7 +1,10 @@
 package androidboys.com.heavensfoodadmin.Activities;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -12,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 
+import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Fragments.SendNotificationFragment;
 import androidboys.com.heavensfoodadmin.Fragments.SpecialOrderUsersListFragment;
 import androidboys.com.heavensfoodadmin.Fragments.SubscribedUserFragment;
@@ -19,10 +23,13 @@ import androidboys.com.heavensfoodadmin.Fragments.UnsubscribedUser;
 import androidboys.com.heavensfoodadmin.Fragments.UserListFragment;
 import androidboys.com.heavensfoodadmin.Fragments.UserProfileFragment;
 import androidboys.com.heavensfoodadmin.R;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -56,6 +63,7 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     private void addDifferentFragment(Fragment replacableFragment){

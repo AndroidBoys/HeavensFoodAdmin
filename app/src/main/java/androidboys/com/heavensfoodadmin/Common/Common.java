@@ -8,5 +8,6 @@ public class Common {
     public static String DELETE="Delete";
     public static final int R_ID_EDIT = 1;
     public static final int R_ID_DELETE = 2;
+    public static final int  LOCATION_PERMISSION_REQUEST_CODE=99;
 
 }
