@@ -9,6 +9,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -99,6 +100,7 @@ public class UsersLocationFragment extends Fragment implements OnMapReadyCallbac
 
         Log.i("MapReady","-------------------------------inside it");
         if(!hasPermission()){
+            Log.i("Permission check","Inside has permission");
             getPermission();
         }else{
             Log.i("Inside","getuserlocation");
@@ -121,6 +123,7 @@ public class UsersLocationFragment extends Fragment implements OnMapReadyCallbac
 
 
     private void getPermission() {
+        Log.i("get permission","inside get permission");
         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, Common.LOCATION_PERMISSION_REQUEST_CODE);
     }
 
@@ -139,6 +142,7 @@ public class UsersLocationFragment extends Fragment implements OnMapReadyCallbac
 
         if (requestCode == Common.LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.i("value ","--------"+String.valueOf(hasPermission()));
                 if (!hasPermission()) {
                     requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, Common.LOCATION_PERMISSION_REQUEST_CODE);
                 }else{
@@ -150,6 +154,7 @@ public class UsersLocationFragment extends Fragment implements OnMapReadyCallbac
 
 
     private void getUserLocation() {
+        Log.i("inside","---------------get user location");
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         //locationProvider = locationManager.getBestProvider(new Criteria(), false);
         locationListener=new LocationListener() {
@@ -158,7 +163,7 @@ public class UsersLocationFragment extends Fragment implements OnMapReadyCallbac
                 if(location!=null) {
                     longitude=location.getLongitude();
                     latitude=location.getLatitude();
-//                    showAdminLocation();
+                    //showAdminLocation();
 
                     //To keep track of admin we need to uncomment below line
                     //settingAllLocationOnMap();
@@ -217,10 +222,29 @@ public class UsersLocationFragment extends Fragment implements OnMapReadyCallbac
 
 
             //since network provider gives you the accurate result so i used here network provider.
-            isNetworkEnabled=locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-            isGpsEnabled=locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+//            isNetworkEnabled=locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+//            isGpsEnabled=locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-            if(isNetworkEnabled) {
+            String status = android.provider.Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+
+            isGpsEnabled = status.contains("gps");
+
+            isNetworkEnabled = status.contains("network");
+
+            if(isGpsEnabled) {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                if (locationManager != null) {
+                    userLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    if (userLocation != null) {
+
+                        longitude = userLocation.getLongitude();
+                        latitude = userLocation.getLatitude();
+                        //Initially i need to set all the users as well as admin location
+                        settingAllLocationOnMap();
+                    }
+                    //googleMap.setMyLocationEnabled(true);
+                }
+            } else if(isNetworkEnabled) {
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
                 if (locationManager != null) {
                     userLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
@@ -233,19 +257,6 @@ public class UsersLocationFragment extends Fragment implements OnMapReadyCallbac
 
                         Log.i("Network latitude",String.valueOf(latitude));
                         Log.i("Network longitude",String.valueOf(longitude));
-                    }
-                    //googleMap.setMyLocationEnabled(true);
-                }
-            }else if(isGpsEnabled){
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-                if (locationManager != null) {
-                    userLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                    if (userLocation != null) {
-
-                        longitude = userLocation.getLongitude();
-                        latitude = userLocation.getLatitude();
-                        //Initially i need to set all the users as well as admin location
-                        settingAllLocationOnMap();
                     }
                     //googleMap.setMyLocationEnabled(true);
                 }
