@@ -60,14 +60,13 @@ public class SendNotificationFragment extends Fragment {
 
         Notification notification = new Notification(notificationMessageEditText.getText().toString(),"Notification from firebase");
         Sender content = new Sender("/topics/subscribed",notification);
+        content.setTime_to_live(60);
         fcmService.sendNotification(content).enqueue(new Callback<MyResponse>() {
             @Override
             public void onResponse(Call<MyResponse> call, Response<MyResponse> response) {
-                if(response.body().success==1){
-                    Toast.makeText(getActivity(), "Notification sent!", Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(getActivity(), "Failed to send notification"+response.errorBody(), Toast.LENGTH_SHORT).show();
-                }
+                Toast.makeText(getActivity(), "Notification sent!", Toast.LENGTH_SHORT).show();
+                Log.i("sendNotification:", "onResponse: "+response.toString());
+                Log.i("Call obj", "onResponse: "+call.toString());
             }
 
             @Override
@@ -75,9 +74,6 @@ public class SendNotificationFragment extends Fragment {
                 Log.i("notification", "onFailure: "+t.getMessage());
             }
         });
-
-
-
     }
 
     public static SendNotificationFragment newInstance() {

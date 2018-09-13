@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 
 import androidboys.com.heavensfoodadmin.Common.Common;
+import androidboys.com.heavensfoodadmin.Fragments.FoodItemsFragment;
 import androidboys.com.heavensfoodadmin.Fragments.SendNotificationFragment;
 import androidboys.com.heavensfoodadmin.Fragments.SpecialOrderUsersListFragment;
 import androidboys.com.heavensfoodadmin.Fragments.SubscribedUserFragment;
@@ -159,8 +160,9 @@ public class HomeActivity extends AppCompatActivity
 
                 addDifferentFragment(SendNotificationFragment.newInstance());
                 
-            }else if (id == R.id.nav_profile) {
-//                addDifferentFragment(UserProfileFragment.newInstance());
+            }else if (id == R.id.nav_items) {
+
+                addDifferentFragment(FoodItemsFragment.newInstance());
             }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
