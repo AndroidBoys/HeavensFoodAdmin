@@ -175,6 +175,7 @@ public class WhyHeavensFoodFragment extends Fragment {
         switch (item.getItemId()) {
             case Common.R_ID_EDIT:
 //                Toast.makeText(getContext(), "edit is tapped", Toast.LENGTH_SHORT).show();
+                // adapter.getRef(item.getOrder()).getKey() will give us key of an item from firebase
                 editDescription(adapter.getRef(item.getOrder()).getKey(),adapter.getItem(item.getOrder()));
                 break;
 
@@ -186,7 +187,7 @@ public class WhyHeavensFoodFragment extends Fragment {
         return true;
     }
 
-    public void editDescription(final String key, final WhyHeavenFood item){
+    public void editDescription(final String key,final WhyHeavenFood item){
         LayoutInflater inflater=getLayoutInflater();
         View view=inflater.inflate(R.layout.add_why_heavens_food_description,null,false);
 

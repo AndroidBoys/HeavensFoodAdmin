@@ -33,4 +33,10 @@ public class Food {
     public void setFoodDescription(String foodDescription) {
         this.foodDescription = foodDescription;
     }
+
+    public Food(String imageUrl, String foodName, String foodDescription) {
+        this.imageUrl = imageUrl;
+        this.foodName = foodName;
+        this.foodDescription = foodDescription;
+    }
 }
