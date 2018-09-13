@@ -100,24 +100,24 @@ public class DescriptionActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        WantsToEatFragment wantsToEatFragment=(WantsToEatFragment)fragmentInForeground;
-        switch (item.getItemId()){
-            case R.id.breakfast:
-                Toast.makeText(this, "breakfast", Toast.LENGTH_SHORT).show();
-                wantsToEatFragment.loadWantToEatImages("BreakFast");
-                return true;
-            case R.id.lunch:
-                wantsToEatFragment.loadWantToEatImages("Lunch");
-                Toast.makeText(this, "lunch", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.dinner:
-                wantsToEatFragment.loadWantToEatImages("Dinner");
-                Toast.makeText(this, "dinner", Toast.LENGTH_SHORT).show();
-                return true;
-        }
-        return false;
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        WantsToEatFragment wantsToEatFragment=(WantsToEatFragment)fragmentInForeground;
+//        switch (item.getItemId()){
+//            case R.id.breakfast:
+//                Toast.makeText(this, "breakfast", Toast.LENGTH_SHORT).show();
+//                wantsToEatFragment.loadWantToEatImages("BreakFast");
+//                return true;
+//            case R.id.lunch:
+//                wantsToEatFragment.loadWantToEatImages("Lunch");
+//                Toast.makeText(this, "lunch", Toast.LENGTH_SHORT).show();
+//                return true;
+//            case R.id.dinner:
+//                wantsToEatFragment.loadWantToEatImages("Dinner");
+//                Toast.makeText(this, "dinner", Toast.LENGTH_SHORT).show();
+//                return true;
+//        }
+//        return false;
+//    }
 
 }

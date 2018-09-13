@@ -27,6 +27,9 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -35,10 +38,12 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Common.FirebaseStorageDeletion;
+import androidboys.com.heavensfoodadmin.Models.Food;
 import androidboys.com.heavensfoodadmin.Models.FoodMenu;
 import androidboys.com.heavensfoodadmin.Models.SpecialFood;
 import androidboys.com.heavensfoodadmin.R;
@@ -63,14 +68,18 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
 
     private DatabaseReference todayMenuDatabaseReference;
     private FloatingActionButton weeklyMenuFloatingActionButton;
-    private EditText weeklyFoodDescriptionEditText;
-    private EditText weeklyFoodNameEditText;
-    private Button weeklyFoodSelectButton;
-    private Button weeklyFoodUploadButton;
+//    private EditText weeklyFoodDescriptionEditText;
+//    private EditText weeklyFoodNameEditText;
+//    private Button weeklyFoodSelectButton;
+//    private Button weeklyFoodUploadButton;
     private Uri imageUri;
+    private ArrayList<String> foodNamesArrayList=new ArrayList();
+    private ArrayList<Food> foodArrayList=new ArrayList<>();
+    private ArrayList<String> foodItemUid=new ArrayList<>();
     private StorageReference storageReference;
-    private Spinner weeklySpinner;
-    private int selectedFoodType; //This is used in spinner when new food will be added
+    private Spinner weeklySpinner,foodItemSpinner;
+    private int selectedFoodType;
+    private int selectedFood;//This is used in spinner when new food will be added
     private CheckBox weeklyBreakfastCheckBox;
     private CheckBox weeklyLunchCheckBox;
     private CheckBox weeklyDinnerCheckBox;
@@ -83,6 +92,11 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
         breakFastRecyclerView=view.findViewById(R.id.breakFastRecyclerView);
         lunchRecyclerView=view.findViewById(R.id.lunchRecyclerView);
         dinnerRecyclerView=view.findViewById(R.id.dinnerRecyclerView);
+        foodArrayList.add(new Food());
+        foodNamesArrayList.add("Select Item");
+        foodItemUid.add(" ");
+
+        fetchAllFoodItems();
 
         chooseFoodType=null;
 
@@ -180,6 +194,40 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
         return view;
     }
 
+    private void fetchAllFoodItems() {
+    FirebaseDatabase.getInstance().getReference("FoodItems").addChildEventListener(new ChildEventListener() {
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            Food food=dataSnapshot.getValue(Food.class);
+            foodArrayList.add(food);
+            foodNamesArrayList.add(food.getFoodName());
+            Log.d("key",dataSnapshot.getKey());
+            foodItemUid.add(dataSnapshot.getKey());
+        }
+
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    });
+
+    }
+
 
     private void setRecyclerView(RecyclerView recyclerView) {
 
@@ -244,37 +292,37 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
     public boolean onContextItemSelected(MenuItem item) {
 
         if(chooseFoodType!=null) {
-
-            if (item.getTitle().equals(Common.EDIT)) {
-
-                switch (chooseFoodType) {
-
-                    case "BreakFast":
-                        try {
-                            showEditAlertDialog(breakFastAdapter.getRef(item.getOrder()).getKey(), breakFastAdapter.getItem(item.getOrder()), breakFastAdapter);
-                        }catch (Exception e){
-                            Toast.makeText(context,"Please select that food item which you have checked",Toast.LENGTH_SHORT).show();
-                        }
-                        break;
-
-                    case "Lunch":
-                        try {
-                            showEditAlertDialog(lunchAdapter.getRef(item.getOrder()).getKey(), lunchAdapter.getItem(item.getOrder()), lunchAdapter);
-                        }catch(Exception e){
-                            Toast.makeText(context,"Please select that food item which you have checked",Toast.LENGTH_SHORT).show();
-                        }
-                        break;
-
-                    default:
-                        try{
-                        showEditAlertDialog(dinnerAdapter.getRef(item.getOrder()).getKey(), dinnerAdapter.getItem(item.getOrder()), dinnerAdapter);
-                        }catch(Exception e){
-                               Toast.makeText(context,"Please select that food item which you have checked",Toast.LENGTH_SHORT).show();
-                        }
-                        break;
-
-                }
-            } else {
+//
+//            if (item.getTitle().equals(Common.EDIT)) {
+//
+//                switch (chooseFoodType) {
+//
+//                    case "BreakFast":
+//                        try {
+//                            showEditAlertDialog(breakFastAdapter.getRef(item.getOrder()).getKey(), breakFastAdapter.getItem(item.getOrder()), breakFastAdapter);
+//                        }catch (Exception e){
+//                            Toast.makeText(context,"Please select that food item which you have checked",Toast.LENGTH_SHORT).show();
+//                        }
+//                        break;
+//
+//                    case "Lunch":
+//                        try {
+//                            showEditAlertDialog(lunchAdapter.getRef(item.getOrder()).getKey(), lunchAdapter.getItem(item.getOrder()), lunchAdapter);
+//                        }catch(Exception e){
+//                            Toast.makeText(context,"Please select that food item which you have checked",Toast.LENGTH_SHORT).show();
+//                        }
+//                        break;
+//
+//                    default:
+//                        try{
+//                        showEditAlertDialog(dinnerAdapter.getRef(item.getOrder()).getKey(), dinnerAdapter.getItem(item.getOrder()), dinnerAdapter);
+//                        }catch(Exception e){
+//                               Toast.makeText(context,"Please select that food item which you have checked",Toast.LENGTH_SHORT).show();
+//                        }
+//                        break;
+//
+//                }
+//            } else {
 
                 switch (chooseFoodType){
 
@@ -301,11 +349,11 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
                         break;
                 }
             }
-        }else{
+        else{
             Toast.makeText(context,"Please first select the food type",Toast.LENGTH_SHORT).show();
         }
+        return true;
 
-        return super.onContextItemSelected(item);
     }
 
 
@@ -322,15 +370,18 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
 
         //Since i am using same layout for alertDialog .Hence the id will also same
         View view=layoutInflater.inflate(R.layout.weekly_menu_add_alert_dialog,null,false);
-        weeklyFoodDescriptionEditText=view.findViewById(R.id.weeklyDescriptionEditText);
-        weeklyFoodSelectButton=view.findViewById(R.id.weeklySelectButton);
-        weeklyFoodUploadButton=view.findViewById(R.id.weeklyUploadButton);
-        weeklyFoodNameEditText=view.findViewById(R.id.weeklyFoodNameEditText);
+//        weeklyFoodDescriptionEditText=view.findViewById(R.id.weeklyDescriptionEditText);
+//      weeklyFoodSelectButton=view.findViewById(R.id.weeklySelectButton);
+//        weeklyFoodUploadButton=view.findViewById(R.id.weeklyUploadButton);
+//        weeklyFoodNameEditText=view.findViewById(R.id.weeklyFoodNameEditText);
         weeklySpinner=view.findViewById(R.id.weeklyMenuSpinner);
+        foodItemSpinner=view.findViewById(R.id.itemSpinner);
 
         ArrayAdapter<String> arrayAdapter=new ArrayAdapter(context,android.R.layout.simple_spinner_dropdown_item,getResources().getStringArray(R.array.foodType));
         weeklySpinner.setAdapter(arrayAdapter);
 
+        ArrayAdapter<String> foodNameArrayAdpter=new ArrayAdapter(context,android.R.layout.simple_spinner_dropdown_item,foodNamesArrayList);
+        foodItemSpinner.setAdapter(foodNameArrayAdpter);
 
         weeklySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -345,59 +396,59 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
         });
 
 
-        weeklyFoodSelectButton.setOnClickListener(new View.OnClickListener() {
+        foodItemSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-                chooseImage();
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedFood=i;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
-        weeklyFoodUploadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                uploadImage(foodMenu);
-            }
-        });
+
+
+
+
+//
+
+//        weeklyFoodUploadButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+////                uploadImage(foodMenu);
+//
+//            }
+//        });
         alertDialog.setView(view);
 
-        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                //Update the data
-                //This below will set the new data on that key
-                Log.i("weekly image url","--------------"+foodMenu.getImageUrl()+"  "+selectedFoodType);
-                if(foodMenu.getImageUrl()!=null && selectedFoodType!=0) {
-                    foodMenu.setFoodDescription(weeklyFoodDescriptionEditText.getText().toString());
-                    foodMenu.setFoodName(weeklyFoodNameEditText.getText().toString());
-                    todayMenuDatabaseReference.push().setValue(foodMenu);
-                    Toast.makeText(context, foodMenu.getFoodName() + " Added", Toast.LENGTH_LONG).show();
-
                     switch(selectedFoodType){
+                        case 0:
+                            Toast.makeText(context,"Please select the food type",Toast.LENGTH_LONG).show();
+                            break;
+
+
 
                         case 1:
-                            todayMenuDatabaseReference.child("BreakFast").push().setValue(foodMenu);
+                            todayMenuDatabaseReference.child("BreakFast").child(foodItemUid.get(selectedFood)).setValue(foodArrayList.get(selectedFood));
                             breakFastAdapter.notifyDataSetChanged();
                             break;
 
 
                         case 2:
-                            todayMenuDatabaseReference.child("Lunch").push().setValue(foodMenu);
+                            todayMenuDatabaseReference.child("Lunch").child(foodItemUid.get(selectedFood)).setValue(foodArrayList.get(selectedFood));
                             lunchAdapter.notifyDataSetChanged();
                             break;
 
 
                         case 3:
-                            todayMenuDatabaseReference.child("Dinner").push().setValue(foodMenu);
+                            todayMenuDatabaseReference.child("Dinner").child(foodItemUid.get(selectedFood)).setValue(foodArrayList.get(selectedFood));
                             dinnerAdapter.notifyDataSetChanged();
                             break;
                     }
-                    dialogInterface.dismiss();
-
-                }else if(selectedFoodType==0) {
-                    Toast.makeText(context,"Please select the food type",Toast.LENGTH_LONG).show();
-                }else{
-                    Toast.makeText(context,"Please first upload the image",Toast.LENGTH_LONG).show();
-//                    alertDialog.show();
-                }
             }
         });
         alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -447,140 +498,140 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
         adapter.notifyDataSetChanged();
     }
 
-    private void showEditAlertDialog(final String key, final FoodMenu foodMenu, final FirebaseRecyclerAdapter<FoodMenu,FoodMenuViewHolder> adapter) {
+//    private void showEditAlertDialog(final String key, final FoodMenu foodMenu, final FirebaseRecyclerAdapter<FoodMenu,FoodMenuViewHolder> adapter) {
+//
+////        Log.i("key","------------------"+key);
+//        AlertDialog.Builder alertDialog=new AlertDialog.Builder(context);
+//        alertDialog.setTitle("Edit the "+chooseFoodType+" food menu details");
+//        alertDialog.setIcon(R.drawable.thali_graphic);
+//        LayoutInflater layoutInflater=getLayoutInflater();
+//        alertDialog.setCancelable(false);
+//
+//        View view=layoutInflater.inflate(R.layout.weekly_menu_add_alert_dialog,null,false);
+//        weeklyFoodDescriptionEditText=view.findViewById(R.id.weeklyDescriptionEditText);
+//        weeklyFoodSelectButton=view.findViewById(R.id.weeklySelectButton);
+//        weeklyFoodUploadButton=view.findViewById(R.id.weeklyUploadButton);
+//        weeklyFoodNameEditText=view.findViewById(R.id.weeklyFoodNameEditText);
+//        weeklySpinner=view.findViewById(R.id.weeklyMenuSpinner);
+//
+//        weeklySpinner.setVisibility(View.GONE);//setting visibility to GONE ensure that your view will not take any space
+//
+//        //setting already exist food details onto edittext
+//        weeklyFoodDescriptionEditText.setText(foodMenu.getFoodDescription());
+//        weeklyFoodNameEditText.setText(foodMenu.getFoodName());
+//
+//
+//        weeklyFoodSelectButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                chooseImage();
+//            }
+//        });
+//        weeklyFoodUploadButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                uploadImage(foodMenu);
+//            }
+//        });
+//        alertDialog.setView(view);
+//
+//        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                //Update the data
+//                //This below will set the new data on that key
+//                foodMenu.setFoodName(weeklyFoodNameEditText.getText().toString());
+//                foodMenu.setFoodDescription(weeklyFoodDescriptionEditText.getText().toString());
+//                todayMenuDatabaseReference.child(chooseFoodType).child(key).setValue(foodMenu);
+//                Log.i("alerturl", "onSuccess: "+foodMenu.getImageUrl());
+//                Toast.makeText(context,foodMenu.getFoodName()+ " updated",Toast.LENGTH_LONG).show();
+//                adapter.notifyDataSetChanged();
+//                dialogInterface.dismiss();
+//            }
+//        });
+//        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                dialogInterface.dismiss();
+//            }
+//        });
+//        alertDialog.show();
+//    }
 
-//        Log.i("key","------------------"+key);
-        AlertDialog.Builder alertDialog=new AlertDialog.Builder(context);
-        alertDialog.setTitle("Edit the "+chooseFoodType+" food menu details");
-        alertDialog.setIcon(R.drawable.thali_graphic);
-        LayoutInflater layoutInflater=getLayoutInflater();
-        alertDialog.setCancelable(false);
-
-        View view=layoutInflater.inflate(R.layout.weekly_menu_add_alert_dialog,null,false);
-        weeklyFoodDescriptionEditText=view.findViewById(R.id.weeklyDescriptionEditText);
-        weeklyFoodSelectButton=view.findViewById(R.id.weeklySelectButton);
-        weeklyFoodUploadButton=view.findViewById(R.id.weeklyUploadButton);
-        weeklyFoodNameEditText=view.findViewById(R.id.weeklyFoodNameEditText);
-        weeklySpinner=view.findViewById(R.id.weeklyMenuSpinner);
-
-        weeklySpinner.setVisibility(View.GONE);//setting visibility to GONE ensure that your view will not take any space
-
-        //setting already exist food details onto edittext
-        weeklyFoodDescriptionEditText.setText(foodMenu.getFoodDescription());
-        weeklyFoodNameEditText.setText(foodMenu.getFoodName());
-
-
-        weeklyFoodSelectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                chooseImage();
-            }
-        });
-        weeklyFoodUploadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                uploadImage(foodMenu);
-            }
-        });
-        alertDialog.setView(view);
-
-        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //Update the data
-                //This below will set the new data on that key
-                foodMenu.setFoodName(weeklyFoodNameEditText.getText().toString());
-                foodMenu.setFoodDescription(weeklyFoodDescriptionEditText.getText().toString());
-                todayMenuDatabaseReference.child(chooseFoodType).child(key).setValue(foodMenu);
-                Log.i("alerturl", "onSuccess: "+foodMenu.getImageUrl());
-                Toast.makeText(context,foodMenu.getFoodName()+ " updated",Toast.LENGTH_LONG).show();
-                adapter.notifyDataSetChanged();
-                dialogInterface.dismiss();
-            }
-        });
-        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-                dialogInterface.dismiss();
-            }
-        });
-        alertDialog.show();
-    }
-
-    private void uploadImage(final FoodMenu foodMenu){
-        if(imageUri!=null){
-
-
-            //if user edited image then we have to delete first previous image
-            try {
-                FirebaseStorageDeletion.deleteFileFromStorage(foodMenu.getImageUrl(), context);
-            }catch (Exception e){
-                //Toast.makeText(context,"This image url is not present in our server",Toast.LENGTH_SHORT).show();
-            }
-
-            final ProgressDialog progressDialog=new ProgressDialog(context);
-            progressDialog.setMessage("Uploading...");
-            progressDialog.show();
-            progressDialog.setCancelable(false);
-
-            String filename= UUID.randomUUID().toString();
-            final StorageReference imageFolder=storageReference.child(filename);
-            Log.i("imageuri",imageUri.toString());
-            imageFolder.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                    imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            progressDialog.dismiss();
-                            foodMenu.setImageUrl(uri.toString());
-                            Toast.makeText(context,"Uploaded Successfully",Toast.LENGTH_SHORT).show();
-                            Log.i("immageurl", "onSuccess: "+foodMenu.getImageUrl());
-                        }
-                    });
-                }
-            })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
-                            progressDialog.dismiss();
-                            Toast.makeText(context,e.getMessage(),Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress=(100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                            progressDialog.setMessage("Uploaded "+(int)progress+" %");
-                        }
-                    });
-        }
-        else{
-            Toast.makeText(context,"Please first select the image",Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void chooseImage(){
-        Intent intent=new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent,"Select Picture"),Common.PICK_IMAGE_REQUEST);
-    }
+//    private void uploadImage(final FoodMenu foodMenu){
+//        if(imageUri!=null){
+//
+//
+//            //if user edited image then we have to delete first previous image
+//            try {
+//                FirebaseStorageDeletion.deleteFileFromStorage(foodMenu.getImageUrl(), context);
+//            }catch (Exception e){
+//                //Toast.makeText(context,"This image url is not present in our server",Toast.LENGTH_SHORT).show();
+//            }
+//
+//            final ProgressDialog progressDialog=new ProgressDialog(context);
+//            progressDialog.setMessage("Uploading...");
+//            progressDialog.show();
+//            progressDialog.setCancelable(false);
+//
+//            String filename= UUID.randomUUID().toString();
+//            final StorageReference imageFolder=storageReference.child(filename);
+//            Log.i("imageuri",imageUri.toString());
+//            imageFolder.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//
+//                    imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                        @Override
+//                        public void onSuccess(Uri uri) {
+//                            progressDialog.dismiss();
+//                            foodMenu.setImageUrl(uri.toString());
+//                            Toast.makeText(context,"Uploaded Successfully",Toast.LENGTH_SHORT).show();
+//                            Log.i("immageurl", "onSuccess: "+foodMenu.getImageUrl());
+//                        }
+//                    });
+//                }
+//            })
+//                    .addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//
+//                            progressDialog.dismiss();
+//                            Toast.makeText(context,e.getMessage(),Toast.LENGTH_SHORT).show();
+//                        }
+//                    })
+//                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+//                        @Override
+//                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+//                            double progress=(100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+//                            progressDialog.setMessage("Uploaded "+(int)progress+" %");
+//                        }
+//                    });
+//        }
+//        else{
+//            Toast.makeText(context,"Please first select the image",Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//
+//    private void chooseImage(){
+//        Intent intent=new Intent();
+//        intent.setType("image/*");
+//        intent.setAction(Intent.ACTION_GET_CONTENT);
+//        startActivityForResult(Intent.createChooser(intent,"Select Picture"),Common.PICK_IMAGE_REQUEST);
+//    }
 
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode==Common.PICK_IMAGE_REQUEST && resultCode==getActivity().RESULT_OK && data!=null){
-            imageUri=data.getData();
-            weeklyFoodSelectButton.setText("Image Selected");
-        }
-    }
-
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if(requestCode==Common.PICK_IMAGE_REQUEST && resultCode==getActivity().RESULT_OK && data!=null){
+//            imageUri=data.getData();
+//            weeklyFoodSelectButton.setText("Image Selected");
+//        }
+//    }
+//
 
     public static WeeklyMenuNestedFragment newInstance(String day) {
 

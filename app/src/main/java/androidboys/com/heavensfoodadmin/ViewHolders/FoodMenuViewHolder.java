@@ -27,8 +27,6 @@ public class FoodMenuViewHolder extends RecyclerView.ViewHolder implements View.
     @Override
     public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
         contextMenu.setHeaderTitle("Select For Action");
-
-        contextMenu.add(0,0,getAdapterPosition(), Common.EDIT);
         contextMenu.add(0,1,getAdapterPosition(),Common.DELETE);
     }
 }
