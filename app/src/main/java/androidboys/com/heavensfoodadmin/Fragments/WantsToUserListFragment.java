@@ -65,10 +65,10 @@ public class WantsToUserListFragment extends Fragment implements AdapterView.OnI
         wantsToEatCustomAdapter=new WantsToEatCustomAdapter(context,wantsFoodNameArrayList,countFoodArrayList);
         wantsToEatListView.setAdapter(wantsToEatCustomAdapter);
         wantsToEatListView.setOnItemClickListener(this);
+
         return view;
 
     }
-
 
     private void fetchWantsToEatFood() {
         wantsToEatFoodReference.addChildEventListener(new ChildEventListener() {
