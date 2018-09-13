@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -22,6 +24,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,7 +40,10 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import androidboys.com.heavensfoodadmin.Common.Common;
+import androidboys.com.heavensfoodadmin.Common.UsersUid;
 import androidboys.com.heavensfoodadmin.Models.FoodMenu;
+import androidboys.com.heavensfoodadmin.Models.LikedFood;
+import androidboys.com.heavensfoodadmin.Models.User;
 import androidboys.com.heavensfoodadmin.R;
 import androidboys.com.heavensfoodadmin.ViewHolders.WantsToEatViewHolder;
 import androidx.annotation.NonNull;
@@ -61,6 +67,8 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     private Button wantAlertUploadButton;
     private EditText wantAlertDescriptionEditText;
     private Uri imageUri;
+    private CheckBox defaultCheckBox;
+    private Boolean isDefault=false;
     private StorageReference storageReference;
     private EditText wantAlertFoodNameEditText;
     private CoordinatorLayout wantsToEatCoordinatorLayout;
@@ -71,6 +79,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.wants_to_eat_layout,container,false);
+        fetchUserList();
         context=getContext();
         wantsToEatRecyclerView=view.findViewById(R.id.wantsToEatRecyclerView);
         wantsToEatDatabaseReference=FirebaseDatabase.getInstance().getReference("TodayMenu");
@@ -105,6 +114,37 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
         return view;
     }
 
+    private void fetchUserList() {
+    FirebaseDatabase.getInstance().getReference("Users").addChildEventListener(new ChildEventListener() {
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            UsersUid.usersUid.add(dataSnapshot.getKey());
+            Log.d("key",dataSnapshot.getKey());
+        }
+
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    });
+
+    }
+
     private void showNewAlertDialog() {
 
         final FoodMenu foodMenu=new FoodMenu();
@@ -118,6 +158,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
         wantAlertSelectButton=view.findViewById(R.id.alertSelectButton);
         wantAlertUploadButton=view.findViewById(R.id.alertUploadButton);
         wantAlertFoodNameEditText=view.findViewById(R.id.alertFoodNameEditText);
+        defaultCheckBox=view.findViewById(R.id.defaultCheckBox);
 
 
         wantAlertSelectButton.setOnClickListener(new View.OnClickListener() {
@@ -142,7 +183,14 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
                 if(foodMenu.getImageUrl()!=null) {
                     foodMenu.setFoodDescription(wantAlertDescriptionEditText.getText().toString());
                     foodMenu.setFoodName(wantAlertFoodNameEditText.getText().toString());
-                    wantsToEatDatabaseReference.child(mealTime).push().setValue(foodMenu);
+
+                    wantsToEatDatabaseReference.child("FoodImages").push().setValue(foodMenu);
+                    if(defaultCheckBox.isChecked());
+                        isDefault=defaultCheckBox.isChecked();
+                    Log.d("checkedfdfdfdsf","************"+defaultCheckBox.isChecked());
+
+                    addFoodMenuForAllUser(foodMenu); //whenever admin upload  a new food add this food for all user if it contain isDefalut=true
+
                     Snackbar.make(wantsToEatCoordinatorLayout, foodMenu.getFoodName() + " Added", Snackbar.LENGTH_LONG).show();
                     wantsToEatFoodAdapter.notifyDataSetChanged();
                     dialogInterface.dismiss();
@@ -160,6 +208,14 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
             }
         });
         alertDialog.show();
+    }
+
+    private void addFoodMenuForAllUser(FoodMenu foodMenu) {
+        if (isDefault) {
+            LikedFood likedFood = new LikedFood(foodMenu.getFoodName(), isDefault);
+            for(int i = 0; i<UsersUid.usersUid.size(); i++)
+                wantsToEatDatabaseReference.child("LikedFood").child(likedFood.getFoodName()).push().setValue(UsersUid.usersUid.get(i));
+        }
     }
 
 

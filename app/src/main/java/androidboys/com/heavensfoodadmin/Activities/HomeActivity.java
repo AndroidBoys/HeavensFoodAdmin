@@ -10,10 +10,22 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Fragments.FoodItemsFragment;
@@ -23,8 +35,12 @@ import androidboys.com.heavensfoodadmin.Fragments.SubscribedUserFragment;
 import androidboys.com.heavensfoodadmin.Fragments.UnsubscribedUser;
 import androidboys.com.heavensfoodadmin.Fragments.UserListFragment;
 import androidboys.com.heavensfoodadmin.Fragments.UserProfileFragment;
+import androidboys.com.heavensfoodadmin.Models.Absence;
+import androidboys.com.heavensfoodadmin.Models.User;
+import androidboys.com.heavensfoodadmin.Models.Wallet;
 import androidboys.com.heavensfoodadmin.R;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,12 +55,18 @@ import androidx.fragment.app.FragmentTransaction;
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private DatabaseReference databaseReference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        databaseReference=FirebaseDatabase.getInstance().getReference("Users");
+
+        checkingUsersDueDate();
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -65,6 +87,113 @@ public class HomeActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+    }
+
+
+
+    //Below method is used to check whether user pack is ended or not. if ended then remove it
+    // from subscribed user and put it into unsubscribe user
+    private void checkingUsersDueDate() {
+
+        databaseReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                User user = dataSnapshot.getValue(User.class);
+
+                if (user != null && user.getSubscribedPlan() != null) {
+
+                    Wallet wallet = user.getWallet();
+                    String dueDateString = wallet.getDueDate();
+                    Log.i("Due date ","----------------"+dueDateString);
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    String currentDateString=simpleDateFormat.format(Calendar.getInstance().getTime());
+                    Log.i("User name", "----------" + user.getName());
+                    Log.i("CurrentDate", "---------" + currentDateString);
+                    Date currentDate = null;
+                    Date dueDate;
+
+                    try {
+                        currentDate= simpleDateFormat.parse(currentDateString);
+                        dueDate = simpleDateFormat.parse(dueDateString);
+                        final int remainingDays=calculateDayDifference(currentDate,dueDate);
+                        //suspense in below condition. either -1 will be or either 0 will be
+                        if (remainingDays <= -1) {
+                            user.subscribedPlan = null;
+                            user.wallet = null;
+                            user.absence = null;
+                            databaseReference.child(dataSnapshot.getKey()).setValue(user);
+                            Log.i("User pack", "-------------------completed");
+                        }else{
+                            wallet.remainingDays=String.valueOf(remainingDays);
+                            databaseReference.child(dataSnapshot.getKey()).child("wallet").setValue(wallet).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.i("Remaining Days","Successfully "+remainingDays);
+                                }
+                            });
+                        }
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+
+
+                    //checking user absence date and the mark it null
+
+                    if (user.getAbsence() != null) {
+                        Absence absence = user.getAbsence();
+                        int dayDifference = checkingAbsenceDateOfUser(absence,currentDate);
+                        Log.i("day Difference ", "------------" + dayDifference);
+                        //if the difference between current data and absence due date is 1 then only we will remove absence object
+                        //from there.
+                        if (dayDifference <= 1 && user.absence!=null) {
+                            user.absence = null;
+                            databaseReference.child(dataSnapshot.getKey()).setValue(user);
+                        }
+                    }
+
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private int checkingAbsenceDateOfUser(Absence absence,Date currentDate) {
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            Date absenceEndDate=simpleDateFormat.parse(absence.getEndDate());
+            return calculateDayDifference(absenceEndDate,currentDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    private int calculateDayDifference(Date startDate,Date endDate){
+        long difference=endDate.getTime()-startDate.getTime();
+        Log.i("difference","------------"+difference);
+        return (int)difference/(24*60*60*1000);
     }
 
     private void addDifferentFragment(Fragment replacableFragment){

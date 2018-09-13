@@ -38,6 +38,7 @@ import com.squareup.picasso.Picasso;
 import java.util.UUID;
 
 import androidboys.com.heavensfoodadmin.Common.Common;
+import androidboys.com.heavensfoodadmin.Common.FirebaseStorageDeletion;
 import androidboys.com.heavensfoodadmin.Models.FoodMenu;
 import androidboys.com.heavensfoodadmin.Models.SpecialFood;
 import androidboys.com.heavensfoodadmin.R;
@@ -279,21 +280,21 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
 
                     case "BreakFast":
                         try{
-                        deleteAlertDialog(breakFastAdapter.getRef(item.getOrder()).getKey(),breakFastAdapter);
+                        deleteAlertDialog(breakFastAdapter.getItem(item.getOrder()),breakFastAdapter.getRef(item.getOrder()).getKey(),breakFastAdapter);
                         }catch(Exception e){
                             Toast.makeText(context,"Please select that food item which you have checked",Toast.LENGTH_SHORT).show();
                         }break;
 
                     case "Lunch":
                         try{
-                        deleteAlertDialog(lunchAdapter.getRef(item.getOrder()).getKey(),lunchAdapter);
+                        deleteAlertDialog(lunchAdapter.getItem(item.getOrder()),lunchAdapter.getRef(item.getOrder()).getKey(),lunchAdapter);
                         }catch(Exception e){
                             Toast.makeText(context,"Please select that food item which you have checked",Toast.LENGTH_SHORT).show();
                         }break;
 
                     default:
                         try {
-                            deleteAlertDialog(dinnerAdapter.getRef(item.getOrder()).getKey(), dinnerAdapter);
+                            deleteAlertDialog(dinnerAdapter.getItem(item.getOrder()),dinnerAdapter.getRef(item.getOrder()).getKey(), dinnerAdapter);
                         }catch(Exception e){
                             Toast.makeText(context,"Please select that food item which you have checked",Toast.LENGTH_SHORT).show();
                         }
@@ -410,7 +411,7 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
     }
 
 
-    private void deleteAlertDialog(final String key, final FirebaseRecyclerAdapter<FoodMenu,FoodMenuViewHolder> adapter) {
+    private void deleteAlertDialog(final FoodMenu foodMenu, final String key, final FirebaseRecyclerAdapter<FoodMenu,FoodMenuViewHolder> adapter) {
 
         AlertDialog.Builder alertDialg=new AlertDialog.Builder(context);
         alertDialg.setTitle("Delete the food");
@@ -421,8 +422,9 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
         alertDialg.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                deleteFood(key,adapter);
+                deleteFood(foodMenu,key,adapter);
                 dialogInterface.dismiss();
+                adapter.notifyDataSetChanged();
             }
         });
         alertDialg.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -434,9 +436,14 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
         alertDialg.show();
     }
 
-    private void deleteFood(String key,FirebaseRecyclerAdapter<FoodMenu,FoodMenuViewHolder> adapter) {
+    private void deleteFood(FoodMenu foodMenu,String key,FirebaseRecyclerAdapter<FoodMenu,FoodMenuViewHolder> adapter) {
         todayMenuDatabaseReference.child(chooseFoodType).child(key).removeValue();
         Toast.makeText(context,"Deleted Successfully",Toast.LENGTH_SHORT).show();
+        try {
+            FirebaseStorageDeletion.deleteFileFromStorage(foodMenu.getImageUrl(), context);
+        }catch (Exception e){
+            Toast.makeText(context,"This image url is not present in our server",Toast.LENGTH_SHORT).show();
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -503,6 +510,15 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
 
     private void uploadImage(final FoodMenu foodMenu){
         if(imageUri!=null){
+
+
+            //if user edited image then we have to delete first previous image
+            try {
+                FirebaseStorageDeletion.deleteFileFromStorage(foodMenu.getImageUrl(), context);
+            }catch (Exception e){
+                //Toast.makeText(context,"This image url is not present in our server",Toast.LENGTH_SHORT).show();
+            }
+
             final ProgressDialog progressDialog=new ProgressDialog(context);
             progressDialog.setMessage("Uploading...");
             progressDialog.show();
