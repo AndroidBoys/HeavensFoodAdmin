@@ -4,12 +4,15 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Models.Food;
 import androidboys.com.heavensfoodadmin.Models.WhyHeavenFood;
+import androidboys.com.heavensfoodadmin.Utils.FileUtil;
+import androidboys.com.heavensfoodadmin.Utils.ImageUtil;
 import androidboys.com.heavensfoodadmin.Utils.ProgressUtils;
 import androidboys.com.heavensfoodadmin.ViewHolders.FoodItemViewHolder;
 import androidx.annotation.NonNull;
@@ -40,11 +43,16 @@ import com.google.firebase.storage.UploadTask;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.UUID;
 
 import androidboys.com.heavensfoodadmin.R;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import id.zelory.compressor.Compressor;
 
 import static android.net.Uri.parse;
 
@@ -182,7 +190,7 @@ public class FoodItemsFragment extends Fragment {
             final StorageReference imageFolder=FirebaseStorage.getInstance().getReference("images/"+filename);
             Log.i("imageuri",imageUri.toString());
 
-
+          //  imageUri=Uri.fromFile(new File(new ImageUtil(hostingActivity).compressImage(imageUri.getPath())));
             uploadTask =imageFolder.putFile(imageUri);
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
 
@@ -234,7 +242,20 @@ public class FoodItemsFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode==Common.PICK_IMAGE_REQUEST && resultCode==getActivity().RESULT_OK && data!=null){
-            imageUri=data.getData();
+            String path = FileUtil.getUriRealPath(hostingActivity,data.getData());
+            Log.i("path", "onActivityResult: "+path);
+            File file = new File(path);
+            try {
+                File compressedImage = new Compressor(hostingActivity)
+                        .setMaxWidth(640)
+                        .setMaxHeight(480)
+                        .setQuality(75)
+                        .setCompressFormat(Bitmap.CompressFormat.WEBP)
+                        .compressToFile(file);
+                imageUri = Uri.fromFile(compressedImage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             Log.i("imageuri", "onActivityResult: imageuri:"+imageUri);
             chooseImageButton.setText("Image Selected");
         }
