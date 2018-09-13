@@ -225,11 +225,9 @@ public class SubscribedUserTodaysMenu extends Fragment implements View.OnCreateC
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.setHeaderTitle("pagal");
         Log.i("menuItem","------------"+menu.getItem(0));
-        Log.i("menuItem","------------"+menu.getItem(1));
 
         //we don't want to give edit and delete option in today's menu fragment.That's why i set the visibility of item false
         menu.getItem(0).setVisible(false);
-        menu.getItem(1).setVisible(false);
     }
 
     @Override

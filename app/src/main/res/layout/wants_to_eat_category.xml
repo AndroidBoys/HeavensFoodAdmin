@@ -8,11 +8,26 @@
     android:orientation="vertical">
 
     <Spinner
+        android:id="@+id/categorySpinner"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_margin="16dp"
+        android:layout_marginStart="5dp"/>
+    <EditText
+        android:id="@+id/categotyEditText"
+        android:visibility="gone"
+        android:layout_margin="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter name of Category"/>
+
+    <Spinner
         android:id="@+id/foodItemSpinner"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_margin="16dp"
         android:layout_marginStart="5dp"/>
+
 
 
     <CheckBox

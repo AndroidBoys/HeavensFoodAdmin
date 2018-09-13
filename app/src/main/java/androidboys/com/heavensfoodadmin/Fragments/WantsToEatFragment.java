@@ -12,10 +12,13 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.baoyz.widget.PullRefreshLayout;
@@ -41,8 +44,10 @@ import java.util.UUID;
 
 import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Common.UsersUid;
+import androidboys.com.heavensfoodadmin.Models.Food;
 import androidboys.com.heavensfoodadmin.Models.FoodMenu;
 import androidboys.com.heavensfoodadmin.Models.LikedFood;
+import androidboys.com.heavensfoodadmin.Models.SpecialFood;
 import androidboys.com.heavensfoodadmin.Models.User;
 import androidboys.com.heavensfoodadmin.R;
 import androidboys.com.heavensfoodadmin.ViewHolders.WantsToEatViewHolder;
@@ -63,10 +68,18 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     private DatabaseReference wantsToEatDatabaseReference;
     private int maxLimit;
     private ArrayList<String> foodChooseList;
-    private Button wantAlertSelectButton;
-    private Button wantAlertUploadButton;
-    private EditText wantAlertDescriptionEditText;
-    private Uri imageUri;
+    private ArrayList<Food> foodArrayList=new ArrayList<>();
+    private ArrayList<String> foodNamesArrayList=new ArrayList<>();
+    private ArrayList<String> foodItemUid=new ArrayList<>();
+    private ArrayList<String> categoryList=new ArrayList<>();
+    private int selectedCategory;
+//    private Button wantAlertSelectButton;
+//    private Button wantAlertUploadButton;
+    private EditText categoryNameEditText;
+    private Spinner foodItemSpinner;
+//    private Uri imageUri;
+    private int selectedFood;
+    private Spinner categorySpinner;
     private CheckBox defaultCheckBox;
     private Boolean isDefault=false;
     private StorageReference storageReference;
@@ -81,6 +94,18 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
         View view=inflater.inflate(R.layout.wants_to_eat_layout,container,false);
         fetchUserList();
         context=getContext();
+
+        foodArrayList.add(new Food());
+        foodNamesArrayList.add("Select Item");
+        foodItemUid.add(" ");
+        categoryList.add("Select Category");
+        categoryList.add("Create New Category");
+        fetchCategory();
+
+        fetchAllFoodItems();
+
+
+
         wantsToEatRecyclerView=view.findViewById(R.id.wantsToEatRecyclerView);
         wantsToEatDatabaseReference=FirebaseDatabase.getInstance().getReference("TodayMenu");
         wantsToEatCoordinatorLayout=view.findViewById(R.id.wantsToEatCoordinatorLayout);
@@ -91,14 +116,14 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
         wantsToEatRecyclerView.setHasFixedSize(true);
         wantsToEatRecyclerView.setLayoutManager(layoutManager);
 
-        mealTime="BreakFast";
-        loadWantToEatImages("BreakFast");
+
+        loadWantToEatImages();
 
         PullRefreshLayout wantsRefreshLayout=view.findViewById(R.id.wantsRefreshLayout);
         wantsRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadWantToEatImages(mealTime);
+                loadWantToEatImages();
             }
         });
         wantsRefreshLayout.setColor(R.color.colorPrimary);//set the color of refresh circle.
@@ -113,6 +138,70 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
         });
         return view;
     }
+
+    private void fetchCategory() {
+    FirebaseDatabase.getInstance().getReference("TodayMenu").child("Category").addChildEventListener(new ChildEventListener() {
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            categoryList.add(dataSnapshot.getKey());
+        }
+
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+    });
+
+    }
+
+    private void fetchAllFoodItems() {
+        FirebaseDatabase.getInstance().getReference("FoodItems").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Food food=dataSnapshot.getValue(Food.class);
+                foodArrayList.add(food);
+                foodNamesArrayList.add(food.getFoodName());
+                foodItemUid.add(dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
 
     private void fetchUserList() {
     FirebaseDatabase.getInstance().getReference("Users").addChildEventListener(new ChildEventListener() {
@@ -147,32 +236,54 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 
     private void showNewAlertDialog() {
 
-        final FoodMenu foodMenu=new FoodMenu();
+        final SpecialFood specialFood=new SpecialFood();
 
         final AlertDialog.Builder alertDialog=new AlertDialog.Builder(context);
         alertDialog.setTitle("Enter new food details");
         alertDialog.setIcon(R.drawable.thali_graphic);
+        alertDialog.setCancelable(false);
+
         LayoutInflater layoutInflater=getLayoutInflater();
-        View view=layoutInflater.inflate(R.layout.food_edit_alert_dialog,null,false);
-        wantAlertDescriptionEditText=view.findViewById(R.id.alertDescriptionEditText);
-        wantAlertSelectButton=view.findViewById(R.id.alertSelectButton);
-        wantAlertUploadButton=view.findViewById(R.id.alertUploadButton);
-        wantAlertFoodNameEditText=view.findViewById(R.id.alertFoodNameEditText);
+
+        //Since i am using same layout for alertDialog .Hence the id will also same
+        View view=layoutInflater.inflate(R.layout.wants_to_eat_category,null,false);
+        foodItemSpinner=view.findViewById(R.id.foodItemSpinner);
         defaultCheckBox=view.findViewById(R.id.defaultCheckBox);
-
-
-        wantAlertSelectButton.setOnClickListener(new View.OnClickListener() {
+        categorySpinner=view.findViewById(R.id.categorySpinner);
+        categoryNameEditText=view.findViewById(R.id.categotyEditText);
+        final ArrayAdapter<String> categoryNameAdapter=new ArrayAdapter(context,android.R.layout.simple_spinner_dropdown_item,categoryList);
+        categorySpinner.setAdapter(categoryNameAdapter);
+        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-                chooseImage();
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(i==1) {
+                    categoryNameEditText.setVisibility(View.VISIBLE);
+                    categoryNameEditText.requestFocus();
+
+                }
+                    selectedCategory=i;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
-        wantAlertUploadButton.setOnClickListener(new View.OnClickListener() {
+
+        ArrayAdapter<String> foodNameArrayAdpter=new ArrayAdapter(context,android.R.layout.simple_spinner_dropdown_item,foodNamesArrayList);
+        foodItemSpinner.setAdapter(foodNameArrayAdpter);
+        foodItemSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-                uploadImage(foodMenu);
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedFood=i;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
+
         alertDialog.setView(view);
 
         alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -180,24 +291,32 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
             public void onClick(DialogInterface dialogInterface, int i) {
                 //Update the data
                 //This below will set the new data on that key
-                if(foodMenu.getImageUrl()!=null) {
-                    foodMenu.setFoodDescription(wantAlertDescriptionEditText.getText().toString());
-                    foodMenu.setFoodName(wantAlertFoodNameEditText.getText().toString());
+                if (selectedCategory == 0)
+                    Toast.makeText(context, "Please select a category first", Toast.LENGTH_SHORT).show();
 
-                    wantsToEatDatabaseReference.child("FoodImages").push().setValue(foodMenu);
-                    if(defaultCheckBox.isChecked());
-                        isDefault=defaultCheckBox.isChecked();
-                    Log.d("checkedfdfdfdsf","************"+defaultCheckBox.isChecked());
+                else {
+                    if (selectedCategory == 1) {
+                        if (!categoryNameEditText.getText().toString().trim().equals("")) {
+                            wantsToEatDatabaseReference.child("Category").child(categoryNameEditText.getText().toString()).push().setValue(foodArrayList.get(selectedFood));
+                        } else
+                            Toast.makeText(context, "Please enter the category first", Toast.LENGTH_SHORT).show();
 
-                    addFoodMenuForAllUser(foodMenu); //whenever admin upload  a new food add this food for all user if it contain isDefalut=true
+                    } else {
+                        wantsToEatDatabaseReference.child("Category").child(categoryList.get(selectedCategory)).push().setValue(foodArrayList.get(selectedFood));
+                    }
 
-                    Snackbar.make(wantsToEatCoordinatorLayout, foodMenu.getFoodName() + " Added", Snackbar.LENGTH_LONG).show();
+                    if (defaultCheckBox.isChecked()) ;
+                    isDefault = defaultCheckBox.isChecked();
+                    Log.d("checkedfdfdfdsf", "************" + defaultCheckBox.isChecked());
+
+                    addFoodForAllUser(foodArrayList.get(selectedFood)); //whenever admin upload  a new food add this food for all user if it contain isDefalut=true
+
+                    Snackbar.make(wantsToEatCoordinatorLayout, foodArrayList.get(selectedFood).getFoodName() + " Added", Snackbar.LENGTH_LONG).show();
                     wantsToEatFoodAdapter.notifyDataSetChanged();
                     dialogInterface.dismiss();
-                }else{
-                    Toast.makeText(context,"Please first upload the image",Toast.LENGTH_SHORT).show();
-//                    alertDialog.show();
+
                 }
+
             }
         });
         alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -210,19 +329,19 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
         alertDialog.show();
     }
 
-    private void addFoodMenuForAllUser(FoodMenu foodMenu) {
+    private void addFoodForAllUser(Food food) {
         if (isDefault) {
-            LikedFood likedFood = new LikedFood(foodMenu.getFoodName(), isDefault);
+            LikedFood likedFood = new LikedFood(food.getFoodName(), isDefault);
             for(int i = 0; i<UsersUid.usersUid.size(); i++)
                 wantsToEatDatabaseReference.child("LikedFood").child(likedFood.getFoodName()).push().setValue(UsersUid.usersUid.get(i));
         }
     }
 
 
-    public void loadWantToEatImages(String time) {
+    public void loadWantToEatImages() {
 
-        mealTime=time;
-        DatabaseReference databaseReference=wantsToEatDatabaseReference.child(time);
+
+        DatabaseReference databaseReference=wantsToEatDatabaseReference.child("FoodImages");
 //        wantsToEatDatabaseReference.child("maxLimit").addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -253,10 +372,11 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
-        if(item.getTitle().equals(Common.EDIT)){
-            showEditAlertDialog(wantsToEatFoodAdapter.getRef(item.getOrder()).getKey(),wantsToEatFoodAdapter.getItem(item.getOrder()));
-        }
-        else if(item.getTitle().equals(Common.DELETE)){
+//        if(item.getTitle().equals(Common.EDIT)){
+//            showEditAlertDialog(wantsToEatFoodAdapter.getRef(item.getOrder()).getKey(),wantsToEatFoodAdapter.getItem(item.getOrder()));
+//        }
+//        else
+          if(item.getTitle().equals(Common.DELETE)){
             //delete the data from the database
             deleteAlertDialog(item);
         }
@@ -285,131 +405,131 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     }
 
     private void deleteFood(String key) {
-        wantsToEatDatabaseReference.child(mealTime).child(key).removeValue();
+        wantsToEatDatabaseReference.child("FoodImages").child(key).removeValue();
         Toast.makeText(context,"Deleted Successfully",Toast.LENGTH_SHORT).show();
         wantsToEatFoodAdapter.notifyDataSetChanged();
     }
 
-    private void showEditAlertDialog(final String key, final FoodMenu foodMenu) {
-
-        Log.i("key","------------------"+key);
-        AlertDialog.Builder alertDialog=new AlertDialog.Builder(context);
-        alertDialog.setCancelable(false);
-
-        alertDialog.setTitle("Edit the food details");
-        alertDialog.setIcon(R.drawable.thali_graphic);
-        LayoutInflater layoutInflater=getLayoutInflater();
-        View view=layoutInflater.inflate(R.layout.food_edit_alert_dialog,null,false);
-        wantAlertDescriptionEditText=view.findViewById(R.id.alertDescriptionEditText);
-        wantAlertSelectButton=view.findViewById(R.id.alertSelectButton);
-        wantAlertUploadButton=view.findViewById(R.id.alertUploadButton);
-        wantAlertFoodNameEditText=view.findViewById(R.id.alertFoodNameEditText);
-
-        //setting already exist food details onto edittext
-        wantAlertFoodNameEditText.setText(foodMenu.getFoodName());
-        wantAlertDescriptionEditText.setText(foodMenu.getFoodDescription());
-
-
-        wantAlertSelectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                chooseImage();
-            }
-        });
-        wantAlertUploadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                 uploadImage(foodMenu);
-            }
-        });
-        alertDialog.setView(view);
-
-        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //Update the data
-                //This below will set the new data on that key
-                foodMenu.setFoodDescription(wantAlertDescriptionEditText.getText().toString());
-                foodMenu.setFoodName(wantAlertFoodNameEditText.getText().toString());
-                Log.i("insidurl:",foodMenu.getImageUrl());
-                wantsToEatDatabaseReference.child(mealTime).child(key).setValue(foodMenu);
-                Snackbar.make(wantsToEatCoordinatorLayout,foodMenu.getFoodName()+ " updated",Snackbar.LENGTH_LONG).show();
-                wantsToEatFoodAdapter.notifyDataSetChanged();
-                dialogInterface.dismiss();
-            }
-        });
-        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-                dialogInterface.dismiss();
-            }
-        });
-        alertDialog.show();
-    }
-
-    private void uploadImage(final FoodMenu foodMenu){
-        if(imageUri!=null){
-            final ProgressDialog progressDialog=new ProgressDialog(context);
-            progressDialog.setMessage("Uploading...");
-            progressDialog.show();
-            progressDialog.setCancelable(false);
-
-            String filename= UUID.randomUUID().toString();
-            final StorageReference imageFolder=storageReference.child(filename);
-            Log.i("imageuri",imageUri.toString());
-            imageFolder.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                    imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            progressDialog.dismiss();
-                            Toast.makeText(context,"Uploaded Successfully",Toast.LENGTH_SHORT).show();
-                            foodMenu.setImageUrl(uri.toString());
-                            Log.i("imageurl:",foodMenu.getImageUrl());
-                        }
-                    });
-                }
-            })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
-                            progressDialog.dismiss();
-                            Toast.makeText(context,e.getMessage(),Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress=(100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                            progressDialog.setMessage("Uploaded "+(int)progress+" %");
-                        }
-                    });
-        }
-        else{
-            Toast.makeText(context,"Please first select the image",Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void chooseImage(){
-        Intent intent=new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent,"Select Picture"),Common.PICK_IMAGE_REQUEST);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode==Common.PICK_IMAGE_REQUEST && resultCode==getActivity().RESULT_OK && data!=null){
-            imageUri=data.getData();
-            wantAlertSelectButton.setText("Image Selected");
-        }
-    }
+//    private void showEditAlertDialog(final String key, final FoodMenu foodMenu) {
+//
+//        Log.i("key","------------------"+key);
+//        AlertDialog.Builder alertDialog=new AlertDialog.Builder(context);
+//        alertDialog.setCancelable(false);
+//
+//        alertDialog.setTitle("Edit the food details");
+//        alertDialog.setIcon(R.drawable.thali_graphic);
+//        LayoutInflater layoutInflater=getLayoutInflater();
+//        View view=layoutInflater.inflate(R.layout.food_edit_alert_dialog,null,false);
+//        wantAlertDescriptionEditText=view.findViewById(R.id.alertDescriptionEditText);
+//        wantAlertSelectButton=view.findViewById(R.id.alertSelectButton);
+//        wantAlertUploadButton=view.findViewById(R.id.alertUploadButton);
+//        wantAlertFoodNameEditText=view.findViewById(R.id.alertFoodNameEditText);
+//
+//        //setting already exist food details onto edittext
+//        wantAlertFoodNameEditText.setText(foodMenu.getFoodName());
+//        wantAlertDescriptionEditText.setText(foodMenu.getFoodDescription());
+//
+//
+//        wantAlertSelectButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                chooseImage();
+//            }
+//        });
+//        wantAlertUploadButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                 uploadImage(foodMenu);
+//            }
+//        });
+//        alertDialog.setView(view);
+//
+//        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                //Update the data
+//                //This below will set the new data on that key
+//                foodMenu.setFoodDescription(wantAlertDescriptionEditText.getText().toString());
+//                foodMenu.setFoodName(wantAlertFoodNameEditText.getText().toString());
+//                Log.i("insidurl:",foodMenu.getImageUrl());
+//                wantsToEatDatabaseReference.child(mealTime).child(key).setValue(foodMenu);
+//                Snackbar.make(wantsToEatCoordinatorLayout,foodMenu.getFoodName()+ " updated",Snackbar.LENGTH_LONG).show();
+//                wantsToEatFoodAdapter.notifyDataSetChanged();
+//                dialogInterface.dismiss();
+//            }
+//        });
+//        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                dialogInterface.dismiss();
+//            }
+//        });
+//        alertDialog.show();
+//    }
+//
+//    private void uploadImage(final FoodMenu foodMenu){
+//        if(imageUri!=null){
+//            final ProgressDialog progressDialog=new ProgressDialog(context);
+//            progressDialog.setMessage("Uploading...");
+//            progressDialog.show();
+//            progressDialog.setCancelable(false);
+//
+//            String filename= UUID.randomUUID().toString();
+//            final StorageReference imageFolder=storageReference.child(filename);
+//            Log.i("imageuri",imageUri.toString());
+//            imageFolder.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//
+//                    imageFolder.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                        @Override
+//                        public void onSuccess(Uri uri) {
+//                            progressDialog.dismiss();
+//                            Toast.makeText(context,"Uploaded Successfully",Toast.LENGTH_SHORT).show();
+//                            foodMenu.setImageUrl(uri.toString());
+//                            Log.i("imageurl:",foodMenu.getImageUrl());
+//                        }
+//                    });
+//                }
+//            })
+//                    .addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//
+//                            progressDialog.dismiss();
+//                            Toast.makeText(context,e.getMessage(),Toast.LENGTH_SHORT).show();
+//                        }
+//                    })
+//                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+//                        @Override
+//                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+//                            double progress=(100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+//                            progressDialog.setMessage("Uploaded "+(int)progress+" %");
+//                        }
+//                    });
+//        }
+//        else{
+//            Toast.makeText(context,"Please first select the image",Toast.LENGTH_SHORT).show();
+//        }
+//    }
+//
+//    private void chooseImage(){
+//        Intent intent=new Intent();
+//        intent.setType("image/*");
+//        intent.setAction(Intent.ACTION_GET_CONTENT);
+//        startActivityForResult(Intent.createChooser(intent,"Select Picture"),Common.PICK_IMAGE_REQUEST);
+//    }
+//
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if(requestCode==Common.PICK_IMAGE_REQUEST && resultCode==getActivity().RESULT_OK && data!=null){
+//            imageUri=data.getData();
+//            wantAlertSelectButton.setText("Image Selected");
+//        }
+//    }
 
     public static WantsToEatFragment newInstance() {
         

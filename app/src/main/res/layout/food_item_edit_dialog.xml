@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="250dp"
+    android:minHeight="270dp"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/alertFoodNameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/josefin_bold"
+        android:hint="Food Name
+"
+        android:maxLines="2"
+        android:textColor="@color/md_black_1000"/>
+
+    <EditText
+        android:id="@+id/alertDescriptionEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/josefin_bold"
+        android:hint="Description"
+        android:maxLines="4"
+        android:textColor="@color/md_black_1000"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="15dp"
+        android:fontFamily="@font/josefin_bold"
+        android:orientation="horizontal"
+        android:textColor="@color/md_black_1000">
+
+
+        <info.hoang8f.widget.FButton
+            android:id="@+id/alertSelectButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:layout_weight="1"
+            android:text="Select Image"/>
+
+        <info.hoang8f.widget.FButton
+            android:id="@+id/alertUploadButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/josefin_bold"
+            android:text="Upload"
+            android:textColor="@color/md_black_1000"/>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

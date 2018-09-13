@@ -136,7 +136,7 @@ public class FoodItemsFragment extends Fragment {
         alertDialog.setTitle("Enter new food details");
         alertDialog.setIcon(R.drawable.thali_graphic);
         LayoutInflater layoutInflater=getLayoutInflater();
-        View view=layoutInflater.inflate(R.layout.food_edit_alert_dialog,null,false);
+        View view=layoutInflater.inflate(R.layout.food_item_edit_dialog,null,false);
 
         foodDescriptionEditText=view.findViewById(R.id.alertDescriptionEditText);
         chooseImageButton=view.findViewById(R.id.alertSelectButton);
@@ -286,7 +286,7 @@ public class FoodItemsFragment extends Fragment {
             alertDialog.setTitle("Enter new food details");
             alertDialog.setIcon(R.drawable.thali_graphic);
             LayoutInflater layoutInflater=getLayoutInflater();
-            View view=layoutInflater.inflate(R.layout.food_edit_alert_dialog,null,false);
+            View view=layoutInflater.inflate(R.layout.food_item_edit_dialog,null,false);
 
             foodDescriptionEditText=view.findViewById(R.id.alertDescriptionEditText);
             chooseImageButton=view.findViewById(R.id.alertSelectButton);
