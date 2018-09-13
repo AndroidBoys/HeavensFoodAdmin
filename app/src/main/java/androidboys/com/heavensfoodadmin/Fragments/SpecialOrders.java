@@ -178,14 +178,21 @@ public class SpecialOrders extends Fragment implements View.OnCreateContextMenuL
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
-        if(item.getTitle().equals(Common.EDIT)){
-            showEditAlertDialog(specialFoodAdapter.getRef(item.getOrder()).getKey(),specialFoodAdapter.getItem(item.getOrder()));
+
+        //getUserVisibleHint
+        if(getUserVisibleHint()){
+
+            if (item.getTitle().equals(Common.EDIT)) {
+                showEditAlertDialog(specialFoodAdapter.getRef(item.getOrder()).getKey(), specialFoodAdapter.getItem(item.getOrder()));
+            } else if (item.getTitle().equals(Common.DELETE)) {
+                //delete the data from the database
+                deleteAlertDialog(item);
+            }
+            return  true;
+
         }
-        else if(item.getTitle().equals(Common.DELETE)){
-            //delete the data from the database
-            deleteAlertDialog(item);
-        }
-        return super.onContextItemSelected(item);
+        else
+            return false;
     }
 
     private void deleteAlertDialog(final MenuItem item) {

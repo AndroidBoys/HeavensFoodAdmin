@@ -1,7 +1,6 @@
 package androidboys.com.heavensfoodadmin.Fragments;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,8 +9,9 @@ import android.os.Bundle;
 
 import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Models.Food;
-import androidboys.com.heavensfoodadmin.Models.FoodMenu;
-import androidboys.com.heavensfoodadmin.ViewHolders.FoodViewHolder;
+import androidboys.com.heavensfoodadmin.Models.WhyHeavenFood;
+import androidboys.com.heavensfoodadmin.Utils.ProgressUtils;
+import androidboys.com.heavensfoodadmin.ViewHolders.FoodItemViewHolder;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
@@ -25,36 +25,37 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.squareup.picasso.Picasso;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.UUID;
 
 import androidboys.com.heavensfoodadmin.R;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static android.net.Uri.parse;
+
 public class FoodItemsFragment extends Fragment {
 
-    private FirebaseRecyclerAdapter<Food, FoodViewHolder> adapter;
+    private FirebaseRecyclerAdapter<Food, FoodItemViewHolder> adapter;
     private RecyclerView recyclerView;
     private Context hostingActivity;
     private DatabaseReference reference;
     private FloatingActionButton addFoodItemButton;
-    private Uri imageUri;
+    private Uri imageUri=null;
     private UploadTask uploadTask;
 
     //Alert Dialog UI compnents
@@ -68,16 +69,10 @@ public class FoodItemsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static FoodItemsFragment newInstance() {
-        FoodItemsFragment fragment = new FoodItemsFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        reference = FirebaseDatabase.getInstance().getReference("Fooditems");
+        reference = FirebaseDatabase.getInstance().getReference("FoodItems");
         super.onCreate(savedInstanceState);
     }
 
@@ -95,6 +90,7 @@ public class FoodItemsFragment extends Fragment {
         });
         recyclerView=view.findViewById(R.id.food_items_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(hostingActivity));
+        recyclerView.setHasFixedSize(true);
         attachAdapter();
         return view;
     }
@@ -113,13 +109,13 @@ public class FoodItemsFragment extends Fragment {
 
     private void attachAdapter(){
 
-        adapter=new FirebaseRecyclerAdapter<Food, FoodViewHolder>(Food.class,R.layout.wants_to_eat_raw_layout
-                ,FoodViewHolder.class,reference) {
+        adapter=new FirebaseRecyclerAdapter<Food, FoodItemViewHolder>(Food.class,R.layout.wants_to_eat_raw_layout
+                ,FoodItemViewHolder.class,reference) {
             @Override
-            protected void populateViewHolder(FoodViewHolder foodViewHolder, Food food, int i) {
-                    foodViewHolder.foodDescriptionTextView.setText(food.getFoodDescription());
-                    foodViewHolder.foodNameTextView.setText(food.getFoodName());
-                    Picasso.with(hostingActivity).load(food.getImageUrl()).into(foodViewHolder.foodImageView);
+            protected void populateViewHolder(FoodItemViewHolder foodItemViewHolder, Food food, int i) {
+                    foodItemViewHolder.foodDescriptionTextView.setText(food.getFoodDescription());
+                    foodItemViewHolder.foodNameTextView.setText(food.getFoodName());
+                    Picasso.with(hostingActivity).load(food.getImageUrl()).into(foodItemViewHolder.foodImageView);
 
             }
         };
@@ -133,6 +129,8 @@ public class FoodItemsFragment extends Fragment {
 
     private void showNewAlertDialog() {
 
+
+        imageUri=null; //since we are using same Uri variable for editing and adding a new item
 
         alertDialog=new AlertDialog.Builder(hostingActivity).create();
         alertDialog.setTitle("Enter new food details");
@@ -160,25 +158,7 @@ public class FoodItemsFragment extends Fragment {
         });
 
        alertDialog.setView(view);
-//
-//       alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                //Update the data
-//                //This below will set the new data on that key
-//                if(food.getImageUrl()!=null) {
-//                    food.setFoodDescription(foodDescriptionEditText.getText().toString());
-//                    food.setFoodName(foodNameEditText.getText().toString());
-//                    reference.child(UUID.randomUUID().toString()).setValue(food);
-//                    Toast.makeText(hostingActivity, food.getFoodName()+" added!", Toast.LENGTH_SHORT).show();
-//                    adapter.notifyDataSetChanged();
-//                    dialogInterface.dismiss();
-//                }else{
-//                    Toast.makeText(context,"Please first upload the image",Toast.LENGTH_SHORT).show();
-////                    alertDialog.show();
-//                }
-//            }
-//        });
+
         alertDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialogInterface) {
@@ -195,37 +175,12 @@ public class FoodItemsFragment extends Fragment {
                     .setStyle(KProgressHUD.Style.ANNULAR_DETERMINATE)
                     .setLabel("Please wait")
                     .setMaxProgress(100)
-//                    .setCancellable(new DialogInterface.OnCancelListener() {
-//                        @Override
-//                        public void onCancel(final DialogInterface dialogInterface1) {
-//                            new AlertDialog.Builder(hostingActivity)
-//                                             .setMessage("Cancel Adding Fooditem?")
-//                                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                                                 @Override
-//                                                 public void onClick(DialogInterface dialogInterface, int i) {
-//                                                        if(uploadTask.isInProgress()&&uploadTask!=null){
-//                                                            uploadTask.cancel();
-//                                                            dialogInterface.dismiss();
-//                                                            dialogInterface1.dismiss();
-//                                                        }
-//                                                 }
-//                                             })
-//                                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                                                 @Override
-//                                                 public void onClick(DialogInterface dialogInterface, int i) {
-//                                                     dialogInterface.dismiss();
-//                                                 }
-//                                             });
-//                        }
-//                    })
                     .setCancellable(false)
                     .show();
-
 
             String filename= UUID.randomUUID().toString();
             final StorageReference imageFolder=FirebaseStorage.getInstance().getReference("images/"+filename);
             Log.i("imageuri",imageUri.toString());
-
 
 
             uploadTask =imageFolder.putFile(imageUri);
@@ -297,21 +252,148 @@ public class FoodItemsFragment extends Fragment {
 
     }
 
+
+
+
+    //****************************************edit and delete options***********************//
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        if(getUserVisibleHint()) {
+            switch (item.getItemId()) {
+                case Common.R_ID_EDIT:
+//                Toast.makeText(getContext(), "edit is tapped", Toast.LENGTH_SHORT).show();
+                    editItem(adapter.getRef(item.getOrder()).getKey(), adapter.getItem(item.getOrder()));
+                    break;
 
-//        if(item.getTitle().equals(Common.EDIT)){
-//            isEditMode=true;
-//            showEditAlertDialog(adapter.getRef(item.getOrder()).getKey(),adapter.getItem(item.getOrder()));
-//        }
-         if(item.getTitle().equals(Common.DELETE)){
-            //delete the data from the database
-            deleteAlertDialog(item);
+                case Common.R_ID_DELETE:
+//                Toast.makeText(getContext(), "delete is tapped", Toast.LENGTH_SHORT).show();
+                    showDeleteDialog(adapter.getRef(item.getOrder()).getKey(), adapter.getItem(item.getOrder()));
+                    break;
+            }
+            return true;
         }
-        return super.onContextItemSelected(item);
+        else
+            return false;
+
     }
 
-    private void deleteAlertDialog(final MenuItem item) {
+    /********************************************************************************/
+
+
+    public void editItem(final String key, final Food item){
+
+            alertDialog=new AlertDialog.Builder(hostingActivity).create();
+            alertDialog.setTitle("Enter new food details");
+            alertDialog.setIcon(R.drawable.thali_graphic);
+            LayoutInflater layoutInflater=getLayoutInflater();
+            View view=layoutInflater.inflate(R.layout.food_edit_alert_dialog,null,false);
+
+            foodDescriptionEditText=view.findViewById(R.id.alertDescriptionEditText);
+            chooseImageButton=view.findViewById(R.id.alertSelectButton);
+            uploadImageButton=view.findViewById(R.id.alertUploadButton);
+            foodNameEditText=view.findViewById(R.id.alertFoodNameEditText);
+
+            foodDescriptionEditText.setText(item.getFoodDescription());
+            foodNameEditText.setText(item.getFoodName());
+            imageUri=parse(item.getImageUrl());
+
+            if(imageUri!=null)
+                chooseImageButton.setText("Image Selected");
+
+            chooseImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    chooseImage();
+                }
+            });
+            uploadImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    uploadNewImage(item.getImageUrl(),key);
+
+                }
+            });
+
+            alertDialog.setView(view);
+
+            alertDialog.show();
+        }
+
+    private void uploadNewImage(final String oldImageUrl, final String key) {
+        UUID uuid=UUID.randomUUID();
+
+             FirebaseStorage.getInstance().getReference().child(uuid.toString()).putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        ProgressUtils.cancelLoading();
+                        deleteFromStorage(oldImageUrl);
+                        updateValueAtKey(key,uri.toString());
+                    }
+                });
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        if(oldImageUrl.equals(imageUri.toString())){
+                            updateValueAtKey(key,imageUri.toString());
+                        }
+                        Toast.makeText(getContext(), ""+e, Toast.LENGTH_SHORT).show();
+                        ProgressUtils.cancelLoading();
+
+                    }
+                })
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+
+                    }
+                });
+
+    }
+    private void deleteFromStorage(String oldImageUri) {
+
+        //to delete old image
+        FirebaseStorage.getInstance().getReferenceFromUrl(oldImageUri).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(getContext(), "Old image deleted", Toast.LENGTH_SHORT).show();
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(), "Failed to delete old image", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void updateValueAtKey(String key, String updatedImageUri) {
+        Food food=new Food(updatedImageUri,foodNameEditText.getText().toString(),foodDescriptionEditText.getText().toString());
+
+        FirebaseDatabase.getInstance().getReference("FoodItems").child(key).setValue(food).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    Toast.makeText(getContext(), "Updated", Toast.LENGTH_SHORT).show();
+                    alertDialog.dismiss();
+                }else
+                    Toast.makeText(getContext(), "Try again!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+    }
+
+
+/***********************************************************************/
+
+
+    private void  showDeleteDialog(final String key, final Food item) {
         AlertDialog.Builder alertDialg=new AlertDialog.Builder(hostingActivity);
         alertDialg.setTitle("Delete the food");
         alertDialg.setMessage("Do you really want to delete it ?");
@@ -319,17 +401,13 @@ public class FoodItemsFragment extends Fragment {
         alertDialg.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                deleteFood(adapter.getRef(item.getOrder()).getKey());
+                deleteFood(key);
+                deleteFromStorage(item.imageUrl);
                 dialogInterface.dismiss();
             }
         });
-        alertDialg.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        alertDialg.show();
+        alertDialg.setNegativeButton("No",null)
+        .show();
     }
 
     private void deleteFood(String key) {
@@ -337,49 +415,12 @@ public class FoodItemsFragment extends Fragment {
         Toast.makeText(hostingActivity,"Deleted Successfully",Toast.LENGTH_SHORT).show();
         adapter.notifyDataSetChanged();
     }
-
-//    private void showEditAlertDialog(final String key, final Food food) {
-//
-//        Log.i("key","------------------"+key);
-//        alertDialog=new AlertDialog.Builder(hostingActivity).create();
-//        alertDialog.setCancelable(false);
-//
-//        alertDialog.setTitle("Edit the food details");
-//        alertDialog.setIcon(R.drawable.thali_graphic);
-//        LayoutInflater layoutInflater=getLayoutInflater();
-//        View view=layoutInflater.inflate(R.layout.food_edit_alert_dialog,null,false);
-//        foodDescriptionEditText=view.findViewById(R.id.alertDescriptionEditText);
-//        chooseImageButton=view.findViewById(R.id.alertSelectButton);
-//        uploadImageButton=view.findViewById(R.id.alertUploadButton);
-//        foodNameEditText=view.findViewById(R.id.alertFoodNameEditText);
-//
-//        //setting already exist food details onto edittext
-//        foodNameEditText.setText(food.getFoodName());
-//        foodDescriptionEditText.setText(food.getFoodDescription());
-//        imageUri=Uri.parse(food.getImageUrl());
-//        Log.i("uri", "showEditAlertDialog: "+imageUri);
-//        chooseImageButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                chooseImage();
-//            }
-//        });
-//        uploadImageButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                uploadImage();
-//            }
-//        });
-//        alertDialog.setView(view);
-//        alertDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-//            @Override
-//            public void onCancel(DialogInterface dialogInterface) {
-//                dialogInterface.dismiss();
-//            }
-//        });
-//        alertDialog.show();
-//    }
-
+    public static FoodItemsFragment newInstance() {
+        FoodItemsFragment fragment = new FoodItemsFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
 
 }
