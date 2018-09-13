@@ -73,6 +73,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     private EditText wantAlertFoodNameEditText;
     private CoordinatorLayout wantsToEatCoordinatorLayout;
     private FloatingActionButton wantsFloatingActionButton;
+    private String mealTime;
 
     @Nullable
     @Override
@@ -81,7 +82,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
         fetchUserList();
         context=getContext();
         wantsToEatRecyclerView=view.findViewById(R.id.wantsToEatRecyclerView);
-        wantsToEatDatabaseReference=FirebaseDatabase.getInstance().getReference("FavouriteFood");
+        wantsToEatDatabaseReference=FirebaseDatabase.getInstance().getReference("TodayMenu");
         wantsToEatCoordinatorLayout=view.findViewById(R.id.wantsToEatCoordinatorLayout);
         wantsFloatingActionButton=view.findViewById(R.id.wantsFloatingActionButton);
         storageReference=FirebaseStorage.getInstance().getReference("images/");
@@ -89,13 +90,15 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
         layoutManager=new LinearLayoutManager(context);
         wantsToEatRecyclerView.setHasFixedSize(true);
         wantsToEatRecyclerView.setLayoutManager(layoutManager);
-        loadWantToEatImages();
+
+        mealTime="BreakFast";
+        loadWantToEatImages("BreakFast");
 
         PullRefreshLayout wantsRefreshLayout=view.findViewById(R.id.wantsRefreshLayout);
         wantsRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadWantToEatImages();
+                loadWantToEatImages(mealTime);
             }
         });
         wantsRefreshLayout.setColor(R.color.colorPrimary);//set the color of refresh circle.
@@ -180,12 +183,14 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
                 if(foodMenu.getImageUrl()!=null) {
                     foodMenu.setFoodDescription(wantAlertDescriptionEditText.getText().toString());
                     foodMenu.setFoodName(wantAlertFoodNameEditText.getText().toString());
+
                     wantsToEatDatabaseReference.child("FoodImages").push().setValue(foodMenu);
                     if(defaultCheckBox.isChecked());
                         isDefault=defaultCheckBox.isChecked();
                     Log.d("checkedfdfdfdsf","************"+defaultCheckBox.isChecked());
 
                     addFoodMenuForAllUser(foodMenu); //whenever admin upload  a new food add this food for all user if it contain isDefalut=true
+
                     Snackbar.make(wantsToEatCoordinatorLayout, foodMenu.getFoodName() + " Added", Snackbar.LENGTH_LONG).show();
                     wantsToEatFoodAdapter.notifyDataSetChanged();
                     dialogInterface.dismiss();
@@ -214,22 +219,23 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     }
 
 
-    private void loadWantToEatImages() {
+    public void loadWantToEatImages(String time) {
 
-        DatabaseReference databaseReference=wantsToEatDatabaseReference.child("FoodImages");
-        wantsToEatDatabaseReference.child("maxLimit").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot!=null){
-                    maxLimit=dataSnapshot.getValue(Integer.class);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        mealTime=time;
+        DatabaseReference databaseReference=wantsToEatDatabaseReference.child(time);
+//        wantsToEatDatabaseReference.child("maxLimit").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                if(dataSnapshot!=null){
+//                    maxLimit=dataSnapshot.getValue(Integer.class);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
 
         wantsToEatFoodAdapter=new FirebaseRecyclerAdapter<FoodMenu, WantsToEatViewHolder>(FoodMenu.class,
                 R.layout.wants_to_eat_raw_layout,WantsToEatViewHolder.class,databaseReference) {
@@ -279,7 +285,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     }
 
     private void deleteFood(String key) {
-        wantsToEatDatabaseReference.child("FoodImages").child(key).removeValue();
+        wantsToEatDatabaseReference.child(mealTime).child(key).removeValue();
         Toast.makeText(context,"Deleted Successfully",Toast.LENGTH_SHORT).show();
         wantsToEatFoodAdapter.notifyDataSetChanged();
     }
@@ -326,7 +332,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
                 foodMenu.setFoodDescription(wantAlertDescriptionEditText.getText().toString());
                 foodMenu.setFoodName(wantAlertFoodNameEditText.getText().toString());
                 Log.i("insidurl:",foodMenu.getImageUrl());
-                wantsToEatDatabaseReference.child("FoodImages").child(key).setValue(foodMenu);
+                wantsToEatDatabaseReference.child(mealTime).child(key).setValue(foodMenu);
                 Snackbar.make(wantsToEatCoordinatorLayout,foodMenu.getFoodName()+ " updated",Snackbar.LENGTH_LONG).show();
                 wantsToEatFoodAdapter.notifyDataSetChanged();
                 dialogInterface.dismiss();

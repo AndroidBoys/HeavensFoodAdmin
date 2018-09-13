@@ -1,15 +1,14 @@
 package androidboys.com.heavensfoodadmin.Models;
 
-public class FoodMenu {
+public class Food {
+
     public String imageUrl;
     public String foodName;
     public String foodDescription;
-    public String foodQuantity;
 
+    public Food() {
 
-    public FoodMenu() {
     }
-
 
     public String getImageUrl() {
         return imageUrl;
@@ -33,12 +32,5 @@ public class FoodMenu {
 
     public void setFoodDescription(String foodDescription) {
         this.foodDescription = foodDescription;
-    }
-    public String getFoodQuantity() {
-        return foodQuantity;
-    }
-
-    public void setFoodQuantity(String foodQuantity) {
-        this.foodQuantity = foodQuantity;
     }
 }
