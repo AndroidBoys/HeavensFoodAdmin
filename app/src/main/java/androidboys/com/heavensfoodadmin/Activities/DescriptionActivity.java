@@ -120,5 +120,4 @@ public class DescriptionActivity extends AppCompatActivity {
         return false;
     }
 
-
 }
