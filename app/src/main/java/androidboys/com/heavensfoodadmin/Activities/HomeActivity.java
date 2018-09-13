@@ -148,7 +148,7 @@ public class HomeActivity extends AppCompatActivity
                         Log.i("day Difference ", "------------" + dayDifference);
                         //if the difference between current data and absence due date is 1 then only we will remove absence object
                         //from there.
-                        if (dayDifference <= 1 && user.absence!=null) {
+                        if (dayDifference >= 1 && user.absence!=null) {
                             user.absence = null;
                             databaseReference.child(dataSnapshot.getKey()).setValue(user);
                         }
