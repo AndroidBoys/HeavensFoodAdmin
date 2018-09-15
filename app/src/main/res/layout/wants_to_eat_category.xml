@@ -7,35 +7,44 @@
     android:minHeight="270dp"
     android:orientation="vertical">
 
-    <Spinner
-        android:id="@+id/categorySpinner"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_margin="16dp"
-        android:layout_marginStart="5dp"/>
     <EditText
         android:id="@+id/categotyEditText"
-        android:visibility="gone"
         android:layout_margin="16dp"
+        android:maxLines="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter name of Category"/>
+    <EditText
+        android:id="@+id/maxSelectedEditText"
+        android:layout_margin="16dp"
+        android:maxLines="1"
+        android:inputType="number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter max limit of category"/>
+
+   <ListView
+       android:id="@+id/itemList"
+       android:layout_width="match_parent"
+       android:layout_height="100dp"
+       android:layout_margin="16dp">
+
+   </ListView>
 
     <Spinner
-        android:id="@+id/foodItemSpinner"
+        android:id="@+id/timeSpinner"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_margin="16dp"
         android:layout_marginStart="5dp"/>
 
-
-
-    <CheckBox
-        android:layout_margin="8dp"
-        android:id="@+id/defaultCheckBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="default" />
+    <!--<androidx.appcompat.widget.AppCompatCheckBox-->
+        <!--android:layout_margin="8dp"-->
+        <!--android:id="@+id/defaultCheckBox"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textColor="@color/red"-->
+        <!--android:text="default \n (if you check this food will be available for all users)" />-->
 
 
 </LinearLayout>

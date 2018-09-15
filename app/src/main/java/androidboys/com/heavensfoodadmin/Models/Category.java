@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Category {
     private ArrayList<Food> foodArrayList=new ArrayList<>();
     private String categoryName;
+    private int maxSelect;
 
     public Category() {
     }
@@ -26,9 +27,18 @@ public class Category {
         this.categoryName = categoryName;
     }
 
-    public Category(ArrayList<Food> foodArrayList, String categoryName) {
+    public int getMaxSelect() {
+        return maxSelect;
+    }
+
+    public void setMaxSelect(int maxSelect) {
+        this.maxSelect = maxSelect;
+    }
+
+    public Category(ArrayList<Food> foodArrayList, String categoryName, int maxSelect) {
 
         this.foodArrayList = foodArrayList;
         this.categoryName = categoryName;
+        this.maxSelect = maxSelect;
     }
 }
