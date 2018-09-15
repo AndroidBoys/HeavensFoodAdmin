@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -262,7 +263,8 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
         foodItemList=view.findViewById(R.id.itemList);
         categoryNameEditText=view.findViewById(R.id.categotyEditText);
         timeSpinner=view.findViewById(R.id.timeSpinner);
-        ArrayAdapter listAdapter=new ArrayAdapter(context,android.R.layout.simple_list_item_1,foodNamesArrayList);
+        foodItemList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        ArrayAdapter listAdapter=new ArrayAdapter(context,android.R.layout.simple_list_item_multiple_choice,foodNamesArrayList);
         foodItemList.setAdapter(listAdapter);
         foodItemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -275,6 +277,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
                    Toast.makeText(context, ""+foodNamesArrayList.get(i)+" added", Toast.LENGTH_SHORT).show();
                    selectedFoodArrayList.add(foodArrayList.get(i));
                }
+
             }
         });
         ArrayAdapter<String> timeArrayAdapter=new ArrayAdapter(context,android.R.layout.simple_spinner_dropdown_item,getResources().getStringArray(R.array.foodType));
@@ -334,6 +337,9 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
                     Toast.makeText(context, "Please fill the required field first", Toast.LENGTH_SHORT).show();
 
                 else {
+
+                    SparseBooleanArray checked = foodItemList.getCheckedItemPositions();
+                    Log.i("checked:", "onClick: "+checked.toString());
 //                    if (selectedCategory == 1) {
 //                        if (!categoryNameEditText.getText().toString().trim().equals("")) {
                     Category category=new Category(selectedFoodArrayList,categoryNameEditText.getText().toString(),Integer.parseInt(maxLimitEditText.getText().toString()));
