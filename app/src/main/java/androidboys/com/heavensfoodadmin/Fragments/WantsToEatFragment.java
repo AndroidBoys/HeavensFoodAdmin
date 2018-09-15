@@ -12,7 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -30,7 +33,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import androidboys.com.heavensfoodadmin.Adapters.ExpandableFoodListAdapter;
+import androidboys.com.heavensfoodadmin.Adapters.WantsToEatCustomAdapterAfterCategorySelected;
 import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Common.UsersUid;
 import androidboys.com.heavensfoodadmin.Models.Category;
@@ -60,9 +66,11 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     private ArrayList<Food> selectedFoodArrayList=new ArrayList<>();
     private ArrayList<String> foodNamesArrayList=new ArrayList<>();
     private ArrayList<String> foodItemUid=new ArrayList<>();
-    private ArrayList<Category> categoryList=new ArrayList<>();
+//    private ArrayList<Category> categoryList=new ArrayList<>();
     private ArrayList<String> categoryNameList=new ArrayList<>();
-
+    private HashMap<String,ArrayList<Food>> listFoodChild=new HashMap<>();
+    private ArrayList<Integer> maxLimitOfCategory=new ArrayList<>();
+private   ExpandableFoodListAdapter expandableFoodListAdapter;
 //    private int selectedCategory;
 //    private Button wantAlertSelectButton;
 //    private Button wantAlertUploadButton;
@@ -75,6 +83,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 //    private Spinner categorySpinner;
 //    private CheckBox defaultCheckBox;
     private Boolean isDefault=false;
+    private ExpandableListView expandableListView;
     private StorageReference storageReference;
     private EditText wantAlertFoodNameEditText;
     private CoordinatorLayout wantsToEatCoordinatorLayout;
@@ -89,37 +98,14 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
         context=getContext();
 
 
-//        categoryList.add("Select Category");
-//        categoryList.add("Create New Category");
-//        fetchCategory("BreakFast"); // load breakfast category first time
-
         fetchAllFoodItems();
 
         mealTime="BreakFast";
-
-
-        wantsToEatRecyclerView=view.findViewById(R.id.wantsToEatRecyclerView);
-//        wantsToEatCategoryListView=view.findViewById(R.id.wantsToEatListView);
-//        adapter=new ArrayAdapter(context,android.R.layout.simple_list_item_1,categoryNameList);
-//        wantsToEatCategoryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//
-//            }
-//        });
-
-
 
         wantsToEatDatabaseReference=FirebaseDatabase.getInstance().getReference("TodayMenu");
         wantsToEatCoordinatorLayout=view.findViewById(R.id.wantsToEatCoordinatorLayout);
         wantsFloatingActionButton=view.findViewById(R.id.wantsFloatingActionButton);
         storageReference=FirebaseStorage.getInstance().getReference("images/");
-//        foodChooseList=new ArrayList<>();
-        layoutManager=new LinearLayoutManager(context);
-        wantsToEatRecyclerView.setHasFixedSize(true);
-        wantsToEatRecyclerView.setLayoutManager(layoutManager);
-
-
         loadWantToEatImages(mealTime);
 
         PullRefreshLayout wantsRefreshLayout=view.findViewById(R.id.wantsRefreshLayout);
@@ -139,6 +125,51 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
                 showNewAlertDialog();
             }
         });
+
+        expandableListView=view.findViewById(R.id.wantsToEatExpandableListView);
+        expandableFoodListAdapter=new ExpandableFoodListAdapter(context,categoryNameList,listFoodChild);
+        expandableListView.setAdapter(expandableFoodListAdapter);
+        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView expandableListView, View view, int groupIndex, int childIndex, long l) {
+                Toast.makeText(context, "group "+groupIndex+"and child :"+childIndex, Toast.LENGTH_SHORT).show();
+                CheckedTextView checkedTextView=view.findViewById(R.id.lblListItem);
+                checkedTextView.toggle();
+                if(checkedTextView.isChecked()){
+                    Toast.makeText(context, "checked", Toast.LENGTH_SHORT).show();
+                    checkedTextView.setCheckMarkDrawable(R.drawable.ic_check_box_outline_blank_black_24dp);
+                }
+                else{
+                    checkedTextView.setCheckMarkDrawable(R.drawable.ic_check_box_black_24dp);
+                    Toast.makeText(context, "unchecked", Toast.LENGTH_SHORT).show();
+                }
+
+                return false;
+            }
+        });
+
+
+
+        //        wantsToEatRecyclerView=view.findViewById(R.id.wantsToEatRecyclerView);
+//        wantsToEatCategoryListView=view.findViewById(R.id.wantsToEatListView);
+//        adapter=new ArrayAdapter(context,android.R.layout.simple_list_item_1,categoryNameList);
+//        wantsToEatCategoryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//
+//            }
+//        });
+
+
+
+//        foodChooseList=new ArrayList<>();
+//        layoutManager=new LinearLayoutManager(context);
+//        wantsToEatRecyclerView.setHasFixedSize(true);
+//        wantsToEatRecyclerView.setLayoutManager(layoutManager);
+
+
+
+
         return view;
     }
 
@@ -395,9 +426,41 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 
 
     public void loadWantToEatImages(String mealTime) {
+        categoryNameList.clear();
+        maxLimitOfCategory.clear();
+        listFoodChild.clear();
+        wantsToEatDatabaseReference.child(mealTime).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Category category=dataSnapshot.getValue(Category.class);
+                categoryNameList.add(" "+category.getCategoryName()+"   (Limit :"+category.getMaxSelect()+")");
+                maxLimitOfCategory.add(category.getMaxSelect());
+                listFoodChild.put(" "+category.getCategoryName()+"   (Limit :"+category.getMaxSelect()+")",category.getFoodArrayList());
+                expandableFoodListAdapter.notifyDataSetChanged();
 
+            }
 
-        DatabaseReference databaseReference=wantsToEatDatabaseReference.child(mealTime);
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 //        wantsToEatDatabaseReference.child("maxLimit").addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -412,30 +475,106 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 //            }
 //        });
 
-        wantsToEatFoodAdapter=new FirebaseRecyclerAdapter<Category, WantsToEatCategoryViewHolder>(Category.class,
-                R.layout.wants_to_eat_category_raw_layout,WantsToEatCategoryViewHolder.class,databaseReference) {
-            @Override
-            protected void populateViewHolder(WantsToEatCategoryViewHolder wantsToEatCategoryViewHolder, final Category category, int i) {
-//                wantsToEatViewHolder.wantsFoodNameTextView.setText(foodMenu.getFoodName());
-//                wantsToEatViewHolder.wantsFoodDescriptionTextView.setText(foodMenu.getFoodDescription());
-//                Picasso.with(context).load(foodMenu.getImageUrl()).into(wantsToEatViewHolder.wantsFoodImageView);
-                  wantsToEatCategoryViewHolder.wantsToEatCategoryTextView.setText(category.getCategoryName());
-                  wantsToEatCategoryViewHolder.wantsToEatCategoryTextView.setOnClickListener(new View.OnClickListener() {
-                      @Override
-                      public void onClick(View view) {
-                          Toast.makeText(context, ""+category.getCategoryName()+" tapped", Toast.LENGTH_SHORT).show();
-                          //show the available option for category
-
-
-
-                      }
-                  });
-
-            }
-        };
-        wantsToEatRecyclerView.setAdapter(wantsToEatFoodAdapter);
+//        wantsToEatFoodAdapter=new FirebaseRecyclerAdapter<Category, WantsToEatCategoryViewHolder>(Category.class,
+//                R.layout.wants_to_eat_category_raw_layout,WantsToEatCategoryViewHolder.class,databaseReference) {
+//            @Override
+//            protected void populateViewHolder(WantsToEatCategoryViewHolder wantsToEatCategoryViewHolder, final Category category, int i) {
+////                wantsToEatViewHolder.wantsFoodNameTextView.setText(foodMenu.getFoodName());
+////                wantsToEatViewHolder.wantsFoodDescriptionTextView.setText(foodMenu.getFoodDescription());
+////                Picasso.with(context).load(foodMenu.getImageUrl()).into(wantsToEatViewHolder.wantsFoodImageView);
+//                  wantsToEatCategoryViewHolder.wantsToEatCategoryTextView.setText(category.getCategoryName());
+//                  WantsToEatCustomAdapterAfterCategorySelected wantsToEatCustomAdapterAfterCategorySelected=new WantsToEatCustomAdapterAfterCategorySelected(context,category.getFoodArrayList(),category.getMaxSelect());
+//                  wantsToEatCategoryViewHolder.foodListView.setAdapter(wantsToEatCustomAdapterAfterCategorySelected);
+//                  wantsToEatCategoryViewHolder.foodListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                      @Override
+//                      public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                          if(view.getId()==R.id.checkBox1){
+//                              Toast.makeText(context, "checked", Toast.LENGTH_SHORT).show();
+//                          }
+//                      }
+//                  });
+//
+//
+//            }
+//        };
+//
+//        wantsToEatRecyclerView.setAdapter(wantsToEatFoodAdapter);
         //
     }
+
+//    private void showChoices(Category category) {
+//
+//
+//         AlertDialog.Builder alertDialog=new AlertDialog.Builder(context);
+//        alertDialog.setTitle("Select foods");
+//        alertDialog.setIcon(R.drawable.thali_graphic);
+//        alertDialog.setCancelable(false);
+//
+//        LayoutInflater layoutInflater=getLayoutInflater();
+//
+//        //Since i am using same layout for alertDialog .Hence the id will also same
+//        View view=layoutInflater.inflate(R.layout.wants_to_eat_layout_listview,null,false);
+//        ListView listView=view.findViewById(R.id.wantsToEatListView);
+//        WantsToEatCustomAdapterAfterCategorySelected wantsToEatCustomAdapterAfterCategorySelected=new WantsToEatCustomAdapterAfterCategorySelected(context,category.getFoodArrayList(),category.getMaxSelect());
+//        listView.setAdapter(wantsToEatCustomAdapterAfterCategorySelected);
+//
+//        alertDialog.setView(view);
+//
+//        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                //Update the data
+//                //This below will set the new data on that key
+//                if (isAnyEmpty())
+//                    Toast.makeText(context, "Please fill the required field first", Toast.LENGTH_SHORT).show();
+//
+//                else {
+////                    if (selectedCategory == 1) {
+////                        if (!categoryNameEditText.getText().toString().trim().equals("")) {
+//                    Category category=new Category(selectedFoodArrayList,categoryNameEditText.getText().toString(),Integer.parseInt(maxLimitEditText.getText().toString()));
+//                    wantsToEatDatabaseReference.child(getResources().getStringArray(R.array.foodType)[selectedTime]).push().setValue(category);
+////                        } else
+////                            Toast.makeText(context, "Please enter the category first", Toast.LENGTH_SHORT).show();
+////
+////                    } else {
+////                        wantsToEatDatabaseReference.child("Category").child(categoryList.get(selectedCategory)).push().setValue(foodArrayList.get(selectedFood));
+////                    }
+//
+////                    if (defaultCheckBox.isChecked());
+////                    isDefault = defaultCheckBox.isChecked();
+////                    Log.d("checkedfdfdfdsf", "************" + defaultCheckBox.isChecked());
+//
+////                    addFoodForAllUser(foodArrayList.get(selectedFood)); //whenever admin upload  a new food add this food for all user if it contain isDefalut=true
+//
+//                    Snackbar.make(wantsToEatCoordinatorLayout, categoryNameEditText.getText().toString() + " Added", Snackbar.LENGTH_LONG).show();
+////                    wantsToEatFoodAdapter.notifyDataSetChanged();
+//
+//                    dialogInterface.dismiss();
+//
+//                }
+//                selectedFoodArrayList.clear();
+//
+//            }
+//        });
+//        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                dialogInterface.dismiss();
+//            }
+//        });
+//        alertDialog.show();
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//    }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
