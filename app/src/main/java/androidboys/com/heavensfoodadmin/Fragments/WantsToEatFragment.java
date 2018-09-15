@@ -1,12 +1,8 @@
 package androidboys.com.heavensfoodadmin.Fragments;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,9 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -25,8 +18,6 @@ import android.widget.Toast;
 
 import com.baoyz.widget.PullRefreshLayout;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.ChildEventListener;
@@ -34,26 +25,19 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Common.UsersUid;
 import androidboys.com.heavensfoodadmin.Models.Category;
 import androidboys.com.heavensfoodadmin.Models.Food;
-import androidboys.com.heavensfoodadmin.Models.FoodMenu;
 import androidboys.com.heavensfoodadmin.Models.LikedFood;
 import androidboys.com.heavensfoodadmin.Models.SpecialFood;
-import androidboys.com.heavensfoodadmin.Models.User;
 import androidboys.com.heavensfoodadmin.R;
-import androidboys.com.heavensfoodadmin.ViewHolders.WantsToEatViewHolder;
+import androidboys.com.heavensfoodadmin.ViewHolders.WantsToEatCategoryViewHolder;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -65,18 +49,20 @@ import androidx.recyclerview.widget.RecyclerView;
 public class WantsToEatFragment extends Fragment implements View.OnCreateContextMenuListener {
 
     private RecyclerView wantsToEatRecyclerView;
+//    private ListView wantsToEatCategoryListView;
     private RecyclerView.LayoutManager layoutManager;
     private Context context;
-    private FirebaseRecyclerAdapter<FoodMenu, WantsToEatViewHolder> wantsToEatFoodAdapter;
+    private FirebaseRecyclerAdapter<Category, WantsToEatCategoryViewHolder> wantsToEatFoodAdapter;
     private DatabaseReference wantsToEatDatabaseReference;
 //    private int maxLimit;
     private ArrayList<Food> foodArrayList=new ArrayList<>();
     private ArrayList<Food> selectedFoodArrayList=new ArrayList<>();
     private ArrayList<String> foodNamesArrayList=new ArrayList<>();
     private ArrayList<String> foodItemUid=new ArrayList<>();
-//    private ArrayList<String> categoryList=new ArrayList<>();
+    private ArrayList<Category> categoryList=new ArrayList<>();
+    private ArrayList<String> categoryNameList=new ArrayList<>();
 
-    private int selectedCategory;
+//    private int selectedCategory;
 //    private Button wantAlertSelectButton;
 //    private Button wantAlertUploadButton;
     private EditText categoryNameEditText;
@@ -93,7 +79,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     private CoordinatorLayout wantsToEatCoordinatorLayout;
     private FloatingActionButton wantsFloatingActionButton;
     private String mealTime;
-
+    private ArrayAdapter adapter;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -104,13 +90,25 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 
 //        categoryList.add("Select Category");
 //        categoryList.add("Create New Category");
-//        fetchCategory();
+//        fetchCategory("BreakFast"); // load breakfast category first time
 
         fetchAllFoodItems();
 
+        mealTime="BreakFast";
 
 
         wantsToEatRecyclerView=view.findViewById(R.id.wantsToEatRecyclerView);
+//        wantsToEatCategoryListView=view.findViewById(R.id.wantsToEatListView);
+//        adapter=new ArrayAdapter(context,android.R.layout.simple_list_item_1,categoryNameList);
+//        wantsToEatCategoryListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//
+//            }
+//        });
+
+
+
         wantsToEatDatabaseReference=FirebaseDatabase.getInstance().getReference("TodayMenu");
         wantsToEatCoordinatorLayout=view.findViewById(R.id.wantsToEatCoordinatorLayout);
         wantsFloatingActionButton=view.findViewById(R.id.wantsFloatingActionButton);
@@ -121,18 +119,18 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
         wantsToEatRecyclerView.setLayoutManager(layoutManager);
 
 
-        loadWantToEatImages();
+        loadWantToEatImages(mealTime);
 
         PullRefreshLayout wantsRefreshLayout=view.findViewById(R.id.wantsRefreshLayout);
         wantsRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadWantToEatImages();
+                loadWantToEatImages(mealTime);
             }
         });
         wantsRefreshLayout.setColor(R.color.colorPrimary);//set the color of refresh circle.
 
-        //wantsSubmitButton.setButtonColor(getActivity().getResources().getColor(R.color.colorPrimary));
+//        wantsSubmitButton.setButtonColor(getActivity().getResources().getColor(R.color.colorPrimary));
 
         wantsFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,11 +141,17 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
         return view;
     }
 
-//    private void fetchCategory() {
-//    FirebaseDatabase.getInstance().getReference("TodayMenu").child("Category").addChildEventListener(new ChildEventListener() {
+//    private void fetchCategory(String mealTime) {
+//        categoryList.clear();
+//        categoryNameList.clear();
+//    wantsToEatDatabaseReference.child(mealTime).addChildEventListener(new ChildEventListener() {
 //        @Override
 //        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//            categoryList.add(dataSnapshot.getKey());
+//            Category category=dataSnapshot.getValue(Category.class);
+//            categoryList.add(category);
+//            categoryNameList.add(category.getCategoryName());
+//            if(adapter!=null)
+//                adapter.notifyDataSetChanged();
 //        }
 //
 //        @Override
@@ -170,7 +174,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 //
 //        }
 //    });
-
+//
 //    }
 
     private void fetchAllFoodItems(){
@@ -333,7 +337,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 //                    if (selectedCategory == 1) {
 //                        if (!categoryNameEditText.getText().toString().trim().equals("")) {
                     Category category=new Category(selectedFoodArrayList,categoryNameEditText.getText().toString(),Integer.parseInt(maxLimitEditText.getText().toString()));
-                            wantsToEatDatabaseReference.child(getResources().getStringArray(R.array.foodType)[selectedTime]).setValue(category);
+                            wantsToEatDatabaseReference.child(getResources().getStringArray(R.array.foodType)[selectedTime]).push().setValue(category);
 //                        } else
 //                            Toast.makeText(context, "Please enter the category first", Toast.LENGTH_SHORT).show();
 //
@@ -348,7 +352,8 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 //                    addFoodForAllUser(foodArrayList.get(selectedFood)); //whenever admin upload  a new food add this food for all user if it contain isDefalut=true
 
                     Snackbar.make(wantsToEatCoordinatorLayout, categoryNameEditText.getText().toString() + " Added", Snackbar.LENGTH_LONG).show();
-                    wantsToEatFoodAdapter.notifyDataSetChanged();
+//                    wantsToEatFoodAdapter.notifyDataSetChanged();
+
                     dialogInterface.dismiss();
 
                 }
@@ -383,10 +388,10 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     }
 
 
-    public void loadWantToEatImages() {
+    public void loadWantToEatImages(String mealTime) {
 
 
-        DatabaseReference databaseReference=wantsToEatDatabaseReference.child("FoodImages");
+        DatabaseReference databaseReference=wantsToEatDatabaseReference.child(mealTime);
 //        wantsToEatDatabaseReference.child("maxLimit").addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override
 //            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -401,13 +406,25 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 //            }
 //        });
 
-        wantsToEatFoodAdapter=new FirebaseRecyclerAdapter<FoodMenu, WantsToEatViewHolder>(FoodMenu.class,
-                R.layout.wants_to_eat_raw_layout,WantsToEatViewHolder.class,databaseReference) {
+        wantsToEatFoodAdapter=new FirebaseRecyclerAdapter<Category, WantsToEatCategoryViewHolder>(Category.class,
+                R.layout.wants_to_eat_category_raw_layout,WantsToEatCategoryViewHolder.class,databaseReference) {
             @Override
-            protected void populateViewHolder(WantsToEatViewHolder wantsToEatViewHolder, final FoodMenu foodMenu, int i) {
-                wantsToEatViewHolder.wantsFoodNameTextView.setText(foodMenu.getFoodName());
-                wantsToEatViewHolder.wantsFoodDescriptionTextView.setText(foodMenu.getFoodDescription());
-                Picasso.with(context).load(foodMenu.getImageUrl()).into(wantsToEatViewHolder.wantsFoodImageView);
+            protected void populateViewHolder(WantsToEatCategoryViewHolder wantsToEatCategoryViewHolder, final Category category, int i) {
+//                wantsToEatViewHolder.wantsFoodNameTextView.setText(foodMenu.getFoodName());
+//                wantsToEatViewHolder.wantsFoodDescriptionTextView.setText(foodMenu.getFoodDescription());
+//                Picasso.with(context).load(foodMenu.getImageUrl()).into(wantsToEatViewHolder.wantsFoodImageView);
+                  wantsToEatCategoryViewHolder.wantsToEatCategoryTextView.setText(category.getCategoryName());
+                  wantsToEatCategoryViewHolder.wantsToEatCategoryTextView.setOnClickListener(new View.OnClickListener() {
+                      @Override
+                      public void onClick(View view) {
+                          Toast.makeText(context, ""+category.getCategoryName()+" tapped", Toast.LENGTH_SHORT).show();
+                          //show the available option for category
+
+
+
+                      }
+                  });
+
             }
         };
         wantsToEatRecyclerView.setAdapter(wantsToEatFoodAdapter);

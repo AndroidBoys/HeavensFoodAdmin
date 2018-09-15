@@ -6,7 +6,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
+    
+    
     
     <com.baoyz.widget.PullRefreshLayout
         android:id="@+id/wantsRefreshLayout"
@@ -14,8 +15,8 @@
         android:layout_height="match_parent">
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/wantsToEatRecyclerView"
+        <ListView
+            android:id="@+id/wantsToEatListView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
