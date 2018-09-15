@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -12,8 +11,8 @@ import android.widget.Toast;
 import androidboys.com.heavensfoodadmin.Fragments.CallForAssistanceFragment;
 import androidboys.com.heavensfoodadmin.Fragments.FaqFragment;
 import androidboys.com.heavensfoodadmin.Fragments.OurPlansFragment;
+import androidboys.com.heavensfoodadmin.Fragments.WantsToEatFoodAndOrdersFragment;
 import androidboys.com.heavensfoodadmin.Fragments.WantsToEatFragment;
-import androidboys.com.heavensfoodadmin.Fragments.WantsToUserListFragment;
 import androidboys.com.heavensfoodadmin.Fragments.WeeklyMenuFragment;
 import androidboys.com.heavensfoodadmin.Fragments.WeeklyMenuNestedFragment;
 import androidboys.com.heavensfoodadmin.Fragments.WhyHeavensFoodFragment;
@@ -70,7 +69,11 @@ public class DescriptionActivity extends AppCompatActivity {
                 fragmentInForeground = fragment5;
                 addDifferentFragment(fragment5);
                 break;
-
+            case R.id.nav_wantsToEat:
+                WantsToEatFoodAndOrdersFragment fragment6=WantsToEatFoodAndOrdersFragment.newInstance();
+                fragmentInForeground=fragment6;
+                addDifferentFragment(fragment6);
+                break;
         }
 
     }

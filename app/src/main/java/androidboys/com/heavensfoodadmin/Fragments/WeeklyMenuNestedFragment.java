@@ -413,7 +413,7 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
 
 //
 
-//        weeklyFoodUploadButton.setOnClickListener(new View.OnClickListener() {
+//        weeklyFoodUploadButton.setOnOurCustomClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
 ////                uploadImage(foodMenu);
@@ -521,13 +521,13 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
 //        weeklyFoodNameEditText.setText(foodMenu.getFoodName());
 //
 //
-//        weeklyFoodSelectButton.setOnClickListener(new View.OnClickListener() {
+//        weeklyFoodSelectButton.setOnOurCustomClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
 //                chooseImage();
 //            }
 //        });
-//        weeklyFoodUploadButton.setOnClickListener(new View.OnClickListener() {
+//        weeklyFoodUploadButton.setOnOurCustomClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
 //                uploadImage(foodMenu);

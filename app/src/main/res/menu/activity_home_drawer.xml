@@ -40,7 +40,7 @@
     <item android:title="Communicate">
         <menu>
             <item
-                android:id="@+id/nav_contectUs"
+                android:id="@+id/nav_contactUs"
                 android:icon="@drawable/contactus"
                 android:title="Contact Us"/>
 

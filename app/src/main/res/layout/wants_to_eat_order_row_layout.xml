@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:layout_margin="6dp"
+        app:cardElevation="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:weightSum="5"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_marginTop="8dp"
+                android:layout_weight="4.2"
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_marginBottom="4dp"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/usernameTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Arvind"
+                    android:layout_marginStart="10dp"
+                    android:fontFamily="@font/josefin_bold"
+                    android:textStyle="bold"
+                    android:textSize="28sp"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+
+
+                <TextView
+                    android:id="@+id/userNumberTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="7895922259"
+                    android:textSize="20sp"
+                    android:layout_marginStart="10dp"
+                    android:fontFamily="@font/josefin_bold"/>
+
+
+                <TextView
+                    android:id="@+id/userAddressTextView"
+                    android:textSize="20sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Pauri Garhwal srinagar"
+                    android:layout_marginStart="10dp"
+                    android:fontFamily="@font/josefin_bold"/>
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/wantsToEatCheckImageView"
+                android:layout_weight="0.8"
+                android:layout_gravity="center"
+                android:visibility="invisible"
+                android:src="@drawable/check_image"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
