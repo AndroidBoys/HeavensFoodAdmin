@@ -9,5 +9,7 @@ public class Common {
     public static final int R_ID_EDIT = 1;
     public static final int R_ID_DELETE = 2;
     public static final int  LOCATION_PERMISSION_REQUEST_CODE=99;
+    public static String PACKED="Packed";
+    public static String DELIVERED="Delivered";
 
 }

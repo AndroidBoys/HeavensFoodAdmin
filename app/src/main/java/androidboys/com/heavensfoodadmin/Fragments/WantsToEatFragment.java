@@ -492,13 +492,13 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 //        wantAlertDescriptionEditText.setText(foodMenu.getFoodDescription());
 //
 //
-//        wantAlertSelectButton.setOnClickListener(new View.OnClickListener() {
+//        wantAlertSelectButton.setOnOurCustomClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
 //                chooseImage();
 //            }
 //        });
-//        wantAlertUploadButton.setOnClickListener(new View.OnClickListener() {
+//        wantAlertUploadButton.setOnOurCustomClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
 //                 uploadImage(foodMenu);

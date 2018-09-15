@@ -69,7 +69,7 @@ public class HomeActivity extends AppCompatActivity
         checkingUsersDueDate();
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
+//        fab.setOnOurCustomClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
 //                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -140,7 +140,7 @@ public class HomeActivity extends AppCompatActivity
 
 
 
-                    //checking user absence date and the mark it null
+                    //checking user absence date and then mark it null
 
                     if (user.getAbsence() != null) {
                         Absence absence = user.getAbsence();
@@ -153,7 +153,6 @@ public class HomeActivity extends AppCompatActivity
                             databaseReference.child(dataSnapshot.getKey()).setValue(user);
                         }
                     }
-
                 }
             }
 
@@ -273,7 +272,7 @@ public class HomeActivity extends AppCompatActivity
 
                 addDifferentFragment(SpecialOrderUsersListFragment.newInstance());
             }
-            else if (id == R.id.nav_contectUs) {
+            else if (id == R.id.nav_contactUs) {
             }
             else if (id == R.id.nav_logout) {
                 logOutDialog();
@@ -282,7 +281,7 @@ public class HomeActivity extends AppCompatActivity
                 addDifferentFragment(UserListFragment.newInstance());
             }else if(id==R.id.nav_wantsToEat){
                 Intent intent = new Intent(HomeActivity.this, DescriptionActivity.class);
-                intent.putExtra("ID", R.id.nav_wantsToEat);//since we have to show the weeklyMenu on the screen which will be host by the description activity
+                intent.putExtra("ID", R.id.nav_wantsToEat);//since we have to show the wantsToEat food on the screen which will be host by the description activity
                 startActivity(intent);
 
             }else if (id == R.id.nav_rate) {
@@ -290,7 +289,6 @@ public class HomeActivity extends AppCompatActivity
                 addDifferentFragment(SendNotificationFragment.newInstance());
                 
             }else if (id == R.id.nav_items) {
-
                 addDifferentFragment(FoodItemsFragment.newInstance());
             }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

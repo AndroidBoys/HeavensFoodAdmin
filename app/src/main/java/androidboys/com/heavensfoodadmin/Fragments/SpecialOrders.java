@@ -170,13 +170,13 @@ public class SpecialOrders extends Fragment implements View.OnCreateContextMenuL
 //        specialFoodNameEditText=view.findViewById(R.id.alertFoodNameEditText);
 
 
-//        specialFoodSelectButton.setOnClickListener(new View.OnClickListener() {
+//        specialFoodSelectButton.setOnOurCustomClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
 //                chooseImage();
 //            }
 //        });
-//        specialFoodUploadButton.setOnClickListener(new View.OnClickListener() {
+//        specialFoodUploadButton.setOnOurCustomClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
 //                uploadImage(specialFood);
@@ -313,13 +313,13 @@ public class SpecialOrders extends Fragment implements View.OnCreateContextMenuL
 //        specialFoodDescriptionEditText.setText(specialFood.getFoodDescription());
 //
 //
-//        specialFoodSelectButton.setOnClickListener(new View.OnClickListener() {
+//        specialFoodSelectButton.setOnOurCustomClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
 //                chooseImage();
 //            }
 //        });
-//        specialFoodUploadButton.setOnClickListener(new View.OnClickListener() {
+//        specialFoodUploadButton.setOnOurCustomClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
 //                uploadImage(specialFood);

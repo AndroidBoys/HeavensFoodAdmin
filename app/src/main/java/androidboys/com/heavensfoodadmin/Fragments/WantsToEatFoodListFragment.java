@@ -33,7 +33,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class WantsToUserListFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class WantsToEatFoodListFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private ListView wantsToEatListView;
     private Context context;
@@ -188,10 +188,10 @@ public class WantsToUserListFragment extends Fragment implements AdapterView.OnI
         nestedRecyclerView.setAdapter(firebaseSpecialUserAdapter);
     }
 
-    public static WantsToUserListFragment newInstance() {
+    public static WantsToEatFoodListFragment newInstance() {
 
         Bundle args = new Bundle();
-        WantsToUserListFragment fragment = new WantsToUserListFragment();
+        WantsToEatFoodListFragment fragment = new WantsToEatFoodListFragment();
         fragment.setArguments(args);
         return fragment;
     }
