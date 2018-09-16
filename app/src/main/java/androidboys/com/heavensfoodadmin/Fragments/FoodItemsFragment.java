@@ -394,7 +394,7 @@ public class FoodItemsFragment extends Fragment {
     }
 
     private void updateValueAtKey(String key, String updatedImageUri) {
-        Food food=new Food(updatedImageUri,foodNameEditText.getText().toString(),foodDescriptionEditText.getText().toString());
+        Food food=new Food(updatedImageUri,foodNameEditText.getText().toString(),foodDescriptionEditText.getText().toString(),false);
 
         FirebaseDatabase.getInstance().getReference("FoodItems").child(key).setValue(food).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
