@@ -5,15 +5,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
@@ -24,11 +23,13 @@ import com.baoyz.widget.PullRefreshLayout;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -36,20 +37,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import androidboys.com.heavensfoodadmin.Adapters.ExpandableFoodListAdapter;
-import androidboys.com.heavensfoodadmin.Adapters.WantsToEatCustomAdapterAfterCategorySelected;
 import androidboys.com.heavensfoodadmin.Common.Common;
-import androidboys.com.heavensfoodadmin.Common.UsersUid;
+import androidboys.com.heavensfoodadmin.Common.UserList;
 import androidboys.com.heavensfoodadmin.Models.Category;
 import androidboys.com.heavensfoodadmin.Models.Food;
-import androidboys.com.heavensfoodadmin.Models.LikedFood;
+import androidboys.com.heavensfoodadmin.Models.Order;
 import androidboys.com.heavensfoodadmin.Models.SpecialFood;
+import androidboys.com.heavensfoodadmin.Models.User;
 import androidboys.com.heavensfoodadmin.R;
 import androidboys.com.heavensfoodadmin.ViewHolders.WantsToEatCategoryViewHolder;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -72,7 +72,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     private ArrayList<Integer> maxLimitOfCategory=new ArrayList<>();
     private   ExpandableFoodListAdapter expandableFoodListAdapter;
 //    private int selectedCategory;
-//    private Button wantAlertSelectButton;
+    private Button notificationButton;
 //    private Button wantAlertUploadButton;
     private EditText categoryNameEditText;
     private Spinner timeSpinner;
@@ -90,6 +90,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     private FloatingActionButton wantsFloatingActionButton;
     private String mealTime="BreakFast";
     private ArrayAdapter adapter;
+    private ArrayList<Food> orderedFoodList[];
 
 
 
@@ -103,12 +104,22 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 
         fetchAllFoodItems();
 
-
         wantsToEatDatabaseReference=FirebaseDatabase.getInstance().getReference("TodayMenu");
         wantsToEatCoordinatorLayout=view.findViewById(R.id.wantsToEatCoordinatorLayout);
+        notificationButton=view.findViewById(R.id.notificationButton);
         wantsFloatingActionButton=view.findViewById(R.id.wantsFloatingActionButton);
         storageReference=FirebaseStorage.getInstance().getReference("images/");
         loadWantToEatImages(mealTime);
+
+
+        notificationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //create notification
+            }
+        });
+
+
 
         PullRefreshLayout wantsRefreshLayout=view.findViewById(R.id.wantsRefreshLayout);
         wantsRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
@@ -131,25 +142,36 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
         expandableListView=view.findViewById(R.id.wantsToEatExpandableListView);
         expandableFoodListAdapter=new ExpandableFoodListAdapter(context,categoryNameList,listFoodChild);
         expandableListView.setAdapter(expandableFoodListAdapter);
+//        expandableListView.setChoiceMode(ExpandableListView.CHOICE_MODE_MULTIPLE);
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view, int groupIndex, int childIndex, long l) {
                 Toast.makeText(context, "group "+groupIndex+"and child :"+childIndex, Toast.LENGTH_SHORT).show();
-                CheckedTextView checkedTextView=view.findViewById(R.id.lblListItem);
-                checkedTextView.toggle();
+                CheckBox checkedTextView=view.findViewById(R.id.checkbox3);
+
+                //since bydefault isChecked==false
                 if(checkedTextView.isChecked()){
-                    Toast.makeText(context, "checked", Toast.LENGTH_SHORT).show();
-                    checkedTextView.setCheckMarkDrawable(R.drawable.ic_check_box_outline_blank_black_24dp);
+                    checkedTextView.toggle();//it will toggle the checkbox and onCheckChangeListener is called inside the expandable listview custom adapter
+//                    Toast.makeText(context, "unchecked", Toast.LENGTH_SHORT).show();
+//                    checkedTextView.setCheckMarkDrawable(R.drawable.ic_check_box_outline_blank_black_24dp);
+                    orderedFoodList[groupIndex].remove((listFoodChild.get(categoryNameList.get(groupIndex))).get(childIndex));
                 }
                 else{
-                    checkedTextView.setCheckMarkDrawable(R.drawable.ic_check_box_black_24dp);
-                    Toast.makeText(context, "unchecked", Toast.LENGTH_SHORT).show();
+                    Log.d("gruoupinandorderlength","g "+groupIndex+" len "+orderedFoodList.length);
+                    if(orderedFoodList[groupIndex].size()<maxLimitOfCategory.get(groupIndex)) {
+                        checkedTextView.toggle();
+//                        checkedTextView.setCheckMarkDrawable(R.drawable.ic_check_box_black_24dp);
+//                        Toast.makeText(context, "checked", Toast.LENGTH_SHORT).show();
+                        orderedFoodList[groupIndex].add((listFoodChild.get(categoryNameList.get(groupIndex))).get(childIndex));
+                    }
+                    else{
+                        Toast.makeText(context, "You have reached to the limit", Toast.LENGTH_SHORT).show();
+                    }
                 }
 
                 return false;
             }
         });
-
 
 
         //        wantsToEatRecyclerView=view.findViewById(R.id.wantsToEatRecyclerView);
@@ -249,7 +271,8 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     FirebaseDatabase.getInstance().getReference("Users").addChildEventListener(new ChildEventListener() {
         @Override
         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            UsersUid.usersUid.add(dataSnapshot.getKey());
+            UserList.usersUid.add(dataSnapshot.getKey());
+            UserList.userList.add(dataSnapshot.getValue(User.class));
             Log.d("key",dataSnapshot.getKey());
         }
 
@@ -307,13 +330,13 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
         selectedItemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                if(selectedFoodArrayList.get(position).isDefault){
-                    selectedFoodArrayList.get(position).setDefault(false);
+                if(selectedFoodArrayList.get(position).byDefault){
+                    selectedFoodArrayList.get(position).setByDefault(false);
 //                    maxLimit-=1;
 //                    Log.d("maxLimit=",""+maxLimit);
                 }
                 else{
-                    selectedFoodArrayList.get(position).setDefault(true);
+                    selectedFoodArrayList.get(position).setByDefault(true);
 //                    maxLimit+=1;
 //                    Log.d("maxLimit=",""+maxLimit);
                 }
@@ -342,7 +365,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 
             }
         });
-        ArrayAdapter<String> timeArrayAdapter=new ArrayAdapter(context,android.R.layout.simple_spinner_dropdown_item,getResources().getStringArray(R.array.foodType));
+//        ArrayAdapter<String> timeArrayAdapter=new ArrayAdapter(context,android.R.layout.simple_spinner_dropdown_item,getResources().getStringArray(R.array.foodType));
 //        timeSpinner.setAdapter(timeArrayAdapter);
 //        timeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 //            @Override
@@ -417,15 +440,18 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 //                    isDefault = defaultCheckBox.isChecked();
 //                    Log.d("checkedfdfdfdsf", "************" + defaultCheckBox.isChecked());
 
-//                    addFoodForAllUser(foodArrayList.get(selectedFood)); //whenever admin upload  a new food add this food for all user if it contain isDefalut=true
+                    addFoodForAllUser(); //whenever admin upload  a new food add this food for all user if it contain isDefalut=true
 
                     Snackbar.make(wantsToEatCoordinatorLayout, categoryNameEditText.getText().toString() + " Added", Snackbar.LENGTH_LONG).show();
 //                    wantsToEatFoodAdapter.notifyDataSetChanged();
 
                     dialogInterface.dismiss();
 
+
                 }
+
                 selectedFoodArrayList.clear();
+                selectedFoodNameList.clear();
 
             }
         });
@@ -434,6 +460,9 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
             public void onClick(DialogInterface dialogInterface, int i) {
 
                 dialogInterface.dismiss();
+
+                selectedFoodArrayList.clear();
+                selectedFoodNameList.clear();
             }
         });
         alertDialog.show();
@@ -442,7 +471,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     private int maxLimit() {
         int count=0;
         for(int i=0;i<selectedFoodArrayList.size();i++){
-            if(selectedFoodArrayList.get(i).isDefault)
+            if(selectedFoodArrayList.get(i).byDefault)
                 count+=1;
         }
         return count;
@@ -456,11 +485,24 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 
     }
 
-    private void addFoodForAllUser(Food food) {
-        if (isDefault) {
-            LikedFood likedFood = new LikedFood(food.getFoodName(), isDefault);
-            for(int i = 0; i<UsersUid.usersUid.size(); i++)
-                wantsToEatDatabaseReference.child("LikedFood").child(likedFood.getFoodName()).push().setValue(UsersUid.usersUid.get(i));
+    private void addFoodForAllUser() {
+        ArrayList<Food> finalOrderedFoodList=new ArrayList<>();
+
+        for (int j = 0; j < selectedFoodArrayList.size(); j++) {
+            if(selectedFoodArrayList.get(j).byDefault)
+                finalOrderedFoodList.add(selectedFoodArrayList.get(j));
+        }
+
+        //default order for all users
+        for(int i = 0; i<UserList.userList.size(); i++){
+            Order order=new Order(UserList.userList.get(i),0,finalOrderedFoodList);
+            FirebaseDatabase.getInstance().getReference("Orders").child(UserList.usersUid.get(i)).setValue(order);
+        }
+
+        //placing user inside favourite food
+        for(int j=0;j<finalOrderedFoodList.size();j++){
+            for (int i = 0; i < UserList.usersUid.size(); i++)
+                FirebaseDatabase.getInstance().getReference("FavouriteFood").child(finalOrderedFoodList.get(j).getFoodName()).child(UserList.usersUid.get(i)).setValue(UserList.usersUid.get(i));
         }
     }
 
@@ -472,20 +514,22 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
         listFoodChild.clear();
         categoryNameList.clear();
         listFoodChild.clear();
-        if(expandableFoodListAdapter!=null)
-             expandableFoodListAdapter.notifyDataSetChanged();
-
-
 
         wantsToEatDatabaseReference.child(mealTime).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Category category=dataSnapshot.getValue(Category.class);
-                categoryNameList.add(" "+category.getCategoryName()+"   (Limit :"+category.getMaxSelect()+")");
-                maxLimitOfCategory.add(category.getMaxSelect());
-                listFoodChild.put(" "+category.getCategoryName()+"   (Limit :"+category.getMaxSelect()+")",category.getFoodArrayList());
-                expandableFoodListAdapter.notifyDataSetChanged();
 
+
+                    Log.d("listor", "" + categoryNameList.size());
+
+
+                    Log.d("listor", category.getCategoryName());
+
+                    categoryNameList.add(" " + category.getCategoryName() + "   (Limit :" + category.getMaxSelect() + ")");
+                    maxLimitOfCategory.add(category.getMaxSelect());
+                    listFoodChild.put(" " + category.getCategoryName() + "   (Limit :" + category.getMaxSelect() + ")", category.getFoodArrayList());
+                    expandableFoodListAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -508,6 +552,31 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 
             }
         });
+
+            wantsToEatDatabaseReference.child(mealTime).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    orderedFoodList=new ArrayList[(int) dataSnapshot.getChildrenCount()];
+                    Log.d("childerencount",""+dataSnapshot.getChildrenCount());
+                    Log.d("orderfoodlistsize",""+orderedFoodList.length);
+                    for(int i=0;i<orderedFoodList.length;i++)
+                        orderedFoodList[i]=new ArrayList<>();
+                    Log.d("listor",""+categoryNameList.size());
+                    expandableFoodListAdapter.notifyDataSetChanged();
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+    }
+
+
+
+
 
 //        wantsToEatDatabaseReference.child("maxLimit").addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override
@@ -548,7 +617,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 //
 //        wantsToEatRecyclerView.setAdapter(wantsToEatFoodAdapter);
         //
-    }
+
 
 //    private void showChoices(Category category) {
 //
