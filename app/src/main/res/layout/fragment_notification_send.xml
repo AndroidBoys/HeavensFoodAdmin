@@ -4,7 +4,25 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:gravity="center">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/meal_time_spinner">
+        </Spinner>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:editable="false"
+            android:id="@+id/deadline_edit_text"/>
 
+
+    </LinearLayout>
     <EditText
         android:id="@+id/notification_msg_edittext"
         android:layout_width="match_parent"
