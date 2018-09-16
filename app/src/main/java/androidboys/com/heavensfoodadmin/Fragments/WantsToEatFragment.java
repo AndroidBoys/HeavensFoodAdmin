@@ -70,14 +70,14 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     private ArrayList<String> categoryNameList=new ArrayList<>();
     private HashMap<String,ArrayList<Food>> listFoodChild=new HashMap<>();
     private ArrayList<Integer> maxLimitOfCategory=new ArrayList<>();
-private   ExpandableFoodListAdapter expandableFoodListAdapter;
+    private   ExpandableFoodListAdapter expandableFoodListAdapter;
 //    private int selectedCategory;
 //    private Button wantAlertSelectButton;
 //    private Button wantAlertUploadButton;
     private EditText categoryNameEditText;
-    private EditText maxLimitEditText;
     private Spinner timeSpinner;
-    private ListView foodItemList;
+    private ListView foodItemList,selectedItemListView;
+    private ArrayList<String> selectedFoodNameList=new ArrayList<>();
 //    private Uri imageUri;
     private int selectedTime;
 //    private Spinner categorySpinner;
@@ -88,8 +88,11 @@ private   ExpandableFoodListAdapter expandableFoodListAdapter;
     private EditText wantAlertFoodNameEditText;
     private CoordinatorLayout wantsToEatCoordinatorLayout;
     private FloatingActionButton wantsFloatingActionButton;
-    private String mealTime;
+    private String mealTime="BreakFast";
     private ArrayAdapter adapter;
+
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -100,7 +103,6 @@ private   ExpandableFoodListAdapter expandableFoodListAdapter;
 
         fetchAllFoodItems();
 
-        mealTime="BreakFast";
 
         wantsToEatDatabaseReference=FirebaseDatabase.getInstance().getReference("TodayMenu");
         wantsToEatCoordinatorLayout=view.findViewById(R.id.wantsToEatCoordinatorLayout);
@@ -276,6 +278,11 @@ private   ExpandableFoodListAdapter expandableFoodListAdapter;
 
     private void showNewAlertDialog() {
 
+        //since dialog is part of this fragment we need to update selected food always whenever this dialog created
+        selectedFoodArrayList.clear();
+        selectedFoodNameList.clear();
+
+
         final SpecialFood specialFood=new SpecialFood();
 
         final AlertDialog.Builder alertDialog=new AlertDialog.Builder(context);
@@ -290,10 +297,30 @@ private   ExpandableFoodListAdapter expandableFoodListAdapter;
 //        foodItemSpinner=view.findViewById(R.id.foodItemSpinner);
 //        defaultCheckBox=view.findViewById(R.id.defaultCheckBox);
 //        categorySpinner=view.findViewById(R.id.categorySpinner);
-        maxLimitEditText=view.findViewById(R.id.maxSelectedEditText);
+//        maxLimitEditText=view.findViewById(R.id.maxSelectedEditText);
         foodItemList=view.findViewById(R.id.itemList);
         categoryNameEditText=view.findViewById(R.id.categotyEditText);
-        timeSpinner=view.findViewById(R.id.timeSpinner);
+//        timeSpinner=view.findViewById(R.id.timeSpinner);
+        selectedItemListView=view.findViewById(R.id.selectedItemList);
+        selectedItemListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        final ArrayAdapter selectedListAdapter=new ArrayAdapter(context,android.R.layout.simple_list_item_multiple_choice,selectedFoodNameList);
+        selectedItemListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                if(selectedFoodArrayList.get(position).isDefault){
+                    selectedFoodArrayList.get(position).setDefault(false);
+//                    maxLimit-=1;
+//                    Log.d("maxLimit=",""+maxLimit);
+                }
+                else{
+                    selectedFoodArrayList.get(position).setDefault(true);
+//                    maxLimit+=1;
+//                    Log.d("maxLimit=",""+maxLimit);
+                }
+            }
+        });
+
+        selectedItemListView.setAdapter(selectedListAdapter);
         foodItemList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         ArrayAdapter listAdapter=new ArrayAdapter(context,android.R.layout.simple_list_item_multiple_choice,foodNamesArrayList);
         foodItemList.setAdapter(listAdapter);
@@ -303,27 +330,31 @@ private   ExpandableFoodListAdapter expandableFoodListAdapter;
                if(selectedFoodArrayList.contains(foodArrayList.get(i))){
                    Toast.makeText(context, ""+foodNamesArrayList.get(i)+" is deselected", Toast.LENGTH_SHORT).show();
                    selectedFoodArrayList.remove(foodArrayList.get(i));
+                   selectedFoodNameList.remove(foodArrayList.get(i).getFoodName());
+                   selectedListAdapter.notifyDataSetChanged();
                }
                else{
                    Toast.makeText(context, ""+foodNamesArrayList.get(i)+" added", Toast.LENGTH_SHORT).show();
                    selectedFoodArrayList.add(foodArrayList.get(i));
+                   selectedFoodNameList.add(foodArrayList.get(i).getFoodName());
+                   selectedListAdapter.notifyDataSetChanged();
                }
 
             }
         });
         ArrayAdapter<String> timeArrayAdapter=new ArrayAdapter(context,android.R.layout.simple_spinner_dropdown_item,getResources().getStringArray(R.array.foodType));
-        timeSpinner.setAdapter(timeArrayAdapter);
-        timeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                selectedTime=i;
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+//        timeSpinner.setAdapter(timeArrayAdapter);
+//        timeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                selectedTime=i;
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
 //        final ArrayAdapter<String> categoryNameAdapter=new ArrayAdapter(context,android.R.layout.simple_spinner_dropdown_item,categoryList);
 //        categorySpinner.setAdapter(categoryNameAdapter);
 //        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -369,12 +400,12 @@ private   ExpandableFoodListAdapter expandableFoodListAdapter;
 
                 else {
 
-                    SparseBooleanArray checked = foodItemList.getCheckedItemPositions();
-                    Log.i("checked:", "onClick: "+checked.toString());
-//                    if (selectedCategory == 1) {
+//                    SparseBooleanArray checked = foodItemList.getCheckedItemPositions();
+//                    Log.i("checked:", "onClick: "+checked.toString());
+////                    if (selectedCategory == 1) {
 //                        if (!categoryNameEditText.getText().toString().trim().equals("")) {
-                    Category category=new Category(selectedFoodArrayList,categoryNameEditText.getText().toString(),Integer.parseInt(maxLimitEditText.getText().toString()));
-                            wantsToEatDatabaseReference.child(getResources().getStringArray(R.array.foodType)[selectedTime]).push().setValue(category);
+                    Category category=new Category(selectedFoodArrayList,categoryNameEditText.getText().toString(),maxLimit());
+                            wantsToEatDatabaseReference.child(mealTime).push().setValue(category);
 //                        } else
 //                            Toast.makeText(context, "Please enter the category first", Toast.LENGTH_SHORT).show();
 //
@@ -408,8 +439,17 @@ private   ExpandableFoodListAdapter expandableFoodListAdapter;
         alertDialog.show();
     }
 
+    private int maxLimit() {
+        int count=0;
+        for(int i=0;i<selectedFoodArrayList.size();i++){
+            if(selectedFoodArrayList.get(i).isDefault)
+                count+=1;
+        }
+        return count;
+    }
+
     private boolean isAnyEmpty() {
-    if(selectedFoodArrayList.isEmpty()||categoryNameEditText.getText().toString().trim().equals("")||maxLimitEditText.getText().toString().trim().equals("")||selectedTime==0)
+    if(selectedFoodArrayList.isEmpty()||categoryNameEditText.getText().toString().trim().equals(""))
         return true;
     else
         return false;
@@ -425,10 +465,18 @@ private   ExpandableFoodListAdapter expandableFoodListAdapter;
     }
 
 
-    public void loadWantToEatImages(String mealTime) {
+    public void loadWantToEatImages(String newMealTime) {
+        mealTime=newMealTime;
         categoryNameList.clear();
         maxLimitOfCategory.clear();
         listFoodChild.clear();
+        categoryNameList.clear();
+        listFoodChild.clear();
+        if(expandableFoodListAdapter!=null)
+             expandableFoodListAdapter.notifyDataSetChanged();
+
+
+
         wantsToEatDatabaseReference.child(mealTime).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {

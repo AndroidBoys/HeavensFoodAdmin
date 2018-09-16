@@ -5,12 +5,13 @@ public class Food {
     public String imageUrl;
     public String foodName;
     public String foodDescription;
+    public boolean isDefault;
 
     public Food() {
-
     }
 
     public String getImageUrl() {
+
         return imageUrl;
     }
 
@@ -34,9 +35,19 @@ public class Food {
         this.foodDescription = foodDescription;
     }
 
-    public Food(String imageUrl, String foodName, String foodDescription) {
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(boolean aDefault) {
+        isDefault = aDefault;
+    }
+
+    public Food(String imageUrl, String foodName, String foodDescription, boolean isDefault) {
+
         this.imageUrl = imageUrl;
         this.foodName = foodName;
         this.foodDescription = foodDescription;
+        this.isDefault = isDefault;
     }
 }
