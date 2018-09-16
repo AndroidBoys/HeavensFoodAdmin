@@ -38,6 +38,7 @@ import androidboys.com.heavensfoodadmin.Fragments.UserProfileFragment;
 import androidboys.com.heavensfoodadmin.Models.Absence;
 import androidboys.com.heavensfoodadmin.Models.User;
 import androidboys.com.heavensfoodadmin.Models.Wallet;
+import androidboys.com.heavensfoodadmin.Notification.Sender;
 import androidboys.com.heavensfoodadmin.R;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -286,10 +287,11 @@ public class HomeActivity extends AppCompatActivity
 
             }else if (id == R.id.nav_rate) {
 
-                addDifferentFragment(SendNotificationFragment.newInstance());
                 
             }else if (id == R.id.nav_items) {
                 addDifferentFragment(FoodItemsFragment.newInstance());
+            }else if(id== R.id.nav_notifications){
+                addDifferentFragment(SendNotificationFragment.newInstance(null));
             }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

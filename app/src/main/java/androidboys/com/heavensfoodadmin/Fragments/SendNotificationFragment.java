@@ -79,7 +79,11 @@ public class SendNotificationFragment extends Fragment {
 
             }
         });
-        selectedMeal=mealTime[0];
+        if(getArguments().get("selectedMeal")!=null){
+            selectedMeal =getArguments().getString("selectedMeal");
+        }else {
+            selectedMeal = mealTime[0];
+        }
         deadlineEditText = view.findViewById(R.id.deadline_edit_text);
         deadlineEditText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,9 +171,12 @@ public class SendNotificationFragment extends Fragment {
 
     }
 
-    public static SendNotificationFragment newInstance() {
+    public static SendNotificationFragment newInstance(@Nullable String mealTime) {
 
         Bundle args = new Bundle();
+        if(mealTime!=null){
+            args.putString("selectedMeal",mealTime);
+        }
         SendNotificationFragment fragment = new SendNotificationFragment();
         fragment.setArguments(args);
         return fragment;
@@ -212,7 +219,7 @@ public class SendNotificationFragment extends Fragment {
     }
 
     private boolean anyFieldEmpty(){
-        return !selectedMeal.equals(mealTime[0]) && deadLine !=0 && TextUtils.isEmpty(notificationMessageEditText.getText());
+        return selectedMeal.equals(mealTime[0]) || deadLine ==0 || TextUtils.isEmpty(notificationMessageEditText.getText());
     }
 
 
