@@ -54,7 +54,7 @@ public class SendNotificationFragment extends Fragment {
     private Activity hostingActivity;
     private String selectedMeal;
     private long deadLine;
-    private String[] mealTime={"Select Meal","Breakfast","Lunch","Dinner"};
+    private String[] mealTime={"Select Meal","BreakFast","Lunch","Dinner"};
     private KProgressHUD progressHUD;
 
     @Nullable
@@ -84,6 +84,7 @@ public class SendNotificationFragment extends Fragment {
         }else {
             selectedMeal = mealTime[0];
         }
+
         deadlineEditText = view.findViewById(R.id.deadline_edit_text);
         deadlineEditText.setOnClickListener(new View.OnClickListener() {
             @Override

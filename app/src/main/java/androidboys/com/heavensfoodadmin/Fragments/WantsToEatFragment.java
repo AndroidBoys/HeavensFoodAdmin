@@ -36,6 +36,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import androidboys.com.heavensfoodadmin.Activities.DescriptionActivity;
 import androidboys.com.heavensfoodadmin.Adapters.ExpandableFoodListAdapter;
 import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Common.UserList;
@@ -78,6 +79,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     private Spinner timeSpinner;
     private ListView foodItemList,selectedItemListView;
     private ArrayList<String> selectedFoodNameList=new ArrayList<>();
+
 //    private Uri imageUri;
     private int selectedTime;
 //    private Spinner categorySpinner;
@@ -92,6 +94,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     private ArrayAdapter adapter;
     private ArrayList<Food> orderedFoodList[];
 
+    private DescriptionActivity descriptionActivity;
 
 
     @Nullable
@@ -100,6 +103,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
         View view=inflater.inflate(R.layout.wants_to_eat_layout,container,false);
         fetchUserList();
         context=getContext();
+        descriptionActivity=(DescriptionActivity)getActivity();
 
 
         fetchAllFoodItems();
@@ -116,6 +120,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
             @Override
             public void onClick(View view) {
                 //create notification
+                descriptionActivity.addDifferentFragment(SendNotificationFragment.newInstance(mealTime));
             }
         });
 
@@ -486,18 +491,39 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     }
 
     private void addFoodForAllUser() {
-        ArrayList<Food> finalOrderedFoodList=new ArrayList<>();
+        final ArrayList<Food> finalOrderedFoodList=new ArrayList<>();
 
         for (int j = 0; j < selectedFoodArrayList.size(); j++) {
             if(selectedFoodArrayList.get(j).byDefault)
                 finalOrderedFoodList.add(selectedFoodArrayList.get(j));
         }
 
-        //default order for all users
-        for(int i = 0; i<UserList.userList.size(); i++){
-            Order order=new Order(UserList.userList.get(i),0,finalOrderedFoodList);
-            FirebaseDatabase.getInstance().getReference("Orders").child(UserList.usersUid.get(i)).setValue(order);
-        }
+
+        FirebaseDatabase.getInstance().getReference("Orders").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getChildrenCount()==0) {
+                    Log.d("childrencount", "" + dataSnapshot.getChildrenCount());
+                    //default order for all users
+                    for (int i = 0; i < UserList.userList.size(); i++) {
+                        Order order = new Order(UserList.userList.get(i), 0, finalOrderedFoodList);
+                        FirebaseDatabase.getInstance().getReference("Orders").child(UserList.usersUid.get(i)).setValue(order);
+                    }
+                }
+                else{
+                    for (int i = 0; i < UserList.userList.size(); i++) {
+                        for(int j=0;j<finalOrderedFoodList.size();j++)
+                            FirebaseDatabase.getInstance().getReference("Orders").child(UserList.usersUid.get(i))
+                                    .child("foodArrayList").push().setValue(finalOrderedFoodList.get(j));
+                    }
+                }
+                }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         //placing user inside favourite food
         for(int j=0;j<finalOrderedFoodList.size();j++){
