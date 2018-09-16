@@ -1,11 +1,14 @@
 package androidboys.com.heavensfoodadmin.Models;
 
-public class Food {
+import java.util.ArrayList;
+
+public class Food{
 
     public String imageUrl;
     public String foodName;
     public String foodDescription;
-    public boolean isDefault;
+    public boolean byDefault;//if true food will be available for all users
+    public boolean marked; //this is required to maintain checkboxes inside expandable list view;
 
     public Food() {
     }
@@ -35,19 +38,28 @@ public class Food {
         this.foodDescription = foodDescription;
     }
 
-    public boolean isDefault() {
-        return isDefault;
+    public boolean isByDefault() {
+        return byDefault;
     }
 
-    public void setDefault(boolean aDefault) {
-        isDefault = aDefault;
+    public void setByDefault(boolean byDefault) {
+        this.byDefault = byDefault;
     }
 
-    public Food(String imageUrl, String foodName, String foodDescription, boolean isDefault) {
+    public boolean isMarked() {
+        return marked;
+    }
+
+    public void setMarked(boolean marked) {
+        this.marked = marked;
+    }
+
+    public Food(String imageUrl, String foodName, String foodDescription, boolean byDefault, boolean marked) {
 
         this.imageUrl = imageUrl;
         this.foodName = foodName;
         this.foodDescription = foodDescription;
-        this.isDefault = isDefault;
+        this.byDefault = byDefault;
+        this.marked = marked;
     }
 }
