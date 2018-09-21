@@ -45,6 +45,7 @@ import androidboys.com.heavensfoodadmin.Models.Food;
 import androidboys.com.heavensfoodadmin.Models.Order;
 import androidboys.com.heavensfoodadmin.Models.SpecialFood;
 import androidboys.com.heavensfoodadmin.Models.User;
+import androidboys.com.heavensfoodadmin.MyApplication;
 import androidboys.com.heavensfoodadmin.R;
 import androidboys.com.heavensfoodadmin.ViewHolders.WantsToEatCategoryViewHolder;
 import androidx.annotation.NonNull;
@@ -93,27 +94,46 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     private String mealTime="BreakFast";
     private ArrayAdapter adapter;
     private ArrayList<Food> orderedFoodList[];
-
+    private boolean notificationExists;
     private DescriptionActivity descriptionActivity;
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        notificationAlreadyExists();
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.wants_to_eat_layout,container,false);
+
+
+        wantsToEatDatabaseReference=FirebaseDatabase.getInstance().getReference("TodayMenu");
+
         fetchUserList();
+        fetchAllFoodItems();
+        loadWantToEatImages(mealTime);
+
         context=getContext();
         descriptionActivity=(DescriptionActivity)getActivity();
 
-
-        fetchAllFoodItems();
-
-        wantsToEatDatabaseReference=FirebaseDatabase.getInstance().getReference("TodayMenu");
         wantsToEatCoordinatorLayout=view.findViewById(R.id.wantsToEatCoordinatorLayout);
         notificationButton=view.findViewById(R.id.notificationButton);
         wantsFloatingActionButton=view.findViewById(R.id.wantsFloatingActionButton);
         storageReference=FirebaseStorage.getInstance().getReference("images/");
-        loadWantToEatImages(mealTime);
+        expandableListView=view.findViewById(R.id.wantsToEatExpandableListView);
+        expandableFoodListAdapter=new ExpandableFoodListAdapter(context,categoryNameList,listFoodChild);
+        expandableListView.setAdapter(expandableFoodListAdapter);
+
+
+        if(MyApplication.notificationStatus){
+            notificationButton.setEnabled(false);
+        }
+        else{
+            notificationButton.setEnabled(true);
+        }
 
 
         notificationButton.setOnClickListener(new View.OnClickListener() {
@@ -123,7 +143,6 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
                 descriptionActivity.addDifferentFragment(SendNotificationFragment.newInstance(mealTime));
             }
         });
-
 
 
         PullRefreshLayout wantsRefreshLayout=view.findViewById(R.id.wantsRefreshLayout);
@@ -144,9 +163,6 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
             }
         });
 
-        expandableListView=view.findViewById(R.id.wantsToEatExpandableListView);
-        expandableFoodListAdapter=new ExpandableFoodListAdapter(context,categoryNameList,listFoodChild);
-        expandableListView.setAdapter(expandableFoodListAdapter);
 //        expandableListView.setChoiceMode(ExpandableListView.CHOICE_MODE_MULTIPLE);
         expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
@@ -194,13 +210,32 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 //        foodChooseList=new ArrayList<>();
 //        layoutManager=new LinearLayoutManager(context);
 //        wantsToEatRecyclerView.setHasFixedSize(true);
-//        wantsToEatRecyclerView.setLayoutManager(layoutManager);
+//        wantsToEatRecyclerView.setLayoutManager(laion")!=nullyoutManager);
 
 
 
 
         return view;
     }
+
+//    private void notificationAlreadyExists() {
+//
+//        FirebaseDatabase.getInstance().getReference("Notification").addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                if(dataSnapshot.getValue()!=null)
+//                    notificationExists=true;
+//                else
+//                    notificationExists=false;
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//
+//    }
 
 //    private void fetchCategory(String mealTime) {
 //        categoryList.clear();
@@ -445,7 +480,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 //                    isDefault = defaultCheckBox.isChecked();
 //                    Log.d("checkedfdfdfdsf", "************" + defaultCheckBox.isChecked());
 
-                    addFoodForAllUser(); //whenever admin upload  a new food add this food for all user if it contain isDefalut=true
+//                    addFoodForAllUser(); //whenever admin upload  a new food add this food for all user if it contain isDefalut=true
 
                     Snackbar.make(wantsToEatCoordinatorLayout, categoryNameEditText.getText().toString() + " Added", Snackbar.LENGTH_LONG).show();
 //                    wantsToEatFoodAdapter.notifyDataSetChanged();
@@ -490,56 +525,57 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 
     }
 
-    private void addFoodForAllUser() {
-        final ArrayList<Food> finalOrderedFoodList=new ArrayList<>();
-
-        for (int j = 0; j < selectedFoodArrayList.size(); j++) {
-            if(selectedFoodArrayList.get(j).byDefault)
-                finalOrderedFoodList.add(selectedFoodArrayList.get(j));
-        }
-
-
-        FirebaseDatabase.getInstance().getReference("Orders").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getChildrenCount()==0) {
-                    Log.d("childrencount", "" + dataSnapshot.getChildrenCount());
-                    //default order for all users
-                    for (int i = 0; i < UserList.userList.size(); i++) {
-                        Order order = new Order(UserList.userList.get(i), 0, finalOrderedFoodList);
-                        FirebaseDatabase.getInstance().getReference("Orders").child(UserList.usersUid.get(i)).setValue(order);
-                    }
-                }
-                else{
-                    for (int i = 0; i < UserList.userList.size(); i++) {
-                        for(int j=0;j<finalOrderedFoodList.size();j++)
-                            FirebaseDatabase.getInstance().getReference("Orders").child(UserList.usersUid.get(i))
-                                    .child("foodArrayList").push().setValue(finalOrderedFoodList.get(j));
-                    }
-                }
-                }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        //placing user inside favourite food
-        for(int j=0;j<finalOrderedFoodList.size();j++){
-            for (int i = 0; i < UserList.usersUid.size(); i++)
-                FirebaseDatabase.getInstance().getReference("FavouriteFood").child(finalOrderedFoodList.get(j).getFoodName()).child(UserList.usersUid.get(i)).setValue(UserList.usersUid.get(i));
-        }
-    }
-
+//    private void addFoodForAllUser() {
+//        final ArrayList<Food> finalOrderedFoodList=new ArrayList<>();
+//
+//        for (int j = 0; j < selectedFoodArrayList.size(); j++) {
+//            if(selectedFoodArrayList.get(j).byDefault)
+//                finalOrderedFoodList.add(selectedFoodArrayList.get(j));
+//        }
+//
+//        FirebaseDatabase.getInstance().getReference("Orders").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                if(dataSnapshot.getChildrenCount()==0) {
+//                    Log.d("childrencount", "" + dataSnapshot.getChildrenCount());
+//                    //default order for all users
+//                    for (int i = 0; i < UserList.userList.size(); i++) {
+//                        Order order = new Order(UserList.userList.get(i), 0, finalOrderedFoodList);
+//                        FirebaseDatabase.getInstance().getReference("Orders").child(UserList.usersUid.get(i)).setValue(order);
+//                    }
+//                }
+//                else{
+//                    for (int i = 0; i < UserList.userList.size(); i++) {
+//                        for(int j=0;j<finalOrderedFoodList.size();j++)
+//                            FirebaseDatabase.getInstance().getReference("Orders").child(UserList.usersUid.get(i))
+//                                    .child("foodArrayList").push().setValue(finalOrderedFoodList.get(j));
+//                    }
+//                }
+//                }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//
+//        //placing user inside favourite food
+//        for(int j=0;j<finalOrderedFoodList.size();j++){
+//            for (int i = 0; i < UserList.usersUid.size(); i++)
+//                FirebaseDatabase.getInstance().getReference("FavouriteFood").child(finalOrderedFoodList.get(j).getFoodName()).child(UserList.usersUid.get(i)).setValue(UserList.usersUid.get(i));
+//        }
+//    }
+//
 
     public void loadWantToEatImages(String newMealTime) {
         mealTime=newMealTime;
         categoryNameList.clear();
+//        categoryNameList.clear();
         maxLimitOfCategory.clear();
+//        listFoodChild.clear();
+//        categoryNameList.clear();
         listFoodChild.clear();
-        categoryNameList.clear();
-        listFoodChild.clear();
+//        listFoodChild.clear();
 
         wantsToEatDatabaseReference.child(mealTime).addChildEventListener(new ChildEventListener() {
             @Override

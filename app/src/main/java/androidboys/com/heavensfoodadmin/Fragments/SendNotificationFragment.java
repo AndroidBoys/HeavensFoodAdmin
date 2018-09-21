@@ -19,17 +19,26 @@ import android.widget.Toast;
 
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import androidboys.com.heavensfoodadmin.Common.UserList;
+import androidboys.com.heavensfoodadmin.Models.Category;
 import androidboys.com.heavensfoodadmin.Models.DBnotification;
+import androidboys.com.heavensfoodadmin.Models.Food;
+import androidboys.com.heavensfoodadmin.Models.Order;
 import androidboys.com.heavensfoodadmin.Notification.APIService;
 import androidboys.com.heavensfoodadmin.Notification.Common;
 import androidboys.com.heavensfoodadmin.Notification.MyResponse;
@@ -84,6 +93,15 @@ public class SendNotificationFragment extends Fragment {
         }else {
             selectedMeal = mealTime[0];
         }
+        int selectedIndex=0;
+        if(selectedMeal.equals(mealTime[1]))
+            selectedIndex=1;
+        else if(selectedMeal.equals(mealTime[2]))
+            selectedIndex=2;
+        else if(selectedMeal.equals(mealTime[3]))
+            selectedIndex=3;
+
+        mealTimeSpinner.setSelection(selectedIndex);
 
         deadlineEditText = view.findViewById(R.id.deadline_edit_text);
         deadlineEditText.setOnClickListener(new View.OnClickListener() {
@@ -125,6 +143,7 @@ public class SendNotificationFragment extends Fragment {
                                .setLabel("Please wait")
                                .show();
                        sendNotification();
+                       addFoodForAllUser();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -134,6 +153,89 @@ public class SendNotificationFragment extends Fragment {
                     }
                 })
                 .show();
+
+    }
+
+    private void addFoodForAllUser() {
+        final ArrayList<Food> selectedFoodArrayList=new ArrayList<>();
+        FirebaseDatabase.getInstance().getReference("TodayMenu").child(selectedMeal).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Category category=dataSnapshot.getValue(Category.class);
+                ArrayList<Food> list=category.getFoodArrayList();
+                for(int i=0;i<list.size();i++)
+                selectedFoodArrayList.add(list.get(i));
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        FirebaseDatabase.getInstance().getReference("TodayMenu").child(selectedMeal).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                final ArrayList<Food> finalOrderedFoodList = new ArrayList<>();
+
+                for (int j = 0; j < selectedFoodArrayList.size(); j++) {
+                    if (selectedFoodArrayList.get(j).byDefault)
+                        finalOrderedFoodList.add(selectedFoodArrayList.get(j));
+                }
+
+                FirebaseDatabase.getInstance().getReference("Orders").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getChildrenCount() == 0) {
+                            Log.d("childrencount", "" + dataSnapshot.getChildrenCount());
+                            //default order for all users
+                            for (int i = 0; i < UserList.userList.size(); i++) {
+                                Order order = new Order(UserList.userList.get(i), 0, finalOrderedFoodList);
+                                FirebaseDatabase.getInstance().getReference("Orders").child(UserList.usersUid.get(i)).setValue(order);
+                            }
+                        } else {
+                            for (int i = 0; i < UserList.userList.size(); i++) {
+                                for (int j = 0; j < finalOrderedFoodList.size(); j++)
+                                    FirebaseDatabase.getInstance().getReference("Orders").child(UserList.usersUid.get(i))
+                                            .child("foodArrayList").push().setValue(finalOrderedFoodList.get(j));
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+                //placing user inside favourite food
+                for (int j = 0; j < finalOrderedFoodList.size(); j++) {
+                    for (int i = 0; i < UserList.usersUid.size(); i++)
+                        FirebaseDatabase.getInstance().getReference("FavouriteFood").child(finalOrderedFoodList.get(j).getFoodName()).child(UserList.usersUid.get(i)).setValue(UserList.usersUid.get(i));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
     }
 
@@ -165,7 +267,7 @@ public class SendNotificationFragment extends Fragment {
         bnotification.setDeadline(String.valueOf(deadLine));
         bnotification.setTimeStamp(ServerValue.TIMESTAMP);
 
-        FirebaseDatabase.getInstance().getReference("notification").push().setValue(bnotification);
+        FirebaseDatabase.getInstance().getReference("Notification").push().setValue(bnotification);
         progressHUD.dismiss();
         Toast.makeText(getActivity(), "Notification sent!", Toast.LENGTH_SHORT).show();
 
