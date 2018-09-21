@@ -1,8 +1,18 @@
 package androidboys.com.heavensfoodadmin.Activities;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 
+
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+
+import java.util.List;
 
 import androidboys.com.heavensfoodadmin.R;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,22 +25,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
-
-
         startActivity(new Intent(this, AuthenticationActivity.class));
 
-//        DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference("todayMenu");
-//        FoodMenu todayMenu=new FoodMenu();
-//        todayMenu.setImageUrl("http://medifoods.my/wp-content/uploads/2015/03/cover-menu-fingerfoods2.jpg");
-//        todayMenu.setFoodName("Apna Food");
-//        todayMenu.setFoodDescription("looking good");
-//        todayMenu.setFoodQuantity("4");
-//        databaseReference.child("lunch").child("04").setValue(todayMenu).addOnSuccessListener(new OnSuccessListener<Void>() {
-//            @Override
-//            public void onSuccess(Void aVoid) {
-//
-//                startActivity(new Intent(MainActivity.this, HomeActivity.class));
-//            }
-//        });}
     }
+
+
 }
