@@ -10,20 +10,8 @@ public class Order {
     public Order() {
     }
 
-    public ArrayList<Food> getFoodArrayList() {
-        return foodArrayList;
-    }
-
-    public void setFoodArrayList(ArrayList<Food> foodArrayList) {
-        this.foodArrayList = foodArrayList;
-    }
-
-    public Order(User user, int status) {
-        this.user = user;
-        this.status = status;
-    }
-
     public User getUser() {
+
         return user;
     }
 
@@ -37,5 +25,20 @@ public class Order {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public ArrayList<Food> getFoodArrayList() {
+        return foodArrayList;
+    }
+
+    public void setFoodArrayList(ArrayList<Food> foodArrayList) {
+        this.foodArrayList = foodArrayList;
+    }
+
+    public Order(User user, int status, ArrayList<Food> foodArrayList) {
+
+        this.user = user;
+        this.status = status;
+        this.foodArrayList = foodArrayList;
     }
 }

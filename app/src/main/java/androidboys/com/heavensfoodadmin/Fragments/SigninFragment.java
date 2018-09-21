@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidboys.com.heavensfoodadmin.Activities.AuthenticationActivity;
-import androidboys.com.heavensfoodadmin.Common.UsersUid;
 import androidboys.com.heavensfoodadmin.Models.User;
 import androidboys.com.heavensfoodadmin.R;
 import androidboys.com.heavensfoodadmin.Utils.AuthUtil;
