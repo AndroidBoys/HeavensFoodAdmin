@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,12 +20,18 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import androidboys.com.heavensfoodadmin.Common.Common;
@@ -62,6 +69,8 @@ public class HomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        resolvePermissions();
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -337,5 +346,51 @@ public class HomeActivity extends AppCompatActivity
                     }
                 }).show();
     }
+
+    private void resolvePermissions(){
+        // new thread to ask for permissions
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+
+                checkMermission();
+            }
+        }, 4000);
+    }
+
+
+    private void checkMermission(){
+        Dexter.withActivity(this)
+                .withPermissions(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.INTERNET,
+                        Manifest.permission.ACCESS_NETWORK_STATE,
+                        Manifest.permission.RECEIVE_BOOT_COMPLETED,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_NETWORK_STATE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                ).withListener(new MultiplePermissionsListener() {
+            @Override
+            public void onPermissionsChecked(MultiplePermissionsReport report) {
+                if (report.isAnyPermissionPermanentlyDenied()){
+                    checkMermission();
+                } else if (report.areAllPermissionsGranted()){
+                    // copy some things
+                } else {
+                    checkMermission();
+                }
+
+            }
+            @Override
+            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                token.continuePermissionRequest();
+            }
+        }).check();
+
+    }
+
 
 }
