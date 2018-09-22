@@ -259,7 +259,8 @@ public class SubscribedUserTodaysMenu extends Fragment implements View.OnCreateC
                 setFoodDetails(foodMenuViewHolder, foodMenu);
 
             }
-        };
+        };//since it returns day number from 1 to 7
+
         breakFastAdapter.notifyDataSetChanged();
         breakFastRecyclerView.setAdapter(breakFastAdapter);
         //Download the images from the firebase
