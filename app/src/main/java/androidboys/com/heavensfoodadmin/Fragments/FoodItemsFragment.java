@@ -12,6 +12,7 @@ import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Models.Food;
 import androidboys.com.heavensfoodadmin.Models.WhyHeavenFood;
 import androidboys.com.heavensfoodadmin.Utils.FileUtil;
+import androidboys.com.heavensfoodadmin.Utils.FileUtil1;
 import androidboys.com.heavensfoodadmin.Utils.ImageUtil;
 import androidboys.com.heavensfoodadmin.Utils.ProgressUtils;
 import androidboys.com.heavensfoodadmin.ViewHolders.FoodItemViewHolder;
@@ -242,7 +243,13 @@ public class FoodItemsFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode==Common.PICK_IMAGE_REQUEST && resultCode==getActivity().RESULT_OK && data!=null){
-            String path = FileUtil.getUriRealPath(hostingActivity,data.getData());
+            String path = null;
+            try {
+                path = FileUtil1.getPath(hostingActivity,data.getData());
+                Log.i("Path::", "onActivityResult: "+path);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
             Log.i("path", "onActivityResult: "+path);
             File file = new File(path);
             try {
@@ -253,6 +260,9 @@ public class FoodItemsFragment extends Fragment {
                         .setCompressFormat(Bitmap.CompressFormat.WEBP)
                         .compressToFile(file);
                 imageUri = Uri.fromFile(compressedImage);
+
+
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
