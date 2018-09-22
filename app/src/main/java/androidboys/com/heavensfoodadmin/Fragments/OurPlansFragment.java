@@ -65,6 +65,16 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
     private StorageReference storageReference;
     private DatabaseReference planDatabaseReference;
     private Context context;
+    private String userRef=null;
+    public static Fragment newInstance(String ref) {
+        Bundle args = new Bundle();
+        args.putString("USERREF",ref);
+
+        OurPlansFragment fragment = new OurPlansFragment();
+        fragment.setArguments(args);
+        return fragment;
+
+    }
 
     @Nullable
     @Override
@@ -76,12 +86,13 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
         planDatabaseReference=FirebaseDatabase.getInstance().getReference("OurPlans");
         context=getContext();
 
+         userRef=getArguments().getString("USERREF",null);
         fetchOurPlansListFromFirebase();
 
         hostingActivity = (DescriptionActivity)getActivity();
         hostingActivity.getSupportActionBar().hide();
 
-        ourPlansCustomArrayAdapter=new OurPlansCustomArrayAdapter(hostingActivity, planList);
+        ourPlansCustomArrayAdapter=new OurPlansCustomArrayAdapter(hostingActivity, planList,userRef);
         ourPlanslistView.setAdapter(ourPlansCustomArrayAdapter);
         ourPlansRefreshLayout=view.findViewById(R.id.ourPlansRefreshLayout);
         ourPlansRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {

@@ -10,6 +10,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -38,13 +39,15 @@ public class BuySubscriptionFragment extends Fragment {
     private boolean lunchChecked=true;
     private boolean breakfastChecked=true;
     private int noOfChecks=3;
+    private String userRef=null;
 
 
 
-    public static BuySubscriptionFragment newInstance(Plan plan) {
+    public static BuySubscriptionFragment newInstance(Plan plan, String userRef) {
 
         Bundle args = new Bundle();
         args.putSerializable("plan",plan);
+        args.putString("USERREF",userRef);
         BuySubscriptionFragment fragment = new BuySubscriptionFragment();
         fragment.setArguments(args);
         return fragment;
@@ -56,6 +59,7 @@ public class BuySubscriptionFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_buy_subscription,container,false);
         plan = (Plan) getArguments().getSerializable("plan");
+        userRef=getArguments().getString("USERREF",null);
 
         planImageView = view.findViewById(R.id.planImageview);
         priceTextView = view.findViewById(R.id.plan_price);
@@ -83,6 +87,7 @@ public class BuySubscriptionFragment extends Fragment {
             public void onClick(View view) {
                 //SUBSCRIBE THIS PLAN
                 moveToPaymentsActivity();
+                Toast.makeText(getContext(), ""+userRef, Toast.LENGTH_SHORT).show();
 
             }
         });

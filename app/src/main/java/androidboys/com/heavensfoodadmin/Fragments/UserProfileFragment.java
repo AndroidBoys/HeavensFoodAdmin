@@ -16,8 +16,11 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import androidboys.com.heavensfoodadmin.Models.Absence;
+import androidboys.com.heavensfoodadmin.Models.Address;
 import androidboys.com.heavensfoodadmin.Models.Plan;
 import androidboys.com.heavensfoodadmin.Models.User;
+import androidboys.com.heavensfoodadmin.Models.Wallet;
 import androidboys.com.heavensfoodadmin.R;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -50,9 +53,17 @@ public class UserProfileFragment extends DialogFragment{
         address=view.findViewById(R.id.addressEditText);
 
         Bundle bundle=getArguments();
-        User user= (User) bundle.getSerializable("USER");
-        setUsersProfile(user);
+        String name=bundle.getString("NAME",null);
+        String email=bundle.getString("EMAIL",null);
+        String phone=bundle.getString("PHONE",null);
+        Address address=(Address)bundle.getSerializable("ADDRESS");
+        String pass=bundle.getString("PASS");
+        Plan plan=(Plan)bundle.getSerializable("PLAN");
+        Wallet wallet=(Wallet)bundle.getSerializable("WALLET");
+        Absence absence=(Absence)bundle.getSerializable("ABSENCE");
 
+        User user=new User(name, email,phone,address,pass,plan,wallet,absence);
+        setUsersProfile(user);
 
         return view;
     }
@@ -93,7 +104,18 @@ public class UserProfileFragment extends DialogFragment{
     public static UserProfileFragment newInstance(User user) {
         
         Bundle args = new Bundle();
-        args.putSerializable("USER", (Serializable) user);
+
+        args.putString("NAME",user.getName());
+        args.putString("EMAIL",user.getEmail());
+        args.putString("PHONE",user.getPhoneNumber());
+        args.putString("PASS",user.getPassword());
+        args.putSerializable("ABSENCE",user.getAbsence());
+
+        args.putSerializable("ADDRESS",user.getUserAddress());
+        args.putSerializable("PLAN",user.getSubscribedPlan());
+        args.putSerializable("WALLET",user.getWallet());
+
+
         UserProfileFragment fragment = new UserProfileFragment();
         fragment.setArguments(args);
         return fragment;

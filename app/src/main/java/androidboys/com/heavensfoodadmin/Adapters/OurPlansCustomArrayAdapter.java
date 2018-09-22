@@ -23,11 +23,14 @@ public class OurPlansCustomArrayAdapter extends ArrayAdapter {
     private ImageView planImageView;
     private TextView planNameTextView;
     private TextView showDetailButton;
+    private String userRef;
 
-    public OurPlansCustomArrayAdapter(DescriptionActivity hostingActivity, ArrayList<Plan> ourPlans) {
+    public OurPlansCustomArrayAdapter(DescriptionActivity hostingActivity, ArrayList<Plan> ourPlans, String userRef) {
         super(hostingActivity,R.layout.our_plans_fragment_listview_row,ourPlans);
         this.ourPlans=ourPlans;
         this.hostingActivity=hostingActivity;
+        this.userRef=userRef;
+
     }
 
     @Override
@@ -43,7 +46,7 @@ public class OurPlansCustomArrayAdapter extends ArrayAdapter {
             @Override
             public void onClick(View view) {
 
-                hostingActivity.addDifferentFragment(BuySubscriptionFragment.newInstance(ourPlans.get(position)));
+                hostingActivity.addDifferentFragment(BuySubscriptionFragment.newInstance(ourPlans.get(position),userRef));
 //                Log.d("position","hahahahh*******"+position);
             }
         });
