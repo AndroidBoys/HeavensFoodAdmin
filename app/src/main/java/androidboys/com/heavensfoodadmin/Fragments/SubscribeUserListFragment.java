@@ -1,5 +1,6 @@
 package androidboys.com.heavensfoodadmin.Fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.Image;
@@ -22,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import androidboys.com.heavensfoodadmin.Models.User;
 import androidboys.com.heavensfoodadmin.Models.WhyHeavenFood;
 import androidboys.com.heavensfoodadmin.R;
+import androidboys.com.heavensfoodadmin.Utils.ProgressUtils;
 import androidboys.com.heavensfoodadmin.ViewHolders.UserListViewHolder;
 import androidboys.com.heavensfoodadmin.ViewHolders.WhyHeavensFoodViewHolder;
 import androidx.annotation.NonNull;
@@ -38,13 +40,16 @@ public class SubscribeUserListFragment extends Fragment {
     private TextDrawable textDrawable;
     private FirebaseRecyclerAdapter<User,UserListViewHolder> adapter;
     private ColorGenerator generator;
+    private Context context;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.user_list_fragment,container,false);
+        context = getContext();
         recyclerView=view.findViewById(R.id.subscribedUserListRecyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        ProgressUtils.showLoadingDialog(context);
         fetchAboutDataFromFirebase();
         return view;
     }
@@ -88,6 +93,7 @@ public class SubscribeUserListFragment extends Fragment {
                    userListViewHolder.Layout_hide();
            }
        };
+       ProgressUtils.cancelLoading();
        recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -96,7 +102,6 @@ public class SubscribeUserListFragment extends Fragment {
     private void showProfile(User user) {
        UserProfileFragment userProfileFragment=UserProfileFragment.newInstance(user);
        FragmentManager fragmentManager=getFragmentManager();
-
        userProfileFragment.show(fragmentManager,"Profile");
     }
 

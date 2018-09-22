@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import androidboys.com.heavensfoodadmin.Activities.DescriptionActivity;
+import androidboys.com.heavensfoodadmin.Activities.HomeActivity;
 import androidboys.com.heavensfoodadmin.Models.FoodMenu;
 import androidboys.com.heavensfoodadmin.R;
 import androidboys.com.heavensfoodadmin.ViewHolders.FoodMenuViewHolder;
@@ -49,7 +50,7 @@ public class SubscribedUserTodaysMenu extends Fragment implements View.OnCreateC
     private FirebaseRecyclerAdapter<FoodMenu,FoodMenuViewHolder> breakFastAdapter;
     private FirebaseRecyclerAdapter<FoodMenu,FoodMenuViewHolder> lunchAdapter;
     private DatabaseReference foodMenuDatabaseReference;
-    private TextView markAbsenceTextView;
+    private TextView userAbsenceDetailTextView;
     private TextView wantToEatTextView;
     private Button startDateButton;
     private Button endDateButton;
@@ -66,7 +67,7 @@ public class SubscribedUserTodaysMenu extends Fragment implements View.OnCreateC
         breakFastRecyclerView=view.findViewById(R.id.breakFastRecyclerView);
         lunchRecyclerView=view.findViewById(R.id.lunchRecyclerView);
         dinnerRecyclerView=view.findViewById(R.id.dinnerRecyclerView);
-        markAbsenceTextView=view.findViewById(R.id.markAbsenceTextView);
+        userAbsenceDetailTextView=view.findViewById(R.id.markAbsenceTextView);
         wantToEatTextView=view.findViewById(R.id.wantToEatTextView);
         context=getContext();
 
@@ -84,10 +85,12 @@ public class SubscribedUserTodaysMenu extends Fragment implements View.OnCreateC
 
         findTodayDay();
 
-        markAbsenceTextView.setOnClickListener(new View.OnClickListener() {
+        userAbsenceDetailTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAbsenceDialog();
+                Intent intent=new Intent(context,DescriptionActivity.class);
+                intent.putExtra("ID",R.id.nav_absence);
+                startActivity(intent);
             }
         });
 

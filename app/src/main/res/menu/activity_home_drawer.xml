@@ -39,6 +39,10 @@
             android:id="@+id/nav_wantsToEat"
             android:icon="@drawable/ic_thumb_up_black_24dp"
             android:title="Users Liked Food"/>
+        <item
+            android:id="@+id/nav_absence"
+            android:icon="@drawable/absence_image"
+            android:title="Absent Users"/>
 
     </group>
 
