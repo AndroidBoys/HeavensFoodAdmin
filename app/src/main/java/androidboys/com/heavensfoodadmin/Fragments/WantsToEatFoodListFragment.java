@@ -44,7 +44,7 @@ public class WantsToEatFoodListFragment extends Fragment implements AdapterView.
     private RecyclerView nestedRecyclerView;
     private PullRefreshLayout pullRefreshLayout;
     private DatabaseReference databaseReference;
-    private FirebaseRecyclerAdapter<FoodMenu,SpecialFoodUsersViewHolder> firebaseSpecialUserAdapter;
+    private FirebaseRecyclerAdapter<String,SpecialFoodUsersViewHolder> firebaseSpecialUserAdapter;
     private FirebaseDatabase firebaseDatabase;
     private String phone,email;
 
@@ -60,7 +60,7 @@ public class WantsToEatFoodListFragment extends Fragment implements AdapterView.
         ProgressUtils.showLoadingDialog(context);
         wantsToEatListView=view.findViewById(R.id.specialOrderUsersListView);
         firebaseDatabase=FirebaseDatabase.getInstance();
-        wantsToEatFoodReference=firebaseDatabase.getReference("FavouriteFood").child("LikedFood");
+        wantsToEatFoodReference=firebaseDatabase.getReference("FavouriteFood");
         fetchWantsToEatFood();
         wantsToEatCustomAdapter=new WantsToEatCustomAdapter(context,wantsFoodNameArrayList,countFoodArrayList);
         wantsToEatListView.setAdapter(wantsToEatCustomAdapter);
@@ -125,68 +125,68 @@ public class WantsToEatFoodListFragment extends Fragment implements AdapterView.
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
-
-        AlertDialog.Builder alertDialog=new AlertDialog.Builder(context,android.R.style.Theme_Black_NoTitleBar_Fullscreen);
-        LayoutInflater layoutInflater=getLayoutInflater();
-        View newView=layoutInflater.inflate(R.layout.special_order_user_nested_list,null,false);
-        nestedRecyclerView=newView.findViewById(R.id.specialFoodNestedRecyclerView);
-        nestedRecyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager=new LinearLayoutManager(context);
-        nestedRecyclerView.setLayoutManager(layoutManager);
-
-        //The below method will fetch the detail of user who have ordered the special food;
-        fetchWantsToEatFoodUsers(i);
-        pullRefreshLayout=newView.findViewById(R.id.nestedSpecialRefreshLayout);
-        pullRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                fetchWantsToEatFoodUsers(i);
-            }
-        });
-        alertDialog.setView(newView);
-        alertDialog.show();
+//
+//        AlertDialog.Builder alertDialog=new AlertDialog.Builder(context,android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+//        LayoutInflater layoutInflater=getLayoutInflater();
+//        View newView=layoutInflater.inflate(R.layout.special_order_user_nested_list,null,false);
+//        nestedRecyclerView=newView.findViewById(R.id.specialFoodNestedRecyclerView);
+//        nestedRecyclerView.setHasFixedSize(true);
+//        RecyclerView.LayoutManager layoutManager=new LinearLayoutManager(context);
+//        nestedRecyclerView.setLayoutManager(layoutManager);
+//
+//        //The below method will fetch the detail of user who have ordered the special food;
+//        fetchWantsToEatFoodUsers(i);
+//        pullRefreshLayout=newView.findViewById(R.id.nestedSpecialRefreshLayout);
+//        pullRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                fetchWantsToEatFoodUsers(i);
+//            }
+//        });
+//        alertDialog.setView(newView);
+//        alertDialog.show();
     }
-
-    private void fetchWantsToEatFoodUsers(int position) {
-
-        Log.i("position",String.valueOf(position));
-        Log.i("food","-----------------"+wantsFoodNameArrayList.get(position));
-        databaseReference=wantsToEatFoodReference.child(wantsFoodNameArrayList.get(position));
-        firebaseSpecialUserAdapter=new FirebaseRecyclerAdapter<FoodMenu, SpecialFoodUsersViewHolder>(FoodMenu.class,R.layout.special_order_user_nested_list_row_layout,SpecialFoodUsersViewHolder.class,databaseReference) {
-            @Override
-            protected void populateViewHolder(final SpecialFoodUsersViewHolder specialFoodUsersViewHolder, final FoodMenu foodMenu, int i) {
-                firebaseDatabase.getReference("Users").child(firebaseSpecialUserAdapter.getRef(i).getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        User user=dataSnapshot.getValue(User.class);
-                        phone=user.getPhoneNumber();
-                        email=user.getEmail();
-
-                        if(phone!=null){
-                            specialFoodUsersViewHolder.specialNestedPhoneNumber.setText(phone);
-                        }
-                        if(email!=null){
-                            specialFoodUsersViewHolder.specialNestedEmail.setText(email);
-                        }
-
-                        //need to add address here
-
-                        specialFoodUsersViewHolder.specialNestedQuantity.setVisibility(View.GONE);
-
-                        if(firebaseSpecialUserAdapter!=null){
-                            firebaseSpecialUserAdapter.notifyDataSetChanged();
-                        }
-
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-            }
-        };
-        nestedRecyclerView.setAdapter(firebaseSpecialUserAdapter);
-    }
+//
+//    private void fetchWantsToEatFoodUsers(int position) {
+//
+//        Log.i("position",String.valueOf(position));
+//        Log.i("food","-----------------"+wantsFoodNameArrayList.get(position));
+//        databaseReference=wantsToEatFoodReference.child(wantsFoodNameArrayList.get(position));
+//        firebaseSpecialUserAdapter=new FirebaseRecyclerAdapter<String, SpecialFoodUsersViewHolder>(String.class,R.layout.special_order_user_nested_list_row_layout,SpecialFoodUsersViewHolder.class,databaseReference) {
+//            @Override
+//            protected void populateViewHolder(final SpecialFoodUsersViewHolder specialFoodUsersViewHolder, final String string, int i) {
+//                firebaseDatabase.getReference("Users").child(firebaseSpecialUserAdapter.getRef(i).getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        User user=dataSnapshot.getValue(User.class);
+//                        phone=user.getPhoneNumber();
+//                        email=user.getEmail();
+//
+//                        if(phone!=null){
+//                            specialFoodUsersViewHolder.specialNestedPhoneNumber.setText(phone);
+//                        }
+//                        if(email!=null){
+//                            specialFoodUsersViewHolder.specialNestedEmail.setText(email);
+//                        }
+//
+//                        //need to add address here
+//
+//                        specialFoodUsersViewHolder.specialNestedQuantity.setVisibility(View.GONE);
+//
+//                        if(firebaseSpecialUserAdapter!=null){
+//                            firebaseSpecialUserAdapter.notifyDataSetChanged();
+//                        }
+//
+//                    }
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                    }
+//                });
+//            }
+//        };
+//        nestedRecyclerView.setAdapter(firebaseSpecialUserAdapter);
+//    }
 
     public static WantsToEatFoodListFragment newInstance() {
 

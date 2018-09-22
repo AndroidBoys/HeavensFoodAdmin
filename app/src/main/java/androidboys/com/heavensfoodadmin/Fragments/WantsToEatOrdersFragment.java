@@ -4,25 +4,34 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 import androidboys.com.heavensfoodadmin.Adapters.WantsToEatOrderAlertDialogCustomAdapter;
 import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Interfaces.OurCustomClickListener;
+import androidboys.com.heavensfoodadmin.Models.DBnotification;
 import androidboys.com.heavensfoodadmin.Models.Food;
 import androidboys.com.heavensfoodadmin.Models.Order;
+import androidboys.com.heavensfoodadmin.Models.SpecialFood;
+import androidboys.com.heavensfoodadmin.Models.SpecialFoodOrder;
 import androidboys.com.heavensfoodadmin.Models.User;
 import androidboys.com.heavensfoodadmin.R;
 import androidboys.com.heavensfoodadmin.ViewHolders.WantsToEatOrdersViewHOlder;
@@ -42,7 +51,13 @@ public class WantsToEatOrdersFragment extends Fragment implements View.OnCreateC
     private FirebaseRecyclerAdapter<Order,WantsToEatOrdersViewHOlder> firebaseRecyclerAdapter;
     private DatabaseReference databaseReference;
     private ArrayList<ArrayList<Food>> usersFoodArrayList;
-    private ListView foodListView;
+    private ArrayList<SpecialFood> userSpecialFoodArrayList;
+    private ListView wantsFoodListView;
+    private ListView specialOrderListView;
+    private ArrayList<String> userUidKeyArrayList;
+    private DBnotification dBnotification;
+    private TextView specialOrderTextView;
+    private String mealTime;
 
     @Nullable
     @Override
@@ -50,6 +65,9 @@ public class WantsToEatOrdersFragment extends Fragment implements View.OnCreateC
         View view=inflater.inflate(R.layout.wants_to_eat_orders_fragment,container,false);
         context=getContext();
         usersFoodArrayList= new ArrayList<>();
+        userSpecialFoodArrayList=new ArrayList<>();
+        userUidKeyArrayList=new ArrayList<>();
+        specialOrderTextView=view.findViewById(R.id.specialOrderTextView);
         databaseReference= FirebaseDatabase.getInstance().getReference("Orders");
         recyclerView=view.findViewById(R.id.wantsToEatOrdersRecyclerView);
         linearLayoutManager=new LinearLayoutManager(context);
@@ -58,16 +76,20 @@ public class WantsToEatOrdersFragment extends Fragment implements View.OnCreateC
         recyclerView.setHasFixedSize(true);
 
         fetchAllTheOrdersUsers();//it will fetch all the data from orders node
+//        fetchSpecialFoodOfUser();
         return view;
     }
+
+
 
     //it will fetch all the data from orders node
     private void fetchAllTheOrdersUsers() {
         firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<Order, WantsToEatOrdersViewHOlder>(
-                Order.class,R.layout.wants_to_eat_order_row_layout,WantsToEatOrdersViewHOlder.class,databaseReference
+                Order.class,R.layout.wants_to_eat_order_row_layout,WantsToEatOrdersViewHOlder.class,databaseReference.child("NewFoodOrders")
         ) {
             @Override
             protected void populateViewHolder(WantsToEatOrdersViewHOlder wantsToEatOrdersViewHOlder, Order order, int i) {
+                userUidKeyArrayList.add(firebaseRecyclerAdapter.getRef(i).getKey());//Storing key into arraylist
                 setUsersData(wantsToEatOrdersViewHOlder,order);
                 wantsToEatOrdersViewHOlder.setOnOurCustomClickListener(new OurCustomClickListener() {
                     @Override
@@ -86,11 +108,100 @@ public class WantsToEatOrdersFragment extends Fragment implements View.OnCreateC
         alertDialog.setTitle("Food selected by user");
         LayoutInflater layoutInflater=getLayoutInflater();
         View view=layoutInflater.inflate(R.layout.wants_to_eat_order_alert_dialog,null,false);
-        foodListView=view.findViewById(R.id.listView);
-        WantsToEatOrderAlertDialogCustomAdapter wantsToEatOrderAlertDialogCustomAdapter=new WantsToEatOrderAlertDialogCustomAdapter(context,usersFoodArrayList.get(position));
-        foodListView.setAdapter(wantsToEatOrderAlertDialogCustomAdapter);
+        wantsFoodListView=view.findViewById(R.id.wantsListView);
+        specialOrderListView=view.findViewById(R.id.specialOrderListView);
+
+        fetchSpecialFoodOfUser(position);
+
+        WantsToEatOrderAlertDialogCustomAdapter wantsToEatOrderAlertDialogCustomAdapter=new WantsToEatOrderAlertDialogCustomAdapter(context,usersFoodArrayList.get(position),null);
+        wantsFoodListView.setAdapter(wantsToEatOrderAlertDialogCustomAdapter);
+        setListViewHeightBasedOnChildren(wantsFoodListView);
+
         alertDialog.setView(view);
         alertDialog.show();
+    }
+
+    // it will fetch the special order of corresponding user
+    private void fetchSpecialFoodOfUser(final int position) {
+//
+//        FirebaseDatabase.getInstance().getReference("Notification").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                dBnotification=dataSnapshot.getValue(DBnotification.class);
+//                Log.i("notification time ",dBnotification.getMealTime());
+//                databaseReference.child("NewSpecialOrders").addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        Log.i("datasnapshotValue",String.valueOf(dataSnapshot.hasChild(userUidKeyArrayList.get(position))));
+//                        Log.i("userUid",userUidKeyArrayList.get(position));
+//                        if(dataSnapshot.hasChild(userUidKeyArrayList.get(position))) {
+//                            SpecialFoodOrder specialFoodOrder=dataSnapshot.getValue(SpecialFoodOrder.class);
+//                            if(dBnotification!=null) {
+//                                Log.i("notification time ",dBnotification.getMealTime());
+//                                Log.i("Special Order",specialFoodOrder.getMealTime());
+//                                if (specialFoodOrder.getMealTime().equals(dBnotification.getMealTime())){
+//                                    userSpecialFoodArrayList=specialFoodOrder.getSpecialFoodsArrayList();
+//
+//                                    //Setting Special Orders list also
+//                                    WantsToEatOrderAlertDialogCustomAdapter wantsToEatOrderAlertDialogCustomAdapter1 = new WantsToEatOrderAlertDialogCustomAdapter(context, null, userSpecialFoodArrayList);
+//                                    specialOrderListView.setAdapter(wantsToEatOrderAlertDialogCustomAdapter1);
+//                                    setListViewHeightBasedOnChildren(specialOrderListView);
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+
+        FirebaseDatabase.getInstance().getReference("Orders").child("mealTime").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mealTime=dataSnapshot.getValue(String.class);
+                databaseReference.child("NewSpecialOrders").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for(DataSnapshot itemSnapshot:dataSnapshot.getChildren()){
+
+                            if(itemSnapshot.getKey().equals(userUidKeyArrayList.get(position))){
+                                SpecialFoodOrder specialFoodOrder=itemSnapshot.getValue(SpecialFoodOrder.class);
+                                if(specialFoodOrder.getMealTime().equals(mealTime)){
+                                    userSpecialFoodArrayList=specialFoodOrder.getSpecialFoodsArrayList();
+
+                                    //Setting Special Orders list also
+                                    WantsToEatOrderAlertDialogCustomAdapter wantsToEatOrderAlertDialogCustomAdapter1 = new WantsToEatOrderAlertDialogCustomAdapter(context, null, userSpecialFoodArrayList);
+                                    specialOrderListView.setAdapter(wantsToEatOrderAlertDialogCustomAdapter1);
+                                    setListViewHeightBasedOnChildren(specialOrderListView);
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     private void setUsersData(WantsToEatOrdersViewHOlder wantsToEatOrdersViewHOlder, Order order) {
@@ -116,6 +227,29 @@ public class WantsToEatOrdersFragment extends Fragment implements View.OnCreateC
         fragment.setArguments(args);
         return fragment;
     }
+
+
+    //This below method is used to set the height of listview based on the number of items present inside it.
+    private void setListViewHeightBasedOnChildren(ListView listView) {
+        ArrayAdapter listAdapter = (ArrayAdapter) listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+        listView.requestLayout();
+    }
+
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
