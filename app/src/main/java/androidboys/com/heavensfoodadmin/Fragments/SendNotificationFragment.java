@@ -353,6 +353,4 @@ public class SendNotificationFragment extends Fragment {
         return selectedMeal.equals(mealTime[0]) || deadLine ==0 || TextUtils.isEmpty(notificationMessageEditText.getText());
     }
 
-
-
 }
