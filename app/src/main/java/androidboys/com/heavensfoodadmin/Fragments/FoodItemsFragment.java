@@ -284,8 +284,6 @@ public class FoodItemsFragment extends Fragment {
     }
 
 
-
-
     //****************************************edit and delete options***********************//
     @Override
     public boolean onContextItemSelected(MenuItem item) {

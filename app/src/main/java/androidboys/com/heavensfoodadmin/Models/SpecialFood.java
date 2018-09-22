@@ -1,20 +1,32 @@
 package androidboys.com.heavensfoodadmin.Models;
 
+import java.util.ArrayList;
+
 public class SpecialFood {
 
     public String imageUrl;
     public String foodName;
     public String foodDescription;
     public String foodQuantity;
+    public String mealTime;
+
+    public String getMealTime() {
+        return mealTime;
+    }
+
+    public void setMealTime(String mealTime) {
+        this.mealTime = mealTime;
+    }
 
     public SpecialFood() {
     }
 
-    public SpecialFood(String imageUrl, String foodName, String foodDescription, String foodQuantity) {
+    public SpecialFood(String imageUrl, String foodName, String foodDescription, String foodQuantity, String mealTime) {
         this.imageUrl = imageUrl;
         this.foodName = foodName;
         this.foodDescription = foodDescription;
         this.foodQuantity = foodQuantity;
+        this.mealTime = mealTime;
     }
 
     public String getImageUrl() {
