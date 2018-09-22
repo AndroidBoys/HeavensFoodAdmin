@@ -270,7 +270,7 @@ public class SendNotificationFragment extends Fragment {
     private void sendNotification(){
 
         Notification notification = new Notification(notificationMessageEditText.getText().toString(),"Notification from firebase");
-        Sender content = new Sender("/topics/subscribed",notification);
+        Sender content = new Sender("/topics/"+selectedMeal,notification);
         content.setTime_to_live((int)deadLine/1000);
         fcmService.sendNotification(content).enqueue(new Callback<MyResponse>() {
             @Override
