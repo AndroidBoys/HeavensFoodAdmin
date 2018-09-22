@@ -22,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import androidboys.com.heavensfoodadmin.Adapters.SpecialOrderUserListCustomAdapter;
+import androidboys.com.heavensfoodadmin.Models.Address;
 import androidboys.com.heavensfoodadmin.Models.SpecialFood;
 import androidboys.com.heavensfoodadmin.Models.User;
 import androidboys.com.heavensfoodadmin.R;
@@ -49,7 +50,7 @@ public class SpecialOrderUsersListFragment extends Fragment implements AdapterVi
 //    private boolean isCompleted;
     private DatabaseReference databaseReference;
     private FirebaseDatabase firebaseDatabase;
-    private String phone,email;
+    private String phone,email,name;
     private PullRefreshLayout pullRefreshLayout;
 
     @Nullable
@@ -174,17 +175,23 @@ public class SpecialOrderUsersListFragment extends Fragment implements AdapterVi
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         User user=dataSnapshot.getValue(User.class);
+                        Address address=null;
                         try {
                             phone = user.getPhoneNumber();
-                            email = user.getEmail();
+                            name=user.getName();
+                            address=user.getUserAddress();
+
                         }catch(Exception e){
                             e.printStackTrace();
                         }
                         if(phone!=null){
                             specialFoodUsersViewHolder.specialNestedPhoneNumber.setText(phone);
                         }
-                        if(email!=null){
-                            specialFoodUsersViewHolder.specialNestedEmail.setText(email);
+                        if(name!=null){
+                            specialFoodUsersViewHolder.specialNestedEmail.setText(name);
+                        }
+                        if(address!=null){
+                            specialFoodUsersViewHolder.specialNestedAddress.setText(address.getAddress());
                         }
 
                         //need to add address here

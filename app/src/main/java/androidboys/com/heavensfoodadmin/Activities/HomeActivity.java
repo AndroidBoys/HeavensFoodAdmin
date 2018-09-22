@@ -111,7 +111,7 @@ public class HomeActivity extends AppCompatActivity
 
                 User user = dataSnapshot.getValue(User.class);
 
-                if (user != null && user.getSubscribedPlan() != null) {
+                if (user != null && user.getSubscribedPlan() != null&&user.getWallet()!=null) {
 
                     Wallet wallet = user.getWallet();
                     String dueDateString = wallet.getDueDate();
