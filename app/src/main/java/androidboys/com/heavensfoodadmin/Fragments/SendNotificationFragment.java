@@ -199,7 +199,7 @@ public class SendNotificationFragment extends Fragment {
                         finalOrderedFoodList.add(selectedFoodArrayList.get(j));
                 }
 
-                FirebaseDatabase.getInstance().getReference("Orders").addListenerForSingleValueEvent(new ValueEventListener() {
+                FirebaseDatabase.getInstance().getReference("Orders").child("NewFoodOrders").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.getChildrenCount() == 0) {
@@ -208,12 +208,12 @@ public class SendNotificationFragment extends Fragment {
                             for (int i = 0; i < UserList.userList.size(); i++) {
                                 Plan plan = UserList.userList.get(i).getSubscribedPlan();
                                 if (
-                                        ((selectedMeal.equals("BreakFast")) && (plan.includesBreakFast))
-                                                || ((selectedMeal.equals("Lunch")) && (plan.includesLunch))
-                                                || ((selectedMeal.equals("Dinner")) && (plan.includesDinner))
+                                        ((selectedMeal.equals("BreakFast")) &&(plan!=null)&& (plan.includesBreakFast))
+                                                || ((selectedMeal.equals("Lunch")) &&(plan!=null)&& (plan.includesLunch))
+                                                || ((selectedMeal.equals("Dinner")) && (plan!=null)&&(plan.includesDinner))
                                         ) {
                                     Order order = new Order(UserList.userList.get(i), 0, finalOrderedFoodList);
-                                    FirebaseDatabase.getInstance().getReference("Orders").child(UserList.usersUid.get(i)).setValue(order);
+                                    FirebaseDatabase.getInstance().getReference("Orders").child("NewFoodOrders").child(UserList.usersUid.get(i)).setValue(order);
                                 } else {
                                     continue;
                                 }
@@ -222,13 +222,13 @@ public class SendNotificationFragment extends Fragment {
                             for (int i = 0; i < UserList.userList.size(); i++) {
                                 Plan plan = UserList.userList.get(i).getSubscribedPlan();
                                 if (
-                                        ((selectedMeal.equals("BreakFast")) && (plan.includesBreakFast))
-                                                || ((selectedMeal.equals("Lunch")) && (plan.includesLunch))
-                                                || ((selectedMeal.equals("Dinner")) && (plan.includesDinner))
+                                        ((selectedMeal.equals("BreakFast")) &&(plan!=null)&& (plan.includesBreakFast))
+                                                || ((selectedMeal.equals("Lunch")) && (plan!=null)&&(plan.includesLunch))
+                                                || ((selectedMeal.equals("Dinner")) &&(plan!=null)&& (plan.includesDinner))
                                         ) {
 
                                     for (int j = 0; j < finalOrderedFoodList.size(); j++)
-                                        FirebaseDatabase.getInstance().getReference("Orders").child(UserList.usersUid.get(i))
+                                        FirebaseDatabase.getInstance().getReference("Orders").child("NewFoodOrders").child(UserList.usersUid.get(i))
                                                 .child("foodArrayList").push().setValue(finalOrderedFoodList.get(j));
                                 } else {
                                     continue;
@@ -247,9 +247,9 @@ public class SendNotificationFragment extends Fragment {
                     for (int i = 0; i < UserList.usersUid.size(); i++) {
                         Plan plan = UserList.userList.get(i).getSubscribedPlan();
                         if (
-                                ((selectedMeal.equals("BreakFast")) && (plan.includesBreakFast))
-                                        || ((selectedMeal.equals("Lunch")) && (plan.includesLunch))
-                                        || ((selectedMeal.equals("Dinner")) && (plan.includesDinner))
+                                ((selectedMeal.equals("BreakFast")) &&(plan!=null)&&(plan.includesBreakFast))
+                                        || ((selectedMeal.equals("Lunch")) &&(plan!=null)&& (plan.includesLunch))
+                                        || ((selectedMeal.equals("Dinner")) && (plan!=null)&&(plan.includesDinner))
                                 ) {
                             FirebaseDatabase.getInstance().getReference("FavouriteFood").child(finalOrderedFoodList.get(j)
                                     .getFoodName()).child(UserList.usersUid.get(i)).setValue(UserList.usersUid.get(i));
