@@ -158,6 +158,9 @@ public class SendNotificationFragment extends Fragment {
     }
 
     private void addFoodForAllUser() {
+
+        FirebaseDatabase.getInstance().getReference("Orders").child("mealTime").setValue(selectedMeal);
+
         final ArrayList<Food> selectedFoodArrayList=new ArrayList<>();
         FirebaseDatabase.getInstance().getReference("TodayMenu").child(selectedMeal).addChildEventListener(new ChildEventListener() {
             @Override
@@ -199,11 +202,11 @@ public class SendNotificationFragment extends Fragment {
                         finalOrderedFoodList.add(selectedFoodArrayList.get(j));
                 }
 
-                FirebaseDatabase.getInstance().getReference("Orders").addListenerForSingleValueEvent(new ValueEventListener() {
+                FirebaseDatabase.getInstance().getReference("Orders").child("NewFoodOrders").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.getChildrenCount() == 0) {
-                            Log.d("childrencount", "" + dataSnapshot.getChildrenCount());
+                        //if (dataSnapshot.getChildrenCount() == 0) {
+                          //  Log.d("childrencount", "" + dataSnapshot.getChildrenCount());
                             //default order for all users
                             for (int i = 0; i < UserList.userList.size(); i++) {
                                 Plan plan = UserList.userList.get(i).getSubscribedPlan();
@@ -213,28 +216,28 @@ public class SendNotificationFragment extends Fragment {
                                                 || ((selectedMeal.equals("Dinner")) && (plan.includesDinner))
                                         ) {
                                     Order order = new Order(UserList.userList.get(i), 0, finalOrderedFoodList);
-                                    FirebaseDatabase.getInstance().getReference("Orders").child(UserList.usersUid.get(i)).setValue(order);
+                                    FirebaseDatabase.getInstance().getReference("Orders").child("NewFoodOrders").child(UserList.usersUid.get(i)).setValue(order);
                                 } else {
                                     continue;
                                 }
                             }
-                        } else {
-                            for (int i = 0; i < UserList.userList.size(); i++) {
-                                Plan plan = UserList.userList.get(i).getSubscribedPlan();
-                                if (
-                                        ((selectedMeal.equals("BreakFast")) && (plan.includesBreakFast))
-                                                || ((selectedMeal.equals("Lunch")) && (plan.includesLunch))
-                                                || ((selectedMeal.equals("Dinner")) && (plan.includesDinner))
-                                        ) {
-
-                                    for (int j = 0; j < finalOrderedFoodList.size(); j++)
-                                        FirebaseDatabase.getInstance().getReference("Orders").child(UserList.usersUid.get(i))
-                                                .child("foodArrayList").push().setValue(finalOrderedFoodList.get(j));
-                                } else {
-                                    continue;
-                                }
-                            }
-                        }
+//                        } else {
+//                            for (int i = 0; i < UserList.userList.size(); i++) {
+//                                Plan plan = UserList.userList.get(i).getSubscribedPlan();
+//                                if (
+//                                        ((selectedMeal.equals("BreakFast")) && (plan.includesBreakFast))
+//                                                || ((selectedMeal.equals("Lunch")) && (plan.includesLunch))
+//                                                || ((selectedMeal.equals("Dinner")) && (plan.includesDinner))
+//                                        ) {
+//
+//                                    for (int j = 0; j < finalOrderedFoodList.size(); j++)
+//                                        FirebaseDatabase.getInstance().getReference("Orders").child(UserList.usersUid.get(i))
+//                                                .child("foodArrayList").push().setValue(finalOrderedFoodList.get(j));
+//                                } else {
+//                                    continue;
+//                                }
+//                            }
+//                        }
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -263,8 +266,6 @@ public class SendNotificationFragment extends Fragment {
 
             }
         });
-
-
     }
 
     private void sendNotification(){
@@ -298,7 +299,6 @@ public class SendNotificationFragment extends Fragment {
         FirebaseDatabase.getInstance().getReference("Notification").push().setValue(bnotification);
         progressHUD.dismiss();
         Toast.makeText(getActivity(), "Notification sent!", Toast.LENGTH_SHORT).show();
-
 
     }
 

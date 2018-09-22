@@ -34,6 +34,7 @@ import androidboys.com.heavensfoodadmin.Models.SpecialFood;
 import androidboys.com.heavensfoodadmin.Models.SpecialFoodOrder;
 import androidboys.com.heavensfoodadmin.Models.User;
 import androidboys.com.heavensfoodadmin.R;
+import androidboys.com.heavensfoodadmin.Utils.ProgressUtils;
 import androidboys.com.heavensfoodadmin.ViewHolders.WantsToEatOrdersViewHOlder;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -58,6 +59,7 @@ public class WantsToEatOrdersFragment extends Fragment implements View.OnCreateC
     private DBnotification dBnotification;
     private TextView specialOrderTextView;
     private String mealTime;
+
 
     @Nullable
     @Override
@@ -110,7 +112,9 @@ public class WantsToEatOrdersFragment extends Fragment implements View.OnCreateC
         View view=layoutInflater.inflate(R.layout.wants_to_eat_order_alert_dialog,null,false);
         wantsFoodListView=view.findViewById(R.id.wantsListView);
         specialOrderListView=view.findViewById(R.id.specialOrderListView);
+        specialOrderTextView=view.findViewById(R.id.specialOrderTextView);
 
+        ProgressUtils.showLoadingDialog(context);
         fetchSpecialFoodOfUser(position);
 
         WantsToEatOrderAlertDialogCustomAdapter wantsToEatOrderAlertDialogCustomAdapter=new WantsToEatOrderAlertDialogCustomAdapter(context,usersFoodArrayList.get(position),null);
@@ -123,47 +127,8 @@ public class WantsToEatOrdersFragment extends Fragment implements View.OnCreateC
 
     // it will fetch the special order of corresponding user
     private void fetchSpecialFoodOfUser(final int position) {
-//
-//        FirebaseDatabase.getInstance().getReference("Notification").addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                dBnotification=dataSnapshot.getValue(DBnotification.class);
-//                Log.i("notification time ",dBnotification.getMealTime());
-//                databaseReference.child("NewSpecialOrders").addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        Log.i("datasnapshotValue",String.valueOf(dataSnapshot.hasChild(userUidKeyArrayList.get(position))));
-//                        Log.i("userUid",userUidKeyArrayList.get(position));
-//                        if(dataSnapshot.hasChild(userUidKeyArrayList.get(position))) {
-//                            SpecialFoodOrder specialFoodOrder=dataSnapshot.getValue(SpecialFoodOrder.class);
-//                            if(dBnotification!=null) {
-//                                Log.i("notification time ",dBnotification.getMealTime());
-//                                Log.i("Special Order",specialFoodOrder.getMealTime());
-//                                if (specialFoodOrder.getMealTime().equals(dBnotification.getMealTime())){
-//                                    userSpecialFoodArrayList=specialFoodOrder.getSpecialFoodsArrayList();
-//
-//                                    //Setting Special Orders list also
-//                                    WantsToEatOrderAlertDialogCustomAdapter wantsToEatOrderAlertDialogCustomAdapter1 = new WantsToEatOrderAlertDialogCustomAdapter(context, null, userSpecialFoodArrayList);
-//                                    specialOrderListView.setAdapter(wantsToEatOrderAlertDialogCustomAdapter1);
-//                                    setListViewHeightBasedOnChildren(specialOrderListView);
-//                                }
-//                            }
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
 
+       // ProgressUtils.showLoadingDialog(context);
         FirebaseDatabase.getInstance().getReference("Orders").child("mealTime").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -171,6 +136,7 @@ public class WantsToEatOrdersFragment extends Fragment implements View.OnCreateC
                 databaseReference.child("NewSpecialOrders").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        int i=0;
                         for(DataSnapshot itemSnapshot:dataSnapshot.getChildren()){
 
                             if(itemSnapshot.getKey().equals(userUidKeyArrayList.get(position))){
@@ -182,9 +148,15 @@ public class WantsToEatOrdersFragment extends Fragment implements View.OnCreateC
                                     WantsToEatOrderAlertDialogCustomAdapter wantsToEatOrderAlertDialogCustomAdapter1 = new WantsToEatOrderAlertDialogCustomAdapter(context, null, userSpecialFoodArrayList);
                                     specialOrderListView.setAdapter(wantsToEatOrderAlertDialogCustomAdapter1);
                                     setListViewHeightBasedOnChildren(specialOrderListView);
+                                    ProgressUtils.cancelLoading();
                                 }
                                 break;
                             }
+                            i++;
+                        }
+                        if(i==dataSnapshot.getChildrenCount()){
+                            ProgressUtils.cancelLoading();
+                            specialOrderTextView.setText("No Special Order");
                         }
                     }
 
@@ -211,6 +183,8 @@ public class WantsToEatOrdersFragment extends Fragment implements View.OnCreateC
 
         wantsToEatOrdersViewHOlder.userNameTextView.setText(user.getName());
         wantsToEatOrdersViewHOlder.userNumberTextView.setText(user.getPhoneNumber());
+
+        if(user.getUserAddress()!=null)
         wantsToEatOrdersViewHOlder.userAddressTextView.setText(user.getUserAddress().getAddress());
         usersFoodArrayList.add(foodArrayList);
         if(status ==1){
@@ -265,14 +239,19 @@ public class WantsToEatOrdersFragment extends Fragment implements View.OnCreateC
                     Toast.makeText(context,"Food is already packed for this user",Toast.LENGTH_SHORT).show();
                 }
             }else{
-                showDeliveredAlertDialog(firebaseRecyclerAdapter.getRef(item.getOrder()).getKey());
+                Log.i("Position",String.valueOf(item.getOrder()));
+                if(firebaseRecyclerAdapter.getItem(item.getOrder()).getStatus()==1) {
+                    showDeliveredAlertDialog(firebaseRecyclerAdapter.getRef(item.getOrder()).getKey(), item.getOrder());
+                }else{
+                    Toast.makeText(context,"Please First pack the food",Toast.LENGTH_SHORT).show();
+                }
             }
         }
         return true;
 
     }
 
-    private void showDeliveredAlertDialog(final String key) {
+    private void showDeliveredAlertDialog(final String key, final int position) {
         AlertDialog.Builder alertDialog=new AlertDialog.Builder(context);
         alertDialog.setIcon(R.drawable.thali_graphic);
         alertDialog.setTitle("Food Delivered");
@@ -280,7 +259,10 @@ public class WantsToEatOrdersFragment extends Fragment implements View.OnCreateC
         alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialogInterface, int i) {
-                databaseReference.child(key).removeValue();
+                ProgressUtils.showLoadingDialog(context);
+                deleteFromFavouriteFood(position);  //deleting user from favourite food
+                deleteFromSpecialOrder(key,position);  // deleting user from special order
+                databaseReference.child("NewFoodOrders").child(key).removeValue();
                 dialogInterface.dismiss();
                 }
         });
@@ -295,6 +277,64 @@ public class WantsToEatOrdersFragment extends Fragment implements View.OnCreateC
 
     }
 
+    private void deleteFromSpecialOrder(final String key, final int position) {
+
+        FirebaseDatabase.getInstance().getReference("Orders").child("mealTime").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mealTime=dataSnapshot.getValue(String.class);
+                databaseReference.child("NewSpecialOrders").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for(DataSnapshot itemSnapshot:dataSnapshot.getChildren()){
+
+                            if(itemSnapshot.getKey().equals(userUidKeyArrayList.get(position))) {
+                                SpecialFoodOrder specialFoodOrder = itemSnapshot.getValue(SpecialFoodOrder.class);
+                                if (specialFoodOrder.getMealTime().equals(mealTime)) {
+                                    userSpecialFoodArrayList = specialFoodOrder.getSpecialFoodsArrayList();
+
+                                    DatabaseReference favDbReference = FirebaseDatabase.getInstance().getReference("SpecialOrder").child("NewOrders");
+
+                                    //Deleting all the user from special order also
+                                    for (int j = 0; j < userSpecialFoodArrayList.size(); j++) {
+                                        favDbReference.child(userSpecialFoodArrayList.get(j).getFoodName())
+                                                .child(userUidKeyArrayList.get(position)).removeValue();
+
+                                    }
+                                }
+                                break;
+                            }
+                        }
+
+                        databaseReference.child("NewSpecialOrders").child(key).removeValue();
+                        userUidKeyArrayList.remove(position);//Remove id from id arraylist also
+                        usersFoodArrayList.remove(position);
+                        ProgressUtils.cancelLoading();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void deleteFromFavouriteFood(final int position) {
+
+        DatabaseReference reference=FirebaseDatabase.getInstance().getReference("FavouriteFood");
+        ArrayList<Food> arrayList=usersFoodArrayList.get(position);
+        for(int i=0;i<arrayList.size();i++){
+            reference.child(arrayList.get(i).getFoodName()).
+                    child(userUidKeyArrayList.get(position)).removeValue();
+        }
+    }
+
     private void showPackedAlertDialog(final String key, final Order order) {
         AlertDialog.Builder alertDialog=new AlertDialog.Builder(context);
         alertDialog.setTitle("Packed the Food");
@@ -306,7 +346,7 @@ public class WantsToEatOrdersFragment extends Fragment implements View.OnCreateC
 
                 //status 1 means food is packed..
                 order.setStatus(1);
-                databaseReference.child(key).setValue(order).addOnSuccessListener(new OnSuccessListener<Void>() {
+                databaseReference.child("NewFoodOrders").child(key).setValue(order).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(context,"Good Job bro..",Toast.LENGTH_SHORT).show();
