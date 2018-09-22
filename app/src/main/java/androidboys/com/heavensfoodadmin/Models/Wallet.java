@@ -1,6 +1,8 @@
 package androidboys.com.heavensfoodadmin.Models;
 
-public class Wallet {
+import java.io.Serializable;
+
+public class Wallet implements Serializable {
 
     public String creditedAmount;
     public String availableBalance;

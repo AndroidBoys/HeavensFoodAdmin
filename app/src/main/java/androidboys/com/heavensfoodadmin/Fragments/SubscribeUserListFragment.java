@@ -7,7 +7,10 @@ import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -20,6 +23,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Models.User;
 import androidboys.com.heavensfoodadmin.Models.WhyHeavenFood;
 import androidboys.com.heavensfoodadmin.R;
@@ -34,7 +38,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class SubscribeUserListFragment extends Fragment {
+public class SubscribeUserListFragment extends Fragment implements View.OnCreateContextMenuListener {
 
     private RecyclerView recyclerView;
     private TextDrawable textDrawable;
@@ -111,4 +115,22 @@ public class SubscribeUserListFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.setHeaderTitle("pagal");
+        Log.i("menuItem","------------"+menu.getItem(0));
+//        contextMenu.add(Menu.NONE,Common.R_ID_SUBSCRIBE, getAdapterPosition(), "Subscribe");
+//
+        menu.getItem(0).setVisible(false);
+        //we don't want to give edit and delete option in today's menu fragment.That's why i set the visibility of item false
+        menu.getItem(0).setVisible(false);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        return super.onContextItemSelected(item);
+    }
+
+
 }

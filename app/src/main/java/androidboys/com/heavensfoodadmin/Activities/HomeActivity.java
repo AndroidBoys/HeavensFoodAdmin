@@ -78,6 +78,7 @@ public class HomeActivity extends AppCompatActivity
 
         checkingUsersDueDate();
 
+
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnOurCustomClickListener(new View.OnClickListener() {
 //            @Override
@@ -86,7 +87,8 @@ public class HomeActivity extends AppCompatActivity
 //                        .setAction("Action", null).show();
 //            }
 
-        addDifferentFragment(SubscribedUserFragment.newInstance());
+            addDifferentFragment(SubscribedUserFragment.newInstance());
+
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

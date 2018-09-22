@@ -34,8 +34,12 @@ public class DescriptionActivity extends AppCompatActivity {
         frameLayout=findViewById(R.id.descriptionFrameLayout);
 
         Intent intent=getIntent();
+        String ref=intent.getStringExtra("USERREF");
         int viewId=intent.getIntExtra("ID",0);
         selectFragmentByViewId(viewId);
+        if(ref!=null){
+            addDifferentFragment(OurPlansFragment.newInstance(ref));
+        }
 
     }
 

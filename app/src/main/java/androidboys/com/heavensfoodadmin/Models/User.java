@@ -1,5 +1,7 @@
 package androidboys.com.heavensfoodadmin.Models;
 
+import java.io.Serializable;
+
 public class User {
 
     public String name;
@@ -10,6 +12,17 @@ public class User {
     public Plan subscribedPlan;
     public Wallet wallet;
     public Absence absence;
+
+    public User(String name, String email, String phoneNumber, Address userAddress, String password, Plan subscribedPlan, Wallet wallet, Absence absence) {
+        this.name = name;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.userAddress = userAddress;
+        this.password = password;
+        this.subscribedPlan = subscribedPlan;
+        this.wallet = wallet;
+        this.absence = absence;
+    }
 
     public Absence getAbsence() {
         return absence;
@@ -27,7 +40,7 @@ public class User {
         this.userAddress = userAddress;
     }
 
-    public User() {
+    public User(String name, String email, String phone, Serializable address, String pass, Serializable plan) {
     }
 
     public String getName() {
@@ -74,6 +87,9 @@ public class User {
 
     public Wallet getWallet() {
         return wallet;
+    }
+
+    public User() {
     }
 
     public void setWallet(Wallet wallet) {

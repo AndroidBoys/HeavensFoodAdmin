@@ -1,6 +1,8 @@
 package androidboys.com.heavensfoodadmin.Models;
 
-public class Absence {
+import java.io.Serializable;
+
+public class Absence implements Serializable {
 
     public String startDate;
     public String endDate;
