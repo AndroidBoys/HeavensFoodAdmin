@@ -47,6 +47,7 @@ import androidboys.com.heavensfoodadmin.Models.SpecialFood;
 import androidboys.com.heavensfoodadmin.Models.User;
 import androidboys.com.heavensfoodadmin.MyApplication;
 import androidboys.com.heavensfoodadmin.R;
+import androidboys.com.heavensfoodadmin.Utils.ProgressUtils;
 import androidboys.com.heavensfoodadmin.ViewHolders.WantsToEatCategoryViewHolder;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -568,6 +569,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 //
 
     public void loadWantToEatImages(String newMealTime) {
+        ProgressUtils.showLoadingDialog(context);
         mealTime=newMealTime;
         categoryNameList.clear();
 //        categoryNameList.clear();
@@ -626,6 +628,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
                         orderedFoodList[i]=new ArrayList<>();
                     Log.d("listor",""+categoryNameList.size());
                     expandableFoodListAdapter.notifyDataSetChanged();
+                    ProgressUtils.cancelLoading();
 
                 }
 

@@ -113,7 +113,7 @@ public class HomeActivity extends AppCompatActivity
 
                 User user = dataSnapshot.getValue(User.class);
 
-                if (user != null && user.getSubscribedPlan() != null) {
+                if (user != null && user.getSubscribedPlan() != null&&user.getWallet()!=null) {
 
                     Wallet wallet = user.getWallet();
                     String dueDateString = wallet.getDueDate();
@@ -288,6 +288,10 @@ public class HomeActivity extends AppCompatActivity
             }
             else if (id == R.id.nav_logout) {
                 logOutDialog();
+            }else if(id==R.id.nav_absence){
+                Intent intent=new Intent(HomeActivity.this,DescriptionActivity.class);
+                intent.putExtra("ID",R.id.nav_absence);
+                startActivity(intent);
             }
             else if (id == R.id.nav_users) {
                 addDifferentFragment(UserListFragment.newInstance());
