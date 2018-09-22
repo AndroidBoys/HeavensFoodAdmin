@@ -286,6 +286,10 @@ public class HomeActivity extends AppCompatActivity
             }
             else if (id == R.id.nav_logout) {
                 logOutDialog();
+            }else if(id==R.id.nav_absence){
+                Intent intent=new Intent(HomeActivity.this,DescriptionActivity.class);
+                intent.putExtra("ID",R.id.nav_absence);
+                startActivity(intent);
             }
             else if (id == R.id.nav_users) {
                 addDifferentFragment(UserListFragment.newInstance());

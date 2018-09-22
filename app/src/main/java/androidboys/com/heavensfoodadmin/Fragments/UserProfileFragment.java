@@ -2,6 +2,7 @@ package androidboys.com.heavensfoodadmin.Fragments;
 
 import android.content.ComponentName;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +18,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import androidboys.com.heavensfoodadmin.Models.Plan;
+import androidboys.com.heavensfoodadmin.Models.Profile;
 import androidboys.com.heavensfoodadmin.Models.User;
 import androidboys.com.heavensfoodadmin.R;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+
+import static android.view.View.GONE;
 
 public class UserProfileFragment extends DialogFragment{
     private ImageView userImage;
@@ -35,7 +39,7 @@ public class UserProfileFragment extends DialogFragment{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.user_profile,container,false);
-       userImage=view.findViewById(R.id.profile_image);
+        userImage=view.findViewById(R.id.profile_image);
         userNameTextViewHeader=view.findViewById(R.id.userNameTextView);
         userEmailTextViewHeader=view.findViewById(R.id.userEmailTextView);
         planName=view.findViewById(R.id.planNameTextView);
@@ -50,10 +54,13 @@ public class UserProfileFragment extends DialogFragment{
         address=view.findViewById(R.id.addressEditText);
 
         Bundle bundle=getArguments();
-        User user= (User) bundle.getSerializable("USER");
-        setUsersProfile(user);
-
-
+        Profile profile;
+        if (bundle != null) {
+            profile = (Profile) bundle.getSerializable("profile");
+            if (profile!= null) {
+                setUsersProfile(profile.getUser());
+            }
+        }
         return view;
     }
 
@@ -63,7 +70,11 @@ public class UserProfileFragment extends DialogFragment{
         email.setText(user.getEmail());
         userNameTextViewHeader.setText(user.getName());
         name.setText(user.getName());
-        address.setText(user.getUserAddress().address);
+        if(user.getUserAddress()!=null) {
+            address.setText(user.getUserAddress().address);
+        }else{
+            address.setVisibility(GONE);
+        }
 
         ColorGenerator generator=ColorGenerator.MATERIAL;
 
@@ -91,9 +102,10 @@ public class UserProfileFragment extends DialogFragment{
             return "Not Included";
     }
     public static UserProfileFragment newInstance(User user) {
-        
+        Profile profile=new Profile();
+        profile.setUser(user);
         Bundle args = new Bundle();
-        args.putSerializable("USER", (Serializable) user);
+        args.putSerializable("profile",profile);
         UserProfileFragment fragment = new UserProfileFragment();
         fragment.setArguments(args);
         return fragment;
