@@ -66,7 +66,7 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
     private DatabaseReference planDatabaseReference;
     private Context context;
     private String userRef=null;
-    public static Fragment newInstance(String ref) {
+    public static OurPlansFragment newInstance(String ref) {
         Bundle args = new Bundle();
         args.putString("USERREF",ref);
 
@@ -86,11 +86,18 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
         planDatabaseReference=FirebaseDatabase.getInstance().getReference("OurPlans");
         context=getContext();
 
-         userRef=getArguments().getString("USERREF",null);
+        userRef=getArguments().getString("USERREF",null);
         fetchOurPlansListFromFirebase();
 
         hostingActivity = (DescriptionActivity)getActivity();
-        hostingActivity.getSupportActionBar().hide();
+        //hostingActivity.getSupportActionBar().hide();
+        String title;
+        if(userRef!=null){
+            title="Select a plan for user";
+        }else{
+            title="Our Plans";
+        }
+        hostingActivity.getSupportActionBar().setTitle(title);
 
         ourPlansCustomArrayAdapter=new OurPlansCustomArrayAdapter(hostingActivity, planList,userRef);
         ourPlanslistView.setAdapter(ourPlansCustomArrayAdapter);

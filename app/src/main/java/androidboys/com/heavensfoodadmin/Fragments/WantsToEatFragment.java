@@ -115,9 +115,10 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 
         fetchUserList();
         fetchAllFoodItems();
+        context=getContext();
         loadWantToEatImages(mealTime);
 
-        context=getContext();
+
         descriptionActivity=(DescriptionActivity)getActivity();
 
         wantsToEatCoordinatorLayout=view.findViewById(R.id.wantsToEatCoordinatorLayout);

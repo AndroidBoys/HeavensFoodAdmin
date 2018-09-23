@@ -81,5 +81,9 @@ dependencies {
 
     implementation 'com.karumi:dexter:5.0.0'
 
+    implementation 'commons-net:commons-net:3.3'
+
+    implementation 'com.google.firebase:firebase-functions:16.1.0'
+
 }
 apply plugin: 'com.google.gms.google-services'

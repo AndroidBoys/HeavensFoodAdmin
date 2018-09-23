@@ -48,7 +48,6 @@
                         android:layout_marginTop="16dp"
                         android:gravity="center"
                         android:layout_gravity="center"
-                        android:textStyle="bold"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                         android:fontFamily="@font/josefin_bold"
                         android:id="@+id/userNameTextView"
