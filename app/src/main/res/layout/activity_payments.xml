@@ -22,18 +22,18 @@
             android:layout_marginTop="4dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Veg Thali"
+            android:text="Confirm user and plan details"
             android:textAllCaps="true"
-            android:textColor="@color/md_grey_800"
+            android:textColor="@color/colorPrimary"
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/imv_product_image"
+        <include
+            android:id="@+id/user_plan_details"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="4"
-            android:src="@drawable/thali_graphic"/>
+            layout="@layout/user_profile"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -42,29 +42,39 @@
             android:orientation="horizontal"
             android:weightSum="3">
 
-            <TextView
-                android:id="@+id/txv_product_price"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:background="@android:color/holo_orange_dark"
-                android:gravity="center"
-                android:textColor="@android:color/white"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                tools:text="$40" />
+            <!--<TextView-->
+                <!--android:id="@+id/txv_product_price"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="2"-->
+                <!--android:background="@android:color/holo_orange_dark"-->
+                <!--android:gravity="center"-->
+                <!--android:textColor="@android:color/white"-->
+                <!--android:textSize="28sp"-->
+                <!--android:textStyle="bold"-->
+                <!--tools:text="$40" />-->
 
-            <TextView
-                android:id="@+id/txt_buy_product"
-                android:layout_width="0dp"
+            <!--<TextView-->
+                <!--android:id="@+id/txt_buy_product"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="@android:color/holo_blue_dark"-->
+                <!--android:gravity="center"-->
+                <!--android:text="@string/txt_buy"-->
+                <!--android:textSize="28sp"-->
+                <!--android:textColor="@android:color/white"-->
+                <!--android:textStyle="bold"/>-->
+            <Button
+                android:id="@+id/confirm_cash_payment_button"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@android:color/holo_blue_dark"
-                android:gravity="center"
-                android:text="@string/txt_buy"
-                android:textSize="28sp"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"/>
+                android:background="@color/colorPrimary"
+                android:text="Confirm cash payment"
+                android:textColor="@color/white"
+                android:textSize="@dimen/material_text_title"/>
+
+
 
         </LinearLayout>
 

@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import androidboys.com.heavensfoodadmin.AsynckTasks.OnlineTimeAsyncTask;
 import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Fragments.FoodItemsFragment;
 import androidboys.com.heavensfoodadmin.Fragments.SendNotificationFragment;
@@ -74,6 +75,11 @@ public class HomeActivity extends AppCompatActivity
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //Before this we have to check internet connection
+        OnlineTimeAsyncTask onlineTimeAsyncTask=new OnlineTimeAsyncTask();
+        onlineTimeAsyncTask.execute();
+
 
         databaseReference=FirebaseDatabase.getInstance().getReference("Users");
 

@@ -117,6 +117,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 
         fetchUserList();
         fetchAllFoodItems();
+        context=getContext();
         loadWantToEatImages(mealTime);
 
 

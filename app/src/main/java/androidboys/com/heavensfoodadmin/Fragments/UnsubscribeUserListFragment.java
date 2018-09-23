@@ -114,14 +114,15 @@ public class UnsubscribeUserListFragment extends Fragment{
     private void showAlert(final DatabaseReference user) {
     AlertDialog builder=new AlertDialog.Builder(context)
             .setIcon(R.drawable.thali_graphic)
-            .setTitle("Subscribe User")
+            .setTitle("Aprove subscription")
             .setCancelable(false)
-            .setMessage("Do you really want to SUBSCRIBE \n this user?")
+            .setMessage("Do you really want to grant this user a plan?")
             .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                   Intent intent=new Intent(context,DescriptionActivity.class);
                   intent.putExtra("USERREF", String.valueOf(user));
+                  intent.putExtra("ID",R.id.ourPlansButton);
 //                    args.putExtra("NAME",user.getName());
 //                    args.putExtra("EMAIL",user.getEmail());
 //                    args.putExtra("PHONE",user.getPhoneNumber());

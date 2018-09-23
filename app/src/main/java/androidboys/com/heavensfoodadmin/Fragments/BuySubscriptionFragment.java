@@ -13,10 +13,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import androidboys.com.heavensfoodadmin.Activities.DescriptionActivity;
 import androidboys.com.heavensfoodadmin.Models.Plan;
+import androidboys.com.heavensfoodadmin.Models.Profile;
+import androidboys.com.heavensfoodadmin.Models.User;
 import androidboys.com.heavensfoodadmin.Payments.PaymentsActivity;
 import androidboys.com.heavensfoodadmin.R;
 import androidx.annotation.NonNull;
@@ -42,7 +48,13 @@ public class BuySubscriptionFragment extends Fragment {
     private boolean breakfastChecked=true;
     private int noOfChecks=3;
     private String userRef=null;
+// <<<<<<< arvind100
     private Activity activity;
+// =======
+    private User user;
+    private String uid;
+
+// >>>>>>> master
 
 
     public static BuySubscriptionFragment newInstance(Plan plan, String userRef) {
@@ -155,6 +167,8 @@ public class BuySubscriptionFragment extends Fragment {
         return  view;
     }
 
+
+
     private void moveToPaymentsActivity(){
         Intent intent = new Intent(getActivity(), PaymentsActivity.class);
         plan.setFrequencyPerDay(String.valueOf(noOfChecks));
@@ -167,7 +181,13 @@ public class BuySubscriptionFragment extends Fragment {
         if(dinnerChecked){
             plan.includesDinner=true;
         }
-        intent.putExtra("choosenPlan",plan);
+
+        Bundle bundle = new Bundle();
+       // bundle.putSerializable("user",new Profile(user));
+        bundle.putSerializable("choosenPlan",plan);
+        bundle.putString("USERREF",userRef);
+
+        intent.putExtras(bundle);
         startActivity(intent);
     }
 

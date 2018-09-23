@@ -136,9 +136,9 @@ public class UserProfileFragment extends DialogFragment{
 //         args.putSerializable("WALLET",user.getWallet());
 
 
-// =======
-//         args.putSerializable("profile",profile);
-// >>>>>>> master
+
+         args.putSerializable("profile",profile);
+
         UserProfileFragment fragment = new UserProfileFragment();
         fragment.setArguments(args);
         return fragment;
