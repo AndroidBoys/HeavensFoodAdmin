@@ -1,5 +1,6 @@
 package androidboys.com.heavensfoodadmin.Fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import androidboys.com.heavensfoodadmin.Activities.HomeActivity;
 import androidboys.com.heavensfoodadmin.Adapters.SpecialOrderUserListCustomAdapter;
 import androidboys.com.heavensfoodadmin.Models.Address;
 import androidboys.com.heavensfoodadmin.Models.SpecialFood;
@@ -52,12 +54,13 @@ public class SpecialOrderUsersListFragment extends Fragment implements AdapterVi
     private FirebaseDatabase firebaseDatabase;
     private String phone,email,name;
     private PullRefreshLayout pullRefreshLayout;
+    private Activity activity;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.special_order_user_list_fragment,container,false);
-
+        activity=getActivity();
         context=getContext();
         listView=view.findViewById(R.id.specialOrderUsersListView);
         layoutManager=new LinearLayoutManager(getContext());
@@ -210,5 +213,11 @@ public class SpecialOrderUsersListFragment extends Fragment implements AdapterVi
         };
         nestedRecyclerView.setAdapter(firebaseSpecialUserAdapter);
 //        firebaseSpecialUserAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((HomeActivity)activity).setActionBarTitle("Users Special Order");
     }
 }

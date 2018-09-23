@@ -1,5 +1,6 @@
 package androidboys.com.heavensfoodadmin.Fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,10 +34,12 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.UUID;
 
+import androidboys.com.heavensfoodadmin.Activities.DescriptionActivity;
 import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Models.Faq;
 import androidboys.com.heavensfoodadmin.Models.WhyHeavenFood;
@@ -58,11 +61,13 @@ public class WhyHeavensFoodFragment extends Fragment {
     private EditText aboutEditText;
     private Button chooseImageButton;
     private  FirebaseRecyclerAdapter<WhyHeavenFood,WhyHeavensFoodViewHolder> adapter;
+    private Activity activity;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.why_heaven_foods_fragment,container,false);
+        activity=getActivity();
         addDescriptionFloatingActionButton=view.findViewById(R.id.addWhyHeavensFood);
         whyHeavensFoodRecyclerView=view.findViewById(R.id.whyHeavenFoodsRecyclerView);
         whyHeavensFoodRecyclerView.setHasFixedSize(true);
@@ -328,8 +333,20 @@ public class WhyHeavensFoodFragment extends Fragment {
         whyHeavensFoodRecyclerView.setAdapter(adapter);
     }
 
-    private void setData(WhyHeavensFoodViewHolder whyHeavensFoodViewHolder,WhyHeavenFood whyHeavenFood) {
-        Picasso.with(getContext()).load(whyHeavenFood.getImageUrl()).into(whyHeavensFoodViewHolder.aboutImageView);
+    private void setData(final WhyHeavensFoodViewHolder whyHeavensFoodViewHolder, WhyHeavenFood whyHeavenFood) {
+        Picasso.with(getContext()).load(whyHeavenFood.getImageUrl()).into(whyHeavensFoodViewHolder.aboutImageView, new Callback() {
+            @Override
+            public void onSuccess() {
+                if(whyHeavensFoodViewHolder.imageProgressBar!=null){
+                    whyHeavensFoodViewHolder.imageProgressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
         whyHeavensFoodViewHolder.aboutTextView.setText(whyHeavenFood.getAbout());
     }
 
@@ -371,5 +388,11 @@ public class WhyHeavensFoodFragment extends Fragment {
                 Toast.makeText(getContext(), "Failed", Toast.LENGTH_SHORT).show();
         }
     });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((DescriptionActivity)activity).setActionBarTitle("Why Heavens Food");
     }
 }

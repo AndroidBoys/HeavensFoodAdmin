@@ -6,41 +6,61 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/nav_items"
-            android:icon="@drawable/ic_free_breakfast_black_24dp"
-            android:title="Items"/>
-        <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home_black_24dp"
+            android:checkable="true"
+            android:checked="false"
             android:title="Home"/>
+
+        <item
+            android:id="@+id/nav_items"
+            android:icon="@drawable/ic_free_breakfast_black_24dp"
+            android:checkable="true"
+            android:checked="false"
+            android:title="Items"/>
+
         <item
             android:id="@+id/nav_notifications"
             android:title="Manage Notifications"
+            android:checkable="true"
+            android:checked="false"
             android:icon="@drawable/ic_notifications_black_24dp"
             />
         <item
             android:id="@+id/nav_specialOrders"
+            android:checkable="true"
+            android:checked="false"
             android:icon="@drawable/ic_restaurant_menu_black_24dp"
             android:title="Special Orders"/>
         <item
-            android:id="@+id/nav_mySubscription"
+            android:id="@+id/nav_unsubscribe"
             android:icon="@drawable/ourplan"
-            android:title="My Subscription"/>
+            android:checkable="true"
+            android:checked="false"
+            android:title="Unsubscribe Page"/>
         <item
             android:id="@+id/nav_weeklyMenu"
             android:icon="@drawable/weeklymenu"
+            android:checkable="true"
+            android:checked="false"
             android:title="Weekly Menu"/>
         <item
             android:id="@+id/nav_users"
             android:icon="@drawable/contactus"
+            android:checkable="true"
+            android:checked="false"
             android:title="Users"/>
 
         <item
             android:id="@+id/nav_wantsToEat"
             android:icon="@drawable/ic_thumb_up_black_24dp"
+            android:checkable="true"
+            android:checked="false"
             android:title="Users Liked Food"/>
         <item
             android:id="@+id/nav_absence"
+            android:checkable="true"
+            android:checked="false"
             android:icon="@drawable/absence_image"
             android:title="Absent Users"/>
 
@@ -51,15 +71,21 @@
             <item
                 android:id="@+id/nav_contactUs"
                 android:icon="@drawable/contactus"
+                android:checkable="true"
+                android:checked="false"
                 android:title="Contact Us"/>
 
             <item
                 android:id="@+id/nav_rate"
                 android:icon="@drawable/rate"
-                android:title="Rate"/>
+                android:checkable="true"
+                android:checked="false"
+                android:title="Rate Us"/>
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_exit_to_app_black_24dp"
+                android:checkable="false"
+                android:checked="false"
                 android:title="Log Out"/>
         </menu>
     </item>

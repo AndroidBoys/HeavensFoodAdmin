@@ -1,5 +1,6 @@
 package androidboys.com.heavensfoodadmin.Fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -66,7 +67,10 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
     private DatabaseReference planDatabaseReference;
     private Context context;
     private String userRef=null;
+    private Activity activity;
+    public static Fragment newInstance(String ref) {
     public static OurPlansFragment newInstance(String ref) {
+
         Bundle args = new Bundle();
         args.putString("USERREF",ref);
 
@@ -80,6 +84,7 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.our_plans_fragment,container,false);
+        activity=getActivity();
         ourPlanslistView=view.findViewById(R.id.ourPlansListview);
         ourPlansFloatingActionButton=view.findViewById(R.id.ourPlansFloatingActionButton);
         storageReference= FirebaseStorage.getInstance().getReference("images/");
@@ -90,6 +95,9 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
         fetchOurPlansListFromFirebase();
 
         hostingActivity = (DescriptionActivity)getActivity();
+
+//        hostingActivity.getSupportActionBar().hide();
+
         //hostingActivity.getSupportActionBar().hide();
         String title;
         if(userRef!=null){
@@ -434,4 +442,11 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
         fragment.setArguments(args);
         return fragment;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((DescriptionActivity)activity).setActionBarTitle("Our Plans");
+    }
+
 }

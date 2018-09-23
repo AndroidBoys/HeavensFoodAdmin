@@ -54,4 +54,8 @@ public class AuthenticationActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.frameLayout,replacableFragment,null).commit();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

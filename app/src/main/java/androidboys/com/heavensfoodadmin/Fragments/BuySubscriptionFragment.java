@@ -1,5 +1,6 @@
 package androidboys.com.heavensfoodadmin.Fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import androidboys.com.heavensfoodadmin.Activities.DescriptionActivity;
 import androidboys.com.heavensfoodadmin.Models.Plan;
 import androidboys.com.heavensfoodadmin.Models.Profile;
 import androidboys.com.heavensfoodadmin.Models.User;
@@ -46,9 +48,13 @@ public class BuySubscriptionFragment extends Fragment {
     private boolean breakfastChecked=true;
     private int noOfChecks=3;
     private String userRef=null;
+// <<<<<<< arvind100
+    private Activity activity;
+// =======
     private User user;
     private String uid;
 
+// >>>>>>> master
 
 
     public static BuySubscriptionFragment newInstance(Plan plan, String userRef) {
@@ -66,8 +72,10 @@ public class BuySubscriptionFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_buy_subscription,container,false);
+        activity=getActivity();
         plan = (Plan) getArguments().getSerializable("plan");
         userRef=getArguments().getString("USERREF",null);
+//        getActivity().getActionBar().hide();
 
         planImageView = view.findViewById(R.id.planImageview);
         priceTextView = view.findViewById(R.id.plan_price);
@@ -94,7 +102,8 @@ public class BuySubscriptionFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 //SUBSCRIBE THIS PLAN
-                moveToPaymentsActivity();
+
+                //moveToPaymentsActivity();
                 Toast.makeText(getContext(), ""+userRef, Toast.LENGTH_SHORT).show();
 
             }
@@ -182,7 +191,9 @@ public class BuySubscriptionFragment extends Fragment {
         startActivity(intent);
     }
 
-
-
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((DescriptionActivity)activity).setActionBarTitle("Buy Subscription");
+    }
 }
