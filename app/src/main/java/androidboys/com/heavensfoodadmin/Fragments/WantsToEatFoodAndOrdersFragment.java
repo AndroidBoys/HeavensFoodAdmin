@@ -1,5 +1,6 @@
 package androidboys.com.heavensfoodadmin.Fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
 
+import androidboys.com.heavensfoodadmin.Activities.DescriptionActivity;
 import androidboys.com.heavensfoodadmin.Adapters.WantsToEatFoodViewPagerAdapter;
 import androidboys.com.heavensfoodadmin.R;
 import androidx.annotation.NonNull;
@@ -25,11 +27,13 @@ public class WantsToEatFoodAndOrdersFragment extends Fragment {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private Context context;
+    private Activity activity;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.wants_to_eat_food_and_orders_fragment_layout,container,false);
+        activity=getActivity();
         context=getContext();
         viewPager=view.findViewById(R.id.wantsToEatFoodAndOrderViewPager);
         tabLayout=view.findViewById(R.id.wantsToEatFoodAndOrderTabLayout);
@@ -59,5 +63,11 @@ public class WantsToEatFoodAndOrdersFragment extends Fragment {
         WantsToEatFoodAndOrdersFragment fragment = new WantsToEatFoodAndOrdersFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((DescriptionActivity)activity).setActionBarTitle("Users Liked Food");
     }
 }

@@ -3,6 +3,7 @@ package androidboys.com.heavensfoodadmin.ViewHolders;
 import android.view.ContextMenu;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidboys.com.heavensfoodadmin.Common.Common;
@@ -16,11 +17,13 @@ public class FoodMenuViewHolder extends RecyclerView.ViewHolder implements View.
     public ImageView foodImageView;
     public TextView foodNameTextView;
     public TextView foodDescriptionTextView;
+    public ProgressBar imageProgressBar;
     public FoodMenuViewHolder(@NonNull View itemView) {
         super(itemView);
         foodImageView=itemView.findViewById(R.id.foodImageView);
         foodNameTextView=itemView.findViewById(R.id.foodNameTextView);
         foodDescriptionTextView=itemView.findViewById(R.id.foodDescriptionTextView);
+        imageProgressBar=itemView.findViewById(R.id.imageProgressBar);
 
         itemView.setOnCreateContextMenuListener(this);
     }

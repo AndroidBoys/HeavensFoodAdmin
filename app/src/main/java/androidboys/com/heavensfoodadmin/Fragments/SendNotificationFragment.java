@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import androidboys.com.heavensfoodadmin.Activities.HomeActivity;
 import androidboys.com.heavensfoodadmin.Common.UserList;
 import androidboys.com.heavensfoodadmin.Models.Category;
 import androidboys.com.heavensfoodadmin.Models.DBnotification;
@@ -66,6 +67,7 @@ public class SendNotificationFragment extends Fragment {
     private long deadLine;
     private String[] mealTime={"Select Meal","BreakFast","Lunch","Dinner"};
     private KProgressHUD progressHUD;
+
 
     @Nullable
     @Override
@@ -353,4 +355,9 @@ public class SendNotificationFragment extends Fragment {
         return selectedMeal.equals(mealTime[0]) || deadLine ==0 || TextUtils.isEmpty(notificationMessageEditText.getText());
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((HomeActivity)hostingActivity).setActionBarTitle("Send Notification");
+    }
 }

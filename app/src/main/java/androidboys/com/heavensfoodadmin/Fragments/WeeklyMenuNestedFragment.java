@@ -1,5 +1,6 @@
 package androidboys.com.heavensfoodadmin.Fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -36,11 +37,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
+import androidboys.com.heavensfoodadmin.Activities.DescriptionActivity;
 import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Common.FirebaseStorageDeletion;
 import androidboys.com.heavensfoodadmin.Models.Food;
@@ -64,7 +67,7 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
     private FirebaseRecyclerAdapter<FoodMenu, FoodMenuViewHolder> dinnerAdapter,
             lunchAdapter,
             breakFastAdapter;
-    private String day;
+    private String day,fullNameOfDay;
 
     private DatabaseReference todayMenuDatabaseReference;
     private FloatingActionButton weeklyMenuFloatingActionButton;
@@ -84,11 +87,13 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
     private CheckBox weeklyLunchCheckBox;
     private CheckBox weeklyDinnerCheckBox;
     private String chooseFoodType; //This is used when we edited the food
+    private Activity activity;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.weekly_menu_nested_fragment,container,false);
+        activity=getActivity();
         breakFastRecyclerView=view.findViewById(R.id.breakFastRecyclerView);
         lunchRecyclerView=view.findViewById(R.id.lunchRecyclerView);
         dinnerRecyclerView=view.findViewById(R.id.dinnerRecyclerView);
@@ -114,6 +119,7 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
         //it will get the day name passed when a perticular day is pressed from weeklyMenuFragment
         Bundle args=getArguments();
         day=args.getString("DAY",null);
+        fullNameOfDay=getFullNameOfDay(day);
 
         todayMenuDatabaseReference=FirebaseDatabase.getInstance().getReference("WeeklyMenu").child(day);
 
@@ -194,6 +200,26 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
         return view;
     }
 
+    private String getFullNameOfDay(String day) {
+        switch (day){
+            case "Mon":
+                return "Monday";
+            case "Tues":
+                return "Tuesday";
+            case "Wed":
+                return "Wednesday";
+            case "Thrus":
+                return "Thrusday";
+            case "Fri":
+                return "Friday";
+            case "Sat":
+                return "Saturday";
+            case "Sun":
+                return "Sunday";
+        }
+        return null;
+    }
+
     private void fetchAllFoodItems() {
     FirebaseDatabase.getInstance().getReference("FoodItems").addChildEventListener(new ChildEventListener() {
         @Override
@@ -251,10 +277,22 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
         //Download the images from the firebase
     }
 
-    private void setFoodDetails(FoodMenuViewHolder foodMenuViewHolder,FoodMenu foodMenu) {
+    private void setFoodDetails(final FoodMenuViewHolder foodMenuViewHolder, FoodMenu foodMenu) {
         foodMenuViewHolder.foodNameTextView.setText(foodMenu.getFoodName());
         foodMenuViewHolder.foodDescriptionTextView.setText(foodMenu.getFoodDescription());
-        Picasso.with(context).load(foodMenu.getImageUrl()).into(foodMenuViewHolder.foodImageView);
+        Picasso.with(context).load(foodMenu.getImageUrl()).into(foodMenuViewHolder.foodImageView, new Callback() {
+            @Override
+            public void onSuccess() {
+                if(foodMenuViewHolder.imageProgressBar!=null) {
+                    foodMenuViewHolder.imageProgressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
 
     }
 
@@ -641,5 +679,10 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
        WeeklyMenuNestedFragment fragment = new WeeklyMenuNestedFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((DescriptionActivity)activity).setActionBarTitle(fullNameOfDay+" Food Menu");
     }
 }

@@ -1,5 +1,6 @@
 package androidboys.com.heavensfoodadmin.Fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
 
+import androidboys.com.heavensfoodadmin.Activities.DescriptionActivity;
+import androidboys.com.heavensfoodadmin.Activities.HomeActivity;
 import androidboys.com.heavensfoodadmin.Adapters.UserListViewPagerAdapter;
 import androidboys.com.heavensfoodadmin.Adapters.ViewPagerAdapter;
 import androidboys.com.heavensfoodadmin.R;
@@ -23,12 +26,14 @@ public class UserListFragment extends Fragment {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private Context context;
+    private Activity activity;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view=inflater.inflate(R.layout.user_list_fragment_layout,container,false);
+        activity=getActivity();
         Log.i("Inside","Subscribed Fragment");
         tabLayout=view.findViewById(R.id.tabLayout);
         viewPager=view.findViewById(R.id.userListViewPager);
@@ -65,5 +70,10 @@ public class UserListFragment extends Fragment {
         UserListFragment fragment = new UserListFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((HomeActivity)activity).setActionBarTitle("User List");
     }
 }

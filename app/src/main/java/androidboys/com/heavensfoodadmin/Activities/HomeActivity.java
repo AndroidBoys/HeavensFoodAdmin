@@ -64,6 +64,7 @@ public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private DatabaseReference databaseReference;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +88,11 @@ public class HomeActivity extends AppCompatActivity
 //                        .setAction("Action", null).show();
 //            }
 
-            addDifferentFragment(SubscribedUserFragment.newInstance());
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
 
+        addDifferentFragment(SubscribedUserFragment.newInstance(),"subscribe");
+        navigationView.setCheckedItem(R.id.nav_home);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -96,8 +100,6 @@ public class HomeActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
     }
 
@@ -207,36 +209,13 @@ public class HomeActivity extends AppCompatActivity
         return (int)difference/(24*60*60*1000);
     }
 
-    private void addDifferentFragment(Fragment replacableFragment){
+    private void addDifferentFragment(Fragment replacableFragment,String tag){
         Log.i("Inside","Different fragment function");
         FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayout,replacableFragment,null).commit();
+        fragmentTransaction.replace(R.id.frameLayout,replacableFragment,tag).commit();
     }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        }
 
-        new AlertDialog.Builder(this)
-                .setMessage("You will exit this app")
-                .setTitle("Do you really want to exit?")
-                .setIcon(R.drawable.thali_graphic)
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                })
-                .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
-                    }
-                }).show();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -260,17 +239,25 @@ public class HomeActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    public void setActionBarTitle(String title){
+        getSupportActionBar().setTitle(title);
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        if(id!=R.id.nav_logout){
+            item.setChecked(true);
+        }
+
             if (id == R.id.nav_home) {
-                addDifferentFragment(UnsubscribedUser.newInstance());
+                addDifferentFragment(SubscribedUserFragment.newInstance(),"subscribe");
                 // Handle the camera action
-            }  else if (id == R.id.nav_mySubscription) {
-                addDifferentFragment(SubscribedUserFragment.newInstance());
+            }  else if (id == R.id.nav_unsubscribe) {
+                addDifferentFragment(UnsubscribedUser.newInstance(),"unsubscribe");
             } else if (id == R.id.nav_weeklyMenu) {
                 Intent intent = new Intent(HomeActivity.this, DescriptionActivity.class);
                 intent.putExtra("ID", R.id.weeklyMenuButton);//since we have to show the weeklyMenu on the screen which will be host by the description activity
@@ -282,7 +269,7 @@ public class HomeActivity extends AppCompatActivity
 //                bundle.putInt("POSITION",1);//SINCE position of the special order position is 1 in view pager
 //                subscribedUserFragment.setArguments(bundle);
 
-                addDifferentFragment(SpecialOrderUsersListFragment.newInstance());
+                addDifferentFragment(SpecialOrderUsersListFragment.newInstance(),null);
             }
             else if (id == R.id.nav_contactUs) {
             }
@@ -294,7 +281,7 @@ public class HomeActivity extends AppCompatActivity
                 startActivity(intent);
             }
             else if (id == R.id.nav_users) {
-                addDifferentFragment(UserListFragment.newInstance());
+                addDifferentFragment(UserListFragment.newInstance(),null);
             }else if(id==R.id.nav_wantsToEat){
                 Intent intent = new Intent(HomeActivity.this, DescriptionActivity.class);
                 intent.putExtra("ID", R.id.nav_wantsToEat);//since we have to show the wantsToEat food on the screen which will be host by the description activity
@@ -304,14 +291,47 @@ public class HomeActivity extends AppCompatActivity
 
                 
             }else if (id == R.id.nav_items) {
-                addDifferentFragment(FoodItemsFragment.newInstance());
+                addDifferentFragment(FoodItemsFragment.newInstance(),null);
             }else if(id== R.id.nav_notifications){
-                addDifferentFragment(SendNotificationFragment.newInstance(null));
+                addDifferentFragment(SendNotificationFragment.newInstance(null),null);
             }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
 
+    @Override
+    public void onBackPressed() {
+        Fragment fragment=getSupportFragmentManager().findFragmentByTag("unsubscribe");
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        }else if(!(fragment instanceof SubscribedUserFragment)){
+            addDifferentFragment(SubscribedUserFragment.newInstance(),"unsubscribe");
+            navigationView.setCheckedItem(R.id.nav_home);
+        }else{
+            exitAlertDialog();
+        }
+    }
+
+    private void exitAlertDialog() {
+
+        new AlertDialog.Builder(this)
+                .setMessage("You will exit this app")
+                .setTitle("Do you really want to exit?")
+                .setIcon(R.drawable.thali_graphic)
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                }).show();
     }
 
     public void logOut()
@@ -360,13 +380,13 @@ public class HomeActivity extends AppCompatActivity
             public void run() {
 
 
-                checkMermission();
+                checkPermission();
             }
         }, 4000);
     }
 
 
-    private void checkMermission(){
+    private void checkPermission(){
         Dexter.withActivity(this)
                 .withPermissions(
                         Manifest.permission.ACCESS_FINE_LOCATION,
@@ -382,11 +402,11 @@ public class HomeActivity extends AppCompatActivity
             @Override
             public void onPermissionsChecked(MultiplePermissionsReport report) {
                 if (report.isAnyPermissionPermanentlyDenied()){
-                    checkMermission();
+                    checkPermission();
                 } else if (report.areAllPermissionsGranted()){
                     // copy some things
                 } else {
-                    checkMermission();
+                    checkPermission();
                 }
 
             }

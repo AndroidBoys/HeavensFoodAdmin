@@ -35,6 +35,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -126,9 +127,17 @@ public class SpecialOrders extends Fragment implements View.OnCreateContextMenuL
                 specialFoodViewHolder.specialFoodDescriptionTextView.setText(specialFood.getFoodDescription());
                 specialFoodViewHolder.specialFoodNameTextView.setText(specialFood.getFoodName());
 //                specialFoodViewHolder.specialFoodQuantityTextView.setText(specialFood.getFoodQuantity());
-                Picasso.with(context).load(specialFood.getImageUrl()).into(specialFoodViewHolder.specialFoodImageView);
-                
-                
+                Picasso.with(context).load(specialFood.getImageUrl()).into(specialFoodViewHolder.specialFoodImageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        if(specialFoodViewHolder.imageProgressBar!=null){
+                            specialFoodViewHolder.imageProgressBar.setVisibility(View.GONE);
+                        }
+                    }
+                    @Override
+                    public void onError() {
+                    }
+                });
             }
         };
         specialOrderRecyclerView.setAdapter(specialFoodAdapter);

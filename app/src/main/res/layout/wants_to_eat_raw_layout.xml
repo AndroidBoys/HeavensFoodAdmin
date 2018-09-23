@@ -10,7 +10,7 @@
     android:layout_marginEnd="5dp"
     app:cardCornerRadius="8dp"
     android:layout_marginBottom="25dp"
-    android:layout_height="350dp">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:orientation="vertical"
@@ -20,6 +20,13 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="230dp">
+
+
+            <ProgressBar
+                android:id="@+id/imageProgressBar"
+                android:padding="85dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
 
             <ImageView
                 android:id="@+id/wantsFoodImageView"
@@ -42,22 +49,14 @@
 
         </RelativeLayout>
 
-        <ScrollView
-            android:layout_marginTop="20dp"
-            android:layout_weight="3"
-            android:layout_width="match_parent"
-            android:layout_height="0dp">
-
-            <TextView
-                android:id="@+id/wantsFoodDescriptionTextView"
-                android:layout_width="wrap_content"
-                android:fontFamily="@font/josefin_bold"
-                android:textSize="15sp"
-                android:text="food Description will be here . This food is one of the best food in the market Here your are getting the facility of not only eating but"
-                android:maxLines="4"
-                android:layout_height="match_parent"/>
-
-        </ScrollView>
+        <TextView
+            android:layout_marginTop="5dp"
+            android:id="@+id/wantsFoodDescriptionTextView"
+            android:layout_width="wrap_content"
+            android:fontFamily="@font/josefin_bold"
+            android:textSize="15sp"
+            android:text="food Description will be here . This food is one of the best food in the market Here your are getting the facility of not only eating"
+            android:layout_height="match_parent"/>
 
     </LinearLayout>
 

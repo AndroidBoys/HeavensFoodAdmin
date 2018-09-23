@@ -1,5 +1,6 @@
 package androidboys.com.heavensfoodadmin.Fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
 
+import androidboys.com.heavensfoodadmin.Activities.DescriptionActivity;
+import androidboys.com.heavensfoodadmin.Activities.HomeActivity;
 import androidboys.com.heavensfoodadmin.Adapters.ViewPagerAdapter;
 import androidboys.com.heavensfoodadmin.R;
 import androidx.annotation.NonNull;
@@ -22,12 +25,13 @@ public class SubscribedUserFragment extends Fragment {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private Context context;
+    private Activity activity;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         View view=inflater.inflate(R.layout.subscribed_user_fragment_layout,container,false);
+        activity=getActivity();
         Log.i("Inside","Subscribed Fragment");
         tabLayout=view.findViewById(R.id.tabLayout);
         viewPager=view.findViewById(R.id.subscriptionViewPager);
@@ -36,8 +40,6 @@ public class SubscribedUserFragment extends Fragment {
         //First we will set the adapter to the viewPager
         ViewPagerAdapter viewPagerAdapter=new ViewPagerAdapter(getFragmentManager());
         viewPager.setAdapter(viewPagerAdapter);
-
-
 
 
         //And then we set the viewPager on the tabLayout
@@ -74,5 +76,11 @@ public class SubscribedUserFragment extends Fragment {
         SubscribedUserFragment fragment = new SubscribedUserFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((HomeActivity)activity).setActionBarTitle("Heavens Food Admin");
     }
 }

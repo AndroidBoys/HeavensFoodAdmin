@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cepheuen.elegantnumberbutton.view.ElegantNumberButton;
@@ -22,11 +23,13 @@ public class WhyHeavensFoodViewHolder extends RecyclerView.ViewHolder implements
 
     public ImageView aboutImageView;
     public TextView aboutTextView;
+    public ProgressBar imageProgressBar;
 
     public WhyHeavensFoodViewHolder(@NonNull View itemView) {
         super(itemView);
         aboutImageView=itemView.findViewById(R.id.aboutImage1);
         aboutTextView=itemView.findViewById(R.id.aboutTextView1);
+        imageProgressBar=itemView.findViewById(R.id.imageProgressBar);
         itemView.setOnCreateContextMenuListener(this);
 
     }
