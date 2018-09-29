@@ -79,5 +79,22 @@
         </LinearLayout>
 
     </LinearLayout>
+    <FrameLayout
+        android:id="@+id/no_plan_selected_framelayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        android:background="@color/colorPrimary">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="@dimen/dimen_70dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="NO PLAN SELECTED BY THIS USER"
+            android:textColor="@color/white"
+            android:fontFamily="@font/josefin_bold"/>
+
+    </FrameLayout>
 
 </androidx.cardview.widget.CardView>

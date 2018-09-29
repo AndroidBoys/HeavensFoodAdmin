@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import androidboys.com.heavensfoodadmin.Activities.DescriptionActivity;
 import androidboys.com.heavensfoodadmin.Activities.HomeActivity;
 import androidboys.com.heavensfoodadmin.Common.UserList;
 import androidboys.com.heavensfoodadmin.Models.Category;
@@ -358,6 +359,11 @@ public class SendNotificationFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((HomeActivity)hostingActivity).setActionBarTitle("Send Notification");
+        String title ="Send Notification";
+        if(hostingActivity instanceof  HomeActivity){
+            ((HomeActivity)hostingActivity).setActionBarTitle(title);
+        }else if(hostingActivity instanceof DescriptionActivity){
+            ((DescriptionActivity)hostingActivity).setActionBarTitle(title);
+        }
     }
 }

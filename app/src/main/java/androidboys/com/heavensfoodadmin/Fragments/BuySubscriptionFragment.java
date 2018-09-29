@@ -47,7 +47,7 @@ public class BuySubscriptionFragment extends Fragment {
     private boolean lunchChecked=true;
     private boolean breakfastChecked=true;
     private int noOfChecks=3;
-    private String userRef=null;
+//    private String userRef=null;
 // <<<<<<< arvind100
     private Activity activity;
 // =======
@@ -57,11 +57,10 @@ public class BuySubscriptionFragment extends Fragment {
 // >>>>>>> master
 
 
-    public static BuySubscriptionFragment newInstance(Plan plan, String userRef) {
+    public static BuySubscriptionFragment newInstance(Plan plan) {
 
         Bundle args = new Bundle();
         args.putSerializable("plan",plan);
-        args.putString("USERREF",userRef);
         BuySubscriptionFragment fragment = new BuySubscriptionFragment();
         fragment.setArguments(args);
         return fragment;
@@ -74,7 +73,7 @@ public class BuySubscriptionFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_buy_subscription,container,false);
         activity=getActivity();
         plan = (Plan) getArguments().getSerializable("plan");
-        userRef=getArguments().getString("USERREF",null);
+//        userRef=getArguments().getString("USERREF",null);
 //        getActivity().getActionBar().hide();
 
         planImageView = view.findViewById(R.id.planImageview);
@@ -101,12 +100,14 @@ public class BuySubscriptionFragment extends Fragment {
             public void onClick(View view) {
                 //SUBSCRIBE THIS PLAN
 
-                if(noOfChecks!=0) {
-                    moveToPaymentsActivity();
-                    Toast.makeText(getContext(), "" + userRef, Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(getContext(), "Please choose the one time plan atleast", Toast.LENGTH_SHORT).show();
-                }
+//                if(noOfChecks!=0) {
+//                    moveToPaymentsActivity();
+////                    Toast.makeText(getContext(), "" + userRef, Toast.LENGTH_SHORT).show();
+//                }else{
+//                    Toast.makeText(getContext(), "Please choose the one time plan atleast", Toast.LENGTH_SHORT).show();
+//                }
+
+                Toast.makeText(getContext(), "This leads to the payment flow!", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -164,7 +165,7 @@ public class BuySubscriptionFragment extends Fragment {
     }
 
 
-
+    // The old story
     private void moveToPaymentsActivity(){
         Intent intent = new Intent(getActivity(), PaymentsActivity.class);
         if(breakfastChecked){
@@ -180,7 +181,7 @@ public class BuySubscriptionFragment extends Fragment {
         Bundle bundle = new Bundle();
        // bundle.putSerializable("user",new Profile(user));
         bundle.putSerializable("choosenPlan",plan);
-        bundle.putString("USERREF",userRef);
+//        bundle.putString("USERREF",userRef);
 
         intent.putExtras(bundle);
         startActivity(intent);
