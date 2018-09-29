@@ -401,6 +401,7 @@ public class PaymentsActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Toast.makeText(PaymentsActivity.this, "Sucessful!", Toast.LENGTH_SHORT).show();
+                            FirebaseDatabase.getInstance().getReference("Users").child(uid).child("wantSubscription").removeValue();
                         }
                     });
 

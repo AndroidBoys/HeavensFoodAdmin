@@ -213,6 +213,7 @@ public class SendNotificationFragment extends Fragment {
                             //default order for all users
                             for (int i = 0; i < UserList.userList.size(); i++) {
                                 Plan plan = UserList.userList.get(i).getSubscribedPlan();
+                                if(plan!=null){
                                 if (
                                         ((selectedMeal.equals("BreakFast")) && (plan.includesBreakFast))
                                                 || ((selectedMeal.equals("Lunch")) && (plan.includesLunch))
@@ -222,6 +223,7 @@ public class SendNotificationFragment extends Fragment {
                                     FirebaseDatabase.getInstance().getReference("Orders").child("NewFoodOrders").child(UserList.usersUid.get(i)).setValue(order);
                                 } else {
                                     continue;
+                                }
                                 }
                             }
 //                        } else {
@@ -252,13 +254,15 @@ public class SendNotificationFragment extends Fragment {
                 for (int j = 0; j < finalOrderedFoodList.size(); j++) {
                     for (int i = 0; i < UserList.usersUid.size(); i++) {
                         Plan plan = UserList.userList.get(i).getSubscribedPlan();
-                        if (
-                                ((selectedMeal.equals("BreakFast")) && (plan.includesBreakFast))
-                                        || ((selectedMeal.equals("Lunch")) && (plan.includesLunch))
-                                        || ((selectedMeal.equals("Dinner")) && (plan.includesDinner))
-                                ) {
-                            FirebaseDatabase.getInstance().getReference("FavouriteFood").child(finalOrderedFoodList.get(j)
-                                    .getFoodName()).child(UserList.usersUid.get(i)).setValue(UserList.usersUid.get(i));
+                        if(plan!=null) {
+                            if (
+                                    ((selectedMeal.equals("BreakFast")) && (plan.includesBreakFast))
+                                            || ((selectedMeal.equals("Lunch")) && (plan.includesLunch))
+                                            || ((selectedMeal.equals("Dinner")) && (plan.includesDinner))
+                            ) {
+                                FirebaseDatabase.getInstance().getReference("FavouriteFood").child(finalOrderedFoodList.get(j)
+                                        .getFoodName()).child(UserList.usersUid.get(i)).setValue(UserList.usersUid.get(i));
+                            }
                         }
                     }
                 }
@@ -273,7 +277,7 @@ public class SendNotificationFragment extends Fragment {
 
     private void sendNotification(){
 
-        Notification notification = new Notification(notificationMessageEditText.getText().toString(),"Notification from firebase");
+        Notification notification = new Notification(notificationMessageEditText.getText().toString(),"Choose Your "+selectedMeal);
         Sender content = new Sender("/topics/"+selectedMeal,notification);
         content.setTime_to_live((int)deadLine/1000);
         fcmService.sendNotification(content).enqueue(new Callback<MyResponse>() {

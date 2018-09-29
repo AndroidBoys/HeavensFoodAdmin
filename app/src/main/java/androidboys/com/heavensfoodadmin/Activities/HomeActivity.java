@@ -20,6 +20,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -73,12 +74,14 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         resolvePermissions();
 
+        FirebaseMessaging.getInstance().subscribeToTopic("admin");
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //Before this we have to check internet connection
-        OnlineTimeAsyncTask onlineTimeAsyncTask=new OnlineTimeAsyncTask();
-        onlineTimeAsyncTask.execute();
+//        //Before this we have to check internet connection
+//        OnlineTimeAsyncTask onlineTimeAsyncTask=new OnlineTimeAsyncTask();
+//        onlineTimeAsyncTask.execute();
 
 
         databaseReference=FirebaseDatabase.getInstance().getReference("Users");

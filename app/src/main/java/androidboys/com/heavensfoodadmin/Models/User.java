@@ -10,6 +10,7 @@ public class User {
     public Address userAddress;
     public String password;
     public Plan subscribedPlan;
+    public boolean wantSubscription;
     public Wallet wallet;
     public Absence absence;
 
@@ -94,5 +95,13 @@ public class User {
 
     public void setWallet(Wallet wallet) {
         this.wallet = wallet;
+    }
+
+    public boolean isWantSubscription() {
+        return wantSubscription;
+    }
+
+    public void setWantSubscription(boolean wantSubscription) {
+        this.wantSubscription = wantSubscription;
     }
 }
