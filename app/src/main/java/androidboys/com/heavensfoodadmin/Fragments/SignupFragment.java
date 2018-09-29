@@ -1,7 +1,9 @@
 package androidboys.com.heavensfoodadmin.Fragments;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.labo.kaji.fragmentanimations.PushPullAnimation;
 
 import java.util.ArrayList;
@@ -76,7 +79,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         emailEditText = view.findViewById(R.id.emailEdittext);
         phoneEditText = view.findViewById(R.id.phonenumberEdittext);
         passwordEditText = view.findViewById(R.id.passwordEdittext);
-        signupButton = view.findViewById(R.id.signupButton);
+        signupButton = view.findViewById(R.id.sendOtpButton);
         loginTextview = view.findViewById(R.id.loginTextview);
         nameEditText = view.findViewById(R.id.nameEdittext);
 
@@ -84,14 +87,18 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
         //hiding search button before fragment
         placeAutocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_button).setVisibility(View.GONE);
         //setting hint for ediittext
+        //setting hint for ediittext
         EditText place;
         place= ((EditText)placeAutocompleteFragment.getView().findViewById(R.id.place_autocomplete_search_input));
         place.setHint("Enter Your Address");
+        place.setTextSize(TypedValue.COMPLEX_UNIT_SP,16f);
         place.setTextColor(Color.WHITE);
+        place.setTypeface(Typeface.DEFAULT);
         placeAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
                 userAddress= new Address((String) place.getAddress(),String.valueOf(place.getLatLng().longitude),String.valueOf(place.getLatLng().latitude));
+//            removePlaceFragment();
             }
 
             @Override
@@ -100,7 +107,6 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 Toast.makeText(getActivity(), ""+status.getStatusMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
         signupButton.setOnClickListener(this);
         loginTextview.setOnClickListener(this);
         return view;
@@ -109,8 +115,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.signupButton:
-                removePlaceFragment();
+            case R.id.sendOtpButton:
+//                removePlaceFragment();
                 registerUser();
                 break;
             case R.id.loginTextview:
@@ -131,7 +137,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
     public void registerUser()
     {
-        mobileNumber = phoneEditText.getText().toString().trim();
+       mobileNumber=phoneEditText.getText().toString();
         email = emailEditText.getText().toString();
         password = passwordEditText.getText().toString();
         name=nameEditText.getText().toString();
@@ -154,8 +160,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
             passwordEditText.requestFocus();
             return;
         }
-
-
+        removePlaceFragment();
         if(!checkAlreadyExists()) {
             verifyPhoneNumber();
         }else {
@@ -221,7 +226,4 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
         return false;
     }
-
-
-
 }

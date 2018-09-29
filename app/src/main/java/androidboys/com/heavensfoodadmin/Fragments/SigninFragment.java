@@ -104,6 +104,7 @@ public class SigninFragment extends Fragment implements View.OnClickListener {
 
     private void recoverPassword()
     {
+
         Toast.makeText(hostingActivity, mAuth.getCurrentUser().getEmail(), Toast.LENGTH_SHORT).show();
         mAuth.sendPasswordResetEmail(mAuth.getCurrentUser().getEmail()).addOnCompleteListener(hostingActivity, new OnCompleteListener<Void>() {
             @Override

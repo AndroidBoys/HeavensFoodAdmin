@@ -72,6 +72,10 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
     private Context context;
     private String userRef=null;
     private Activity activity;
+// <<<<<<< 29-sept
+// //    public static Fragment newInstance(String ref) {
+// =======
+// >>>>>>> master
 
     public static OurPlansFragment newInstance(String ref) {
 

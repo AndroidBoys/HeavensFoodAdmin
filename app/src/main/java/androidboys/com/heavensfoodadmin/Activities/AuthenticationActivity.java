@@ -20,14 +20,6 @@ public class AuthenticationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
         getSupportActionBar().hide();
-
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
         SigninFragment signinFragment = SigninFragment.newInstance();
 
         if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
@@ -38,6 +30,14 @@ public class AuthenticationActivity extends AppCompatActivity {
 
             addDifferentFragment(signinFragment);
         }
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
     }
 
     public void moveToHomeActivity()

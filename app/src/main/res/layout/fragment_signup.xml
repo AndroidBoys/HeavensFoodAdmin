@@ -5,33 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:gravity="center"
-        android:layout_weight="2"
-        android:id="@+id/signupLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/righteous"
-        android:text="@string/btn_signup"
-        android:textColor="@android:color/white"
-        android:textSize="64sp"
-        android:layout_gravity="center"/>
-
-    <fragment
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_weight=".5"
-        android:textColorHint="@android:color/white"
-        android:textColor="@android:color/white"
-        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-        android:id="@+id/addressAutoCompleteFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
+        <TextView
+            android:gravity="center"
+            android:layout_weight="2"
+            android:id="@+id/signupLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/righteous"
+            android:text="@string/btn_signup"
+            android:textColor="@android:color/white"
+            android:textSize="64sp"
+            android:layout_gravity="center"/>
 
     <EditText
         android:layout_weight=".5"
@@ -48,83 +35,104 @@
 
 
     <EditText
-        android:layout_weight=".5"
-        android:id="@+id/emailEdittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:backgroundTint="#33ffffff"
-        android:fontFamily="@font/josefin_regular"
-        android:hint="@string/hint_email"
-        android:inputType="textEmailAddress"
-        android:textColor="@android:color/white"
-        android:textColorHint="@android:color/white"/>
-
-    <EditText
-        android:layout_weight=".5"
-        android:id="@+id/phonenumberEdittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:backgroundTint="#33ffffff"
-        android:fontFamily="@font/josefin_regular"
-        android:inputType="phone"
-        android:textColor="@android:color/white"
-        android:textColorHint="@android:color/white"
-        android:hint="@string/phone_number_hint"/>
-
-    <EditText
-        android:layout_weight=".5"
-        android:id="@+id/passwordEdittext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:backgroundTint="#33ffffff"
-        android:fontFamily="@font/josefin_regular"
-        android:hint="@string/hint_password"
-        android:inputType="textPassword"
-        android:textColor="@android:color/white"
-        android:textColorHint="@android:color/white"/>
-
-    <LinearLayout
-        android:layout_weight="2"
-        android:layout_width="match_parent"
-        android:layout_height="0dp">
-
-        <Button
-            android:layout_gravity="center"
-            android:id="@+id/signupButton"
-            android:layout_width="170dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:background="@drawable/button_background"
-            android:fontFamily="@font/josefin_bold"
-            android:text="@string/send_otp_text"
-            android:textColor="@android:color/white"
-            android:textSize="25sp"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_weight="2"
-        android:layout_width="match_parent"
-        android:layout_height="0dp">
-        <TextView
-            android:layout_gravity="center"
-            android:layout_weight="2"
-            android:id="@+id/loginTextview"
+            android:layout_weight=".5"
+            android:id="@+id/emailEdittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
-            android:fontFamily="@font/josefin_bold"
-            android:text="@string/text_signin"
-            android:textAlignment="center"
+            android:backgroundTint="#33ffffff"
+            android:fontFamily="@font/josefin_regular"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
             android:textColor="@android:color/white"
-            android:textSize="22sp"/>
+            android:textColorHint="@android:color/white"/>
+    <androidx.cardview.widget.CardView
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/transparent"
+        android:layout_weight=".5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <fragment
+            android:layout_gravity="center"
+            android:textColorHint="@android:color/white"
+            android:textColor="@android:color/white"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            android:id="@+id/addressAutoCompleteFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
-    </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+
+        <EditText
+            android:layout_weight=".5"
+            android:id="@+id/phonenumberEdittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:backgroundTint="#33ffffff"
+            android:fontFamily="@font/josefin_regular"
+            android:inputType="phone"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            android:hint="@string/phone_number_hint"/>
+
+        <EditText
+            android:layout_weight=".5"
+            android:id="@+id/passwordEdittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:backgroundTint="#33ffffff"
+            android:fontFamily="@font/josefin_regular"
+            android:hint="@string/hint_password"
+            android:inputType="textPassword"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"/>
+
+    <LinearLayout
+            android:layout_weight="2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <Button
+                android:layout_gravity="center"
+                android:id="@+id/sendOtpButton"
+                android:layout_width="170dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/button_background"
+                android:fontFamily="@font/josefin_bold"
+                android:text="@string/send_otp_text"
+                android:textColor="@android:color/white"
+                android:textSize="25sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+            <TextView
+                android:layout_gravity="center"
+                android:layout_weight="2"
+                android:id="@+id/loginTextview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/josefin_bold"
+                android:text="@string/text_signin"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="22sp"/>
+
+        </LinearLayout>
+
 </LinearLayout>

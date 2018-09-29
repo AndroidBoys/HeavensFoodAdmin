@@ -1,6 +1,8 @@
 package androidboys.com.heavensfoodadmin.Fragments;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +20,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.io.Serializable;
@@ -34,6 +39,7 @@ import androidx.fragment.app.Fragment;
 
 public class VerificationFragment extends Fragment implements View.OnClickListener {
 
+    private static String adminPhoneNo;
     private EditText otpEditText;
     private TextView verificationTextView;
     private Button signupButton;
@@ -52,7 +58,11 @@ public class VerificationFragment extends Fragment implements View.OnClickListen
     private String password;
     private Address address;
 
+
     public static VerificationFragment newInstance(String email,String mobile,String password,Address userAddress,String name) {
+
+
+
 
         Bundle args = new Bundle();
         args.putString("mobile",mobile);
@@ -89,7 +99,6 @@ public class VerificationFragment extends Fragment implements View.OnClickListen
         address= (Address) getArguments().getSerializable("userAddress");
         name=getArguments().getString("name");
 
-
         sendVerificationCode();
 
         return view;
@@ -119,15 +128,36 @@ public class VerificationFragment extends Fragment implements View.OnClickListen
                     .show();
             registerUser();
         }
+        else{
+
+            verifyVerificationCode(otpEditText.getText().toString());
+            registerUser();
+        }
     }
 
     private void sendVerificationCode() {
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                "+91" + mobile,
-                60,
-                TimeUnit.SECONDS,
-                TaskExecutors.MAIN_THREAD,
-                mCallbacks);
+
+        FirebaseDatabase.getInstance().getReference("AdminPhoneNo").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                adminPhoneNo =dataSnapshot.getValue().toString();
+                Log.d("phoneNO",adminPhoneNo);
+                Log.d("tag",""+adminPhoneNo);
+                PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                        "+91"+adminPhoneNo,
+                        60,
+                        TimeUnit.SECONDS,
+                        TaskExecutors.MAIN_THREAD,
+                        mCallbacks);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -141,18 +171,17 @@ public class VerificationFragment extends Fragment implements View.OnClickListen
             //so user has to manually enter the code
             if (code != null) {
                 otpEditText.setText(code);
-
                 //verifying the code
                 verifyVerificationCode(code);
                 progressBar.setVisibility(View.GONE);
 
             }
 
-
         }
 
         @Override
         public void onVerificationFailed(FirebaseException e) {
+            Log.d("error",e.getMessage());
             Toast.makeText(hostingActivity, e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
@@ -161,6 +190,18 @@ public class VerificationFragment extends Fragment implements View.OnClickListen
             super.onCodeSent(s, forceResendingToken);
             mVerificationId = s;
             // mResendToken = forceResendingToken;
+            new CountDownTimer(5000, 1000) {
+                @Override
+                public void onTick(long l) {
+
+                }
+
+                @Override
+                public void onFinish() {
+
+                    progressBar.setVisibility(View.GONE);
+                }
+            }.start();
         }
     };
 
@@ -183,14 +224,31 @@ public class VerificationFragment extends Fragment implements View.OnClickListen
                 if(task.isSuccessful())
                 {
                     // add phone number to the email/ password login
-                    mAuth.getCurrentUser().linkWithCredential(credential);
-                    addUsertoDB();
-                    hostingActivity.addDifferentFragment(SigninFragment.newInstance());
-                }
-                else
-                {   kProgressHUD.dismiss();
-                    Toast.makeText(hostingActivity, "Sign up failed:"+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
+                    mAuth.getCurrentUser().linkWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(task.isSuccessful()){
+                                addUsertoDB();
+                                hostingActivity.addDifferentFragment(SigninFragment.newInstance());
+
+                            }
+                            else{
+
+                                mAuth.getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                       if(task.isSuccessful())
+                                            Toast.makeText(getContext(), "Please enter a valid otp", Toast.LENGTH_SHORT).show();
+
+                                    }
+
+                                });
+                                kProgressHUD.dismiss();
+                                Toast.makeText(hostingActivity, "Sign up failed:"+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                  }
 
             }
         });
