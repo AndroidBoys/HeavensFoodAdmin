@@ -68,7 +68,7 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
     private Context context;
     private String userRef=null;
     private Activity activity;
-    public static Fragment newInstance(String ref) {
+
     public static OurPlansFragment newInstance(String ref) {
 
         Bundle args = new Bundle();
