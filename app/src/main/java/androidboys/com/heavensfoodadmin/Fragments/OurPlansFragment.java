@@ -59,7 +59,11 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
     private FloatingActionButton ourPlansFloatingActionButton;
     private EditText alertPlanNameEditText;
     private EditText alertPlanDescriptionEditText;
-    private EditText alertPlanSingleTimePriceEditText;
+    private EditText singleTimePriceEditText;
+    private EditText twoTimePriceEditText;
+    private EditText threeTimePriceEditText;
+    private EditText daysEditText;
+
     private Button alertPlanSelectButton;
     private Button alertPlanUploadButton;
     private Uri imageUri;
@@ -206,15 +210,22 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
         View view=layoutInflater.inflate(R.layout.our_plans_alert_dialog_layout,null,false);
         alertPlanDescriptionEditText=view.findViewById(R.id.alertPlanDescriptionEditText);
         alertPlanNameEditText=view.findViewById(R.id.alertPlanNameEditText);
-        alertPlanSingleTimePriceEditText=view.findViewById(R.id.alertSingleTimePriceEditText);
         alertPlanSelectButton=view.findViewById(R.id.alertPlanSelectButton);
         alertPlanUploadButton=view.findViewById(R.id.alertPlanUploadButton);
+
+        singleTimePriceEditText = view.findViewById(R.id.onetimePriceEditText);
+        twoTimePriceEditText= view.findViewById(R.id.twotimePriceEditText);
+        threeTimePriceEditText = view.findViewById(R.id.threetimePriceEditText);
+        daysEditText = view.findViewById(R.id.daysEditText);
 
 
         //setting already exist food details onto edittext
         alertPlanNameEditText.setText(plan.getPlanName());
         alertPlanDescriptionEditText.setText(plan.getDescription());
-        alertPlanSingleTimePriceEditText.setText(plan.getSingleTimePrice());
+        singleTimePriceEditText.setText(plan.getOneTimePrice());
+        twoTimePriceEditText.setText(plan.getTwoTimePrice());
+        threeTimePriceEditText.setText(plan.getThreeTimePrice());
+        daysEditText.setText(plan.getNoOfDays());
 
 
         alertPlanSelectButton.setOnClickListener(new View.OnClickListener() {
@@ -239,7 +250,11 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
 //                //This below will set the new data on that key
                 plan.setPlanName(alertPlanNameEditText.getText().toString());
                 plan.setDescription(alertPlanDescriptionEditText.getText().toString());
-                plan.setSingleTimePrice(alertPlanSingleTimePriceEditText.getText().toString());
+
+                plan.setOneTimePrice(singleTimePriceEditText.getText().toString());
+                plan.setTwoTimePrice(twoTimePriceEditText.getText().toString());
+                plan.setThreeTimePrice(threeTimePriceEditText.getText().toString());
+                plan.setNoOfDays(daysEditText.getText().toString());
 
                 planDatabaseReference.child(key).setValue(plan).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -310,7 +325,18 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
         View view=layoutInflater.inflate(R.layout.our_plans_alert_dialog_layout,null,false);
         alertPlanDescriptionEditText=view.findViewById(R.id.alertPlanDescriptionEditText);
         alertPlanNameEditText=view.findViewById(R.id.alertPlanNameEditText);
-        alertPlanSingleTimePriceEditText=view.findViewById(R.id.alertSingleTimePriceEditText);
+
+        singleTimePriceEditText = view.findViewById(R.id.onetimePriceEditText);
+        twoTimePriceEditText= view.findViewById(R.id.twotimePriceEditText);
+        threeTimePriceEditText = view.findViewById(R.id.threetimePriceEditText);
+        daysEditText = view.findViewById(R.id.daysEditText);
+
+
+
+        plan.setOneTimePrice(singleTimePriceEditText.getText().toString());
+        plan.setTwoTimePrice(twoTimePriceEditText.getText().toString());
+        plan.setThreeTimePrice(threeTimePriceEditText.getText().toString());
+
         alertPlanSelectButton=view.findViewById(R.id.alertPlanSelectButton);
         alertPlanUploadButton=view.findViewById(R.id.alertPlanUploadButton);
 
@@ -337,7 +363,12 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
 
                     plan.setDescription(alertPlanDescriptionEditText.getText().toString());
                     plan.setPlanName(alertPlanNameEditText.getText().toString());
-                    plan.setSingleTimePrice(alertPlanSingleTimePriceEditText.getText().toString());
+
+                    plan.setOneTimePrice(singleTimePriceEditText.getText().toString());
+                    plan.setTwoTimePrice(twoTimePriceEditText.getText().toString());
+                    plan.setThreeTimePrice(threeTimePriceEditText.getText().toString());
+                    plan.setNoOfDays(daysEditText.getText().toString());
+
                     planDatabaseReference.push().setValue(plan).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
