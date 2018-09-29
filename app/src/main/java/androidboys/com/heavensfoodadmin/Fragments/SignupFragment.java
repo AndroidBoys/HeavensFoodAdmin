@@ -185,7 +185,6 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     public void fetchUsers()
     {
         users = new ArrayList<>();
-
         FirebaseDatabase.getInstance().getReference("Admin").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {

@@ -17,8 +17,8 @@ public class ProgressUtils {
             progressDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             progressDialog.setContentView(R.layout.progress_dialog);
             progressDialog.setCancelable(true);
-            progressDialog.show();
             progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.show();
         }
     }
 

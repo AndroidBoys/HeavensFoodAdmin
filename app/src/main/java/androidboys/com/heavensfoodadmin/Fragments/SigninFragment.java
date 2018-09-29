@@ -164,7 +164,7 @@ public class SigninFragment extends Fragment implements View.OnClickListener {
                 .show();
 
 
-        FirebaseDatabase.getInstance().getReference("Users").addChildEventListener(new ChildEventListener() {
+        FirebaseDatabase.getInstance().getReference("Admin").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
@@ -194,7 +194,7 @@ public class SigninFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        FirebaseDatabase.getInstance().getReference("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference("Admin").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // All child have been added

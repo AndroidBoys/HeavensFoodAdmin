@@ -354,15 +354,15 @@ public class HomeActivity extends AppCompatActivity
 
     public void moveToAuthenticationActivity()
     {
-//        Intent intent = new Intent(this,AuthenticationActivity.class);
-//        startActivity(intent);
-          finish();
+        Intent intent = new Intent(this,AuthenticationActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     public void logOutDialog()
     {
         new AlertDialog.Builder(this)
-                .setMessage("You will be loged out")
+                .setMessage("You will be logged out")
                 .setTitle("Do you really want to log out?")
                 .setIcon(R.drawable.thali_graphic)
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
