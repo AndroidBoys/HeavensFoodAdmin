@@ -29,16 +29,50 @@
         />
 
     <EditText
-        android:id="@+id/alertSingleTimePriceEditText"
+        android:id="@+id/onetimePriceEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/josefin_bold"
-        android:hint="SingleTimePrice"
+        android:hint="Single time price"
         android:maxLines="1"
         android:inputType="number"
         android:textColor="@color/md_black_1000"
         />
+    <EditText
+        android:id="@+id/twotimePriceEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/josefin_bold"
+        android:hint="Two times Price"
+        android:maxLines="1"
+        android:inputType="number"
+        android:textColor="@color/md_black_1000"
+        />
+    <EditText
+        android:id="@+id/threetimePriceEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/josefin_bold"
+        android:hint="Three times Price"
+        android:maxLines="1"
+        android:inputType="number"
+        android:textColor="@color/md_black_1000"
+        />
+    <EditText
+        android:id="@+id/daysEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/josefin_bold"
+        android:hint="Days"
+        android:maxLines="1"
+        android:inputType="number"
+        android:textColor="@color/md_black_1000"
+        />
+
 
 
     <LinearLayout

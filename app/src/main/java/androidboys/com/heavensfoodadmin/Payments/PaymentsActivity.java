@@ -183,7 +183,7 @@ public class PaymentsActivity extends AppCompatActivity {
             dinner.setText(checkBool(plan.includesDinner));
             breakfast.setText(checkBool(plan.includesBreakFast));
             days.setText(plan.noOfDays);
-            int totalPrice = Integer.parseInt(plan.getFrequencyPerDay()) * Integer.parseInt(plan.getSingleTimePrice());
+            int totalPrice = calculatePrice();
             price.setText("" + totalPrice);
         }
 
@@ -250,8 +250,7 @@ public class PaymentsActivity extends AppCompatActivity {
 
     private void setUserWallet(){
 
-        String amount = String.valueOf(Integer.parseInt(plan.getNoOfDays())*
-                (Integer.parseInt(plan.getSingleTimePrice())*Integer.parseInt(plan.getFrequencyPerDay())));
+        String amount = String.valueOf(calculatePrice());
 
         String dueDate = calculateDueDate1();
 
@@ -377,6 +376,33 @@ public class PaymentsActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private int calculatePrice(){
+        int frequency =0;
+        if(plan.includesBreakFast){
+            frequency++;
+        }
+        if(plan.includesLunch){
+            frequency++;
+        }
+        if(plan.includesDinner){
+            frequency++;
+        }
+
+        switch (frequency){
+            case 1:
+                return getInt(plan.getOneTimePrice());
+            case 2:
+                return getInt(plan.getTwoTimePrice());
+            case 3:
+                return getInt(plan.getThreeTimePrice());
+        }
+
+        return 0;
+    }
+    private int getInt(String s){
+        return  Integer.parseInt(s);
     }
 
 
