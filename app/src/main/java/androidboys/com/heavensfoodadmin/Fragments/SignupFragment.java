@@ -110,7 +110,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.signupButton:
-                removePlaceFragment();
+//                removePlaceFragment();
                 registerUser();
                 break;
             case R.id.loginTextview:
