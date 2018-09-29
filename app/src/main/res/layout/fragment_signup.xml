@@ -67,6 +67,7 @@
     </androidx.cardview.widget.CardView>
 
 
+
         <EditText
             android:layout_weight=".5"
             android:id="@+id/phonenumberEdittext"
@@ -87,15 +88,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
+            android:layout_marginStart="16dp"
             android:backgroundTint="#33ffffff"
             android:fontFamily="@font/josefin_regular"
             android:hint="@string/hint_password"
             android:inputType="textPassword"
             android:textColor="@android:color/white"
             android:textColorHint="@android:color/white"/>
-
-
 
     <LinearLayout
             android:layout_weight="2"
@@ -135,4 +134,5 @@
                 android:textSize="22sp"/>
 
         </LinearLayout>
-            </LinearLayout>
+
+</LinearLayout>

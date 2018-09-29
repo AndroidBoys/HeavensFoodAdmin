@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    android:background="@drawable/background_xml"
-    tools:context="drunkcoder.com.foodheaven.Activities.AuthenticationActivity">
+    android:background="@drawable/background_xml">
 
         <TextView
             android:gravity="center"
