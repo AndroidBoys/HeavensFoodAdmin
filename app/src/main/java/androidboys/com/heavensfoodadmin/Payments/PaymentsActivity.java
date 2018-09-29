@@ -65,6 +65,7 @@ import androidboys.com.heavensfoodadmin.R;
 import androidboys.com.heavensfoodadmin.Utils.ProgressUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import retrofit2.Retrofit;
@@ -86,6 +87,7 @@ public class PaymentsActivity extends AppCompatActivity {
     private NotificationSubscription notificationSubscription;
     private KProgressHUD progressHUD;
     private String userRef;
+    private View frameLayout;
 
 
     private void initViews() {
@@ -107,6 +109,10 @@ public class PaymentsActivity extends AppCompatActivity {
         phone=view.findViewById(R.id.phoneEditText);
         address=view.findViewById(R.id.addressEditText);
 
+        // framelayout
+
+        frameLayout = findViewById(R.id.no_plan_selected_framelayout);
+
     }
 
     @Override
@@ -114,7 +120,7 @@ public class PaymentsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         initViews();
         Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
+//        Bundle bundle = intent.getExtras();
 
         progressHUD= KProgressHUD.create(this);
         progressHUD.setLabel("Please wait");
@@ -122,8 +128,8 @@ public class PaymentsActivity extends AppCompatActivity {
         progressHUD.setStyle(KProgressHUD.Style.SPIN_INDETERMINATE);
 
 
-        plan = (Plan) bundle.getSerializable("choosenPlan");
-        userRef = bundle.getString("USERREF");
+//        plan = (Plan) bundle.getSerializable("choosenPlan");
+        userRef =intent.getStringExtra("USERREF");
 
         fetchUser();
 
@@ -159,32 +165,37 @@ public class PaymentsActivity extends AppCompatActivity {
     }
 
     private void setUsersProfile(User user) {
-        userEmailTextViewHeader.setText(user.getEmail());
-        phone.setText(user.getPhoneNumber());
-        email.setText(user.getEmail());
-        userNameTextViewHeader.setText(user.getName());
-        name.setText(user.getName());
-        if(user.getUserAddress()!=null) {
-            address.setText(user.getUserAddress().address);
-        }else{
-            address.setVisibility(GONE);
-        }
-
-        ColorGenerator generator=ColorGenerator.MATERIAL;
-
-        TextDrawable textDrawable = TextDrawable.builder()
-                .buildRound(""+"" + user.getName().charAt(0), generator.getRandomColor());//setting first letter of the user name
-        userImage.setImageDrawable(textDrawable);
-
-
         if(plan!=null) {
-            planName.setText(plan.getPlanName());
-            lunch.setText(checkBool(plan.isIncludesLunch()));
-            dinner.setText(checkBool(plan.includesDinner));
-            breakfast.setText(checkBool(plan.includesBreakFast));
-            days.setText(plan.noOfDays);
-            int totalPrice = calculatePrice();
-            price.setText("" + totalPrice);
+            userEmailTextViewHeader.setText(user.getEmail());
+            phone.setText(user.getPhoneNumber());
+            email.setText(user.getEmail());
+            userNameTextViewHeader.setText(user.getName());
+            name.setText(user.getName());
+            if (user.getUserAddress() != null) {
+                address.setText(user.getUserAddress().address);
+            } else {
+                address.setVisibility(GONE);
+            }
+
+            ColorGenerator generator = ColorGenerator.MATERIAL;
+
+            TextDrawable textDrawable = TextDrawable.builder()
+                    .buildRound("" + "" + user.getName().charAt(0), generator.getRandomColor());//setting first letter of the user name
+            userImage.setImageDrawable(textDrawable);
+
+
+//            if (plan != null) {
+                planName.setText(plan.getPlanName());
+                lunch.setText(checkBool(plan.isIncludesLunch()));
+                dinner.setText(checkBool(plan.includesDinner));
+                breakfast.setText(checkBool(plan.includesBreakFast));
+                days.setText(plan.noOfDays);
+                int totalPrice = calculatePrice();
+                price.setText("" + totalPrice);
+//            }
+        }else{
+            // No plan is selected from the user side
+            frameLayout.setVisibility(View.VISIBLE);
         }
 
         progressHUD.dismiss();
@@ -263,6 +274,9 @@ public class PaymentsActivity extends AppCompatActivity {
             wallet.setRemainingDays(plan.getNoOfDays());
             user.setWallet(wallet);
             updateUserInDB();
+        }else{
+            Toast.makeText(this, "Due date is null!", Toast.LENGTH_SHORT).show();
+            progressHUD.dismiss();
         }
         // 9690300349
 
@@ -330,8 +344,24 @@ public class PaymentsActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
                 uid = dataSnapshot.getKey();
+                fetchUserSelectedPlan();
                 fetchNotificationTokenForUser();
-                setUsersProfile(user);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void fetchUserSelectedPlan() {
+        FirebaseDatabase.getInstance().getReference("Requests").child(uid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+               plan = dataSnapshot.getValue(Plan.class);
+               setUsersProfile(user);
             }
 
             @Override
@@ -367,8 +397,13 @@ public class PaymentsActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<String> task) {
                 if(task.isSuccessful()){
+                    FirebaseDatabase.getInstance().getReference("Requests").child(uid).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(PaymentsActivity.this, "Sucessful!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
-                    Toast.makeText(PaymentsActivity.this, "Sucessful!", Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(PaymentsActivity.this,"Failed:"+task.getException(), Toast.LENGTH_SHORT).show();
                 }

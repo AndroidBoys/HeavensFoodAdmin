@@ -70,19 +70,18 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
     private StorageReference storageReference;
     private DatabaseReference planDatabaseReference;
     private Context context;
-    private String userRef=null;
     private Activity activity;
 
-    public static OurPlansFragment newInstance(String ref) {
-
-        Bundle args = new Bundle();
-        args.putString("USERREF",ref);
-
-        OurPlansFragment fragment = new OurPlansFragment();
-        fragment.setArguments(args);
-        return fragment;
-
-    }
+//    public static OurPlansFragment newInstance(String ref) {
+//
+//        Bundle args = new Bundle();
+//        args.putString("USERREF",ref);
+//
+//        OurPlansFragment fragment = new OurPlansFragment();
+//        fragment.setArguments(args);
+//        return fragment;
+//
+//    }
 
     @Nullable
     @Override
@@ -95,7 +94,7 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
         planDatabaseReference=FirebaseDatabase.getInstance().getReference("OurPlans");
         context=getContext();
 
-        userRef=getArguments().getString("USERREF",null);
+//        userRef=getArguments().getString("USERREF",null);
         fetchOurPlansListFromFirebase();
 
         hostingActivity = (DescriptionActivity)getActivity();
@@ -104,14 +103,14 @@ public class OurPlansFragment extends Fragment implements View.OnCreateContextMe
 
         //hostingActivity.getSupportActionBar().hide();
         String title;
-        if(userRef!=null){
-            title="Select a plan for user";
-        }else{
+//        if(userRef!=null){
+//            title="Select a plan for user";
+//        }else{
             title="Our Plans";
-        }
+//        }
         hostingActivity.getSupportActionBar().setTitle(title);
 
-        ourPlansCustomArrayAdapter=new OurPlansCustomArrayAdapter(hostingActivity, planList,userRef);
+        ourPlansCustomArrayAdapter=new OurPlansCustomArrayAdapter(hostingActivity, planList);
         ourPlanslistView.setAdapter(ourPlansCustomArrayAdapter);
         ourPlansRefreshLayout=view.findViewById(R.id.ourPlansRefreshLayout);
         ourPlansRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {

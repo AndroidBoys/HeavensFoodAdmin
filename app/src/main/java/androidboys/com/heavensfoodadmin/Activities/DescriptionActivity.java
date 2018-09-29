@@ -50,13 +50,13 @@ public class DescriptionActivity extends AppCompatActivity {
 
         switch(id){
             case R.id.ourPlansButton:
-                String ref=getIntent().getStringExtra("USERREF");
+//                String ref=getIntent().getStringExtra("USERREF");
                 OurPlansFragment fragment;
-                if(ref!=null){
-                    fragment = OurPlansFragment.newInstance(ref);
-                }else{
+//                if(ref!=null){
+//                    fragment = OurPlansFragment.newInstance(ref);
+//                }else{
                     fragment = OurPlansFragment.newInstance();
-                }
+//                }
                 fragmentInForeground=fragment;
                 addDifferentFragment(fragment,null);
                 break;

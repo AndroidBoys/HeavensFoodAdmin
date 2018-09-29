@@ -26,6 +26,7 @@ import androidboys.com.heavensfoodadmin.Activities.DescriptionActivity;
 import androidboys.com.heavensfoodadmin.Activities.HomeActivity;
 import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Models.User;
+import androidboys.com.heavensfoodadmin.Payments.PaymentsActivity;
 import androidboys.com.heavensfoodadmin.R;
 import androidboys.com.heavensfoodadmin.ViewHolders.UserListViewHolder;
 import androidx.annotation.NonNull;
@@ -106,7 +107,7 @@ public class UnsubscribeUserListFragment extends Fragment{
                }
 //           }
        };
-    recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
     }
@@ -120,9 +121,9 @@ public class UnsubscribeUserListFragment extends Fragment{
             .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                  Intent intent=new Intent(context,DescriptionActivity.class);
+                  Intent intent=new Intent(context, PaymentsActivity.class);
                   intent.putExtra("USERREF", String.valueOf(user));
-                  intent.putExtra("ID",R.id.ourPlansButton);
+//                  intent.putExtra("ID",R.id.ourPlansButton);
 //                    args.putExtra("NAME",user.getName());
 //                    args.putExtra("EMAIL",user.getEmail());
 //                    args.putExtra("PHONE",user.getPhoneNumber());
