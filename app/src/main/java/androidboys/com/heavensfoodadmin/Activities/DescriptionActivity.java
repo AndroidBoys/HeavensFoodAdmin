@@ -37,10 +37,17 @@ public class DescriptionActivity extends AppCompatActivity {
         int viewId=intent.getIntExtra("ID",0);
         selectFragmentByViewId(viewId);
 
+// <<<<<<< arvind150
+//        if(ref!=null){
+//            addDifferentFragment(OurPlansFragment.newInstance(ref),null);
+//        }
+// =======
+// >>>>>>> master
 
     }
 
     private void selectFragmentByViewId(int id) {
+
         switch(id){
             case R.id.ourPlansButton:
                 String ref=getIntent().getStringExtra("USERREF");

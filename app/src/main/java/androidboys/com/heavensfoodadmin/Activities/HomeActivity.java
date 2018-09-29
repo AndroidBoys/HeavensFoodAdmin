@@ -362,7 +362,7 @@ public class HomeActivity extends AppCompatActivity
     public void logOutDialog()
     {
         new AlertDialog.Builder(this)
-                .setMessage("You will be loged out")
+                .setMessage("You will be logged out")
                 .setTitle("Do you really want to log out?")
                 .setIcon(R.drawable.thali_graphic)
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
