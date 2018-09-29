@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -216,10 +218,21 @@ public class SubscribedUserTodaysMenu extends Fragment implements View.OnCreateC
         //Download the images from the firebase
     }
 
-    private void setFoodDetails(FoodMenuViewHolder foodMenuViewHolder,FoodMenu foodMenu) {
+    private void setFoodDetails(final FoodMenuViewHolder foodMenuViewHolder, FoodMenu foodMenu) {
+        //foodMenuViewHolder.imageProgressBar.setVisibility(View.VISIBLE);
         foodMenuViewHolder.foodNameTextView.setText(foodMenu.getFoodName());
         foodMenuViewHolder.foodDescriptionTextView.setText(foodMenu.getFoodDescription());
-        Picasso.with(context).load(foodMenu.getImageUrl()).placeholder(R.drawable.progress_animation).into(foodMenuViewHolder.foodImageView);
+        Picasso.with(context).load(foodMenu.getImageUrl()).into(foodMenuViewHolder.foodImageView, new Callback() {
+            @Override
+            public void onSuccess() {
+                if(foodMenuViewHolder.imageProgressBar!=null){
+                    foodMenuViewHolder.imageProgressBar.setVisibility(View.GONE);
+                }
+            }
+            @Override
+            public void onError() {
+            }
+        });
 
     }
 

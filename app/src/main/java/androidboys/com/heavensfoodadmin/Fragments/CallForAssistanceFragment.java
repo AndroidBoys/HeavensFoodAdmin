@@ -1,5 +1,6 @@
 package androidboys.com.heavensfoodadmin.Fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,6 +28,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
+import androidboys.com.heavensfoodadmin.Activities.DescriptionActivity;
+import androidboys.com.heavensfoodadmin.Activities.HomeActivity;
 import androidboys.com.heavensfoodadmin.Adapters.CallForAssistanceArrayAdapter;
 import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Models.Assistance;
@@ -41,10 +44,12 @@ public class CallForAssistanceFragment extends Fragment implements View.OnCreate
     private ArrayList<Assistance> assistanceList=new ArrayList<>();
     private CallForAssistanceArrayAdapter callForAssistanceArrayAdapter;
     private FloatingActionButton addAssistanceFloatingActionButtton;
+    private Activity activity;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.call_for_assistance_fragment,container,false);
+        activity=getActivity();
         listView=view.findViewById(R.id.callForAssistenceListView);
         addAssistanceFloatingActionButtton=view.findViewById(R.id.addAssistance);
         callForAssistanceArrayAdapter=new CallForAssistanceArrayAdapter(getContext(),assistanceList);
@@ -286,5 +291,11 @@ public class CallForAssistanceFragment extends Fragment implements View.OnCreate
     private void dialNo(String s) {
         Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + s));
         startActivity(intent);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((DescriptionActivity)activity).setActionBarTitle("Call For Assistance ");
     }
 }

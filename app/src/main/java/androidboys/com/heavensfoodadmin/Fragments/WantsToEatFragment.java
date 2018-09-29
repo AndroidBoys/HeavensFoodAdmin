@@ -113,6 +113,8 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 
         wantsToEatDatabaseReference=FirebaseDatabase.getInstance().getReference("TodayMenu");
 
+        context=getContext();
+
         fetchUserList();
         fetchAllFoodItems();
         context=getContext();
@@ -142,7 +144,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
             @Override
             public void onClick(View view) {
                 //create notification
-                descriptionActivity.addDifferentFragment(SendNotificationFragment.newInstance(mealTime));
+                descriptionActivity.addDifferentFragment(SendNotificationFragment.newInstance(mealTime),null);
             }
         });
 
@@ -570,6 +572,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
 //
 
     public void loadWantToEatImages(String newMealTime) {
+
         ProgressUtils.showLoadingDialog(context);
         mealTime=newMealTime;
         categoryNameList.clear();
@@ -928,5 +931,11 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
         WantsToEatFragment fragment = new WantsToEatFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        descriptionActivity.setActionBarTitle("Choose What You Want");
     }
 }

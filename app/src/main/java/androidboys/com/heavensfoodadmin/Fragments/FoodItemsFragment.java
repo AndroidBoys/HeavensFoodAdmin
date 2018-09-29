@@ -1,5 +1,6 @@
 package androidboys.com.heavensfoodadmin.Fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,6 +9,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidboys.com.heavensfoodadmin.Activities.HomeActivity;
 import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Models.Food;
 import androidboys.com.heavensfoodadmin.Models.WhyHeavenFood;
@@ -42,6 +44,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.kaopiz.kprogresshud.KProgressHUD;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -73,6 +76,7 @@ public class FoodItemsFragment extends Fragment {
     private EditText foodDescriptionEditText;
     private Button chooseImageButton;
     private Button uploadImageButton;
+    private Activity activity;
 
     public FoodItemsFragment() {
         // Required empty public constructor
@@ -90,6 +94,7 @@ public class FoodItemsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_food_items, container, false);
+        activity=getActivity();
         addFoodItemButton = view.findViewById(R.id.add_food_item);
         addFoodItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,10 +126,22 @@ public class FoodItemsFragment extends Fragment {
         adapter=new FirebaseRecyclerAdapter<Food, FoodItemViewHolder>(Food.class,R.layout.wants_to_eat_raw_layout
                 ,FoodItemViewHolder.class,reference) {
             @Override
-            protected void populateViewHolder(FoodItemViewHolder foodItemViewHolder, Food food, int i) {
+            protected void populateViewHolder(final FoodItemViewHolder foodItemViewHolder, Food food, int i) {
                     foodItemViewHolder.foodDescriptionTextView.setText(food.getFoodDescription());
                     foodItemViewHolder.foodNameTextView.setText(food.getFoodName());
-                    Picasso.with(hostingActivity).load(food.getImageUrl()).into(foodItemViewHolder.foodImageView);
+                    Picasso.with(hostingActivity).load(food.getImageUrl()).into(foodItemViewHolder.foodImageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            if(foodItemViewHolder.imageProgressBar!=null){
+                                foodItemViewHolder.imageProgressBar.setVisibility(View.GONE);
+                            }
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
+                    });
 
             }
         };
@@ -449,6 +466,11 @@ public class FoodItemsFragment extends Fragment {
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((HomeActivity)activity).setActionBarTitle("Food Items");
     }
 
 

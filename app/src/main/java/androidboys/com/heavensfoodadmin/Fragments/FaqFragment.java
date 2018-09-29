@@ -1,5 +1,6 @@
 package androidboys.com.heavensfoodadmin.Fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -24,6 +25,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
+import androidboys.com.heavensfoodadmin.Activities.DescriptionActivity;
+import androidboys.com.heavensfoodadmin.Activities.HomeActivity;
 import androidboys.com.heavensfoodadmin.Adapters.FaqArrayAdapter;
 import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.Models.Faq;
@@ -37,12 +40,14 @@ public class FaqFragment extends Fragment implements View.OnClickListener,View.O
     private ArrayList<Faq> faqArrayList=new ArrayList<>();
     private FaqArrayAdapter faqArrayAdapter;
     private FloatingActionButton addQAFloatingActionButton;
+    private Activity activity;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view=inflater.inflate(R.layout.f_a_q_fragment,container,false);
+        activity=getActivity();
         faqlistView=view.findViewById(R.id.faqListView);
         addQAFloatingActionButton=view.findViewById(R.id.addQA);
         faqArrayAdapter=new FaqArrayAdapter(getContext(),faqArrayList);
@@ -276,5 +281,10 @@ public class FaqFragment extends Fragment implements View.OnClickListener,View.O
 
         }
 
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((DescriptionActivity)activity).setActionBarTitle("Frequently Asked Question?");
     }
 }

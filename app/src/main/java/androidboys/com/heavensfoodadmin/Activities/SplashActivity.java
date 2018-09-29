@@ -17,7 +17,17 @@ import java.util.List;
 import androidboys.com.heavensfoodadmin.R;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity {
+
+
+    private Handler handler=new Handler();
+    private Runnable runnable=new Runnable() {
+        @Override
+        public void run() {
+            finish();
+            startActivity(new Intent(SplashActivity.this, AuthenticationActivity.class));
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,9 +35,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportActionBar().hide();
 
-        startActivity(new Intent(this, AuthenticationActivity.class));
+        handler.postDelayed(runnable,4000);
 
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

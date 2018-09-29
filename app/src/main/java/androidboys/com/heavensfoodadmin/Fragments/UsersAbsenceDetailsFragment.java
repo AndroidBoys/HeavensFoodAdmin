@@ -1,5 +1,6 @@
 package androidboys.com.heavensfoodadmin.Fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import androidboys.com.heavensfoodadmin.Activities.DescriptionActivity;
 import androidboys.com.heavensfoodadmin.Adapters.UserAbsenceDetailCustomAdapter;
 import androidboys.com.heavensfoodadmin.Common.UserList;
 import androidboys.com.heavensfoodadmin.Models.Absence;
@@ -33,11 +35,13 @@ public class UsersAbsenceDetailsFragment extends Fragment {
     private ArrayList<User> userArrayList;
     private Context context;
     private UserAbsenceDetailCustomAdapter userAbsenceDetailCustomAdapter;
+    private Activity activity;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.user_absence_details_fragment,container,false);
+        activity=getActivity();
         context=getContext();
         userArrayList=new ArrayList<>();
         ProgressUtils.showLoadingDialog(context);
@@ -111,4 +115,11 @@ public class UsersAbsenceDetailsFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((DescriptionActivity)activity).setActionBarTitle("Absent Users");
+    }
+
 }
