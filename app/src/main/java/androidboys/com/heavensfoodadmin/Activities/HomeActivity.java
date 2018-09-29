@@ -354,9 +354,9 @@ public class HomeActivity extends AppCompatActivity
 
     public void moveToAuthenticationActivity()
     {
-//        Intent intent = new Intent(this,AuthenticationActivity.class);
-//        startActivity(intent);
-          finish();
+        Intent intent = new Intent(this,AuthenticationActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     public void logOutDialog()

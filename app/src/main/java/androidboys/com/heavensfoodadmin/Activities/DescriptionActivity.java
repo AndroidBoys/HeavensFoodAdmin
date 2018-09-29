@@ -37,9 +37,6 @@ public class DescriptionActivity extends AppCompatActivity {
         int viewId=intent.getIntExtra("ID",0);
         selectFragmentByViewId(viewId);
 
-        if(ref!=null){
-            addDifferentFragment(OurPlansFragment.newInstance(ref),null);
-        }
 
     }
 
