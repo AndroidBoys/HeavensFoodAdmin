@@ -140,6 +140,7 @@ public class HomeActivity extends AppCompatActivity
                         currentDate= simpleDateFormat.parse(currentDateString);
                         dueDate = simpleDateFormat.parse(dueDateString);
                         final int remainingDays=calculateDayDifference(currentDate,dueDate);
+                        Log.i("remaining days",String.valueOf(remainingDays));
                         //suspense in below condition. either -1 will be or either 0 will be
                         if (remainingDays <= -1) {
                             user.subscribedPlan = null;
@@ -213,9 +214,10 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private int calculateDayDifference(Date startDate,Date endDate){
-        long difference=endDate.getTime()-startDate.getTime();
+        long difference=(endDate.getTime()-startDate.getTime())/(24*60*60*1000);
         Log.i("difference","------------"+difference);
-        return (int)difference/(24*60*60*1000);
+//        Log.i("difference in int",String.valueOf((int)difference/(24*60*60*1000)));
+        return (int)difference;
     }
 
     private void addDifferentFragment(Fragment replacableFragment,String tag){
@@ -338,6 +340,7 @@ public class HomeActivity extends AppCompatActivity
                 .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        finishAffinity();
                         finish();
                     }
                 }).show();

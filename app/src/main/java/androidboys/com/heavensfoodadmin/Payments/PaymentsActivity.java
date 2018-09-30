@@ -268,7 +268,7 @@ public class PaymentsActivity extends AppCompatActivity {
 
         if(dueDate!=null) {
             Wallet wallet = new Wallet();
-//        wallet.setAvailableBalance(amount);
+//          wallet.setAvailableBalance(amount);
             wallet.setCreditedAmount(amount);
             wallet.setDueDate(dueDate);
             wallet.setRemainingDays(plan.getNoOfDays());
@@ -304,21 +304,34 @@ public class PaymentsActivity extends AppCompatActivity {
 //
     public String calculateDueDate1(){
 
-        if(Common.todayOnlineDate!=null) {
-            String todayDate = Common.todayOnlineDate;
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            Calendar calendar = Calendar.getInstance();
-            try {
-                calendar.setTime(simpleDateFormat.parse(todayDate));//Setting todayDate into calendar variable.
-                // So that we can add them later one
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            calendar.add(Calendar.DATE, Integer.parseInt(plan.getNoOfDays()));
-            Date resultDate = new Date(calendar.getTimeInMillis()); //we are getting the timeInMillis after adding dates
-            return simpleDateFormat.format(resultDate);
+//        if(Common.todayOnlineDate!=null) {
+//            String todayDate = Common.todayOnlineDate;
+//            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+//            Calendar calendar = Calendar.getInstance();
+//            try {
+//                calendar.setTime(simpleDateFormat.parse(todayDate));//Setting todayDate into calendar variable.
+//                // So that we can add them later one
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//            calendar.add(Calendar.DATE, Integer.parseInt(plan.getNoOfDays()));
+//            Date resultDate = new Date(calendar.getTimeInMillis()); //we are getting the timeInMillis after adding dates
+//            return simpleDateFormat.format(resultDate);
+//        }
+//        return null;
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String todayDate=simpleDateFormat.format(Calendar.getInstance().getTime());
+        Calendar calendar = Calendar.getInstance();
+        try {
+            calendar.setTime(simpleDateFormat.parse(todayDate));//Setting todayDate into calendar variable.
+            // So that we can add them later one
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-        return null;
+        calendar.add(Calendar.DATE, Integer.parseInt(plan.getNoOfDays()));
+        Date resultDate = new Date(calendar.getTimeInMillis()); //we are getting the timeInMillis after adding dates
+        return simpleDateFormat.format(resultDate);
     }
 
    private void fetchNotificationTokenForUser(){
