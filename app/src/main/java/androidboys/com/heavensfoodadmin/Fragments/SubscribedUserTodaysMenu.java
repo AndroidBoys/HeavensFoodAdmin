@@ -60,7 +60,7 @@ public class SubscribedUserTodaysMenu extends Fragment implements View.OnCreateC
     private Button submitButton;
     private String startDate;
     private String endDate;
-
+    private ProgressBar breakFastProgressBar,lunchProgressBar,dinnerProgressBar;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -72,6 +72,9 @@ public class SubscribedUserTodaysMenu extends Fragment implements View.OnCreateC
         userAbsenceDetailTextView=view.findViewById(R.id.markAbsenceTextView);
         wantToEatTextView=view.findViewById(R.id.wantToEatTextView);
         context=getContext();
+        breakFastProgressBar=view.findViewById(R.id.breakFastProgressBar);
+        lunchProgressBar=view.findViewById(R.id.lunchProgressBar);
+        dinnerProgressBar=view.findViewById(R.id.dinnerProgressBar);
 
         String[] weekDays = new String[]{"Sun", "Mon", "Tues", "Wed", "Thrus", "Fri", "Sat"};
         int day=findTodayDay();
@@ -210,6 +213,9 @@ public class SubscribedUserTodaysMenu extends Fragment implements View.OnCreateC
             @Override
             protected void populateViewHolder(FoodMenuViewHolder foodMenuViewHolder, FoodMenu foodMenu, int i) {
                 setFoodDetails(foodMenuViewHolder, foodMenu);
+                if(dinnerProgressBar!=null){
+                    dinnerProgressBar.setVisibility(View.GONE);
+                }
 
             }
         };
@@ -258,6 +264,9 @@ public class SubscribedUserTodaysMenu extends Fragment implements View.OnCreateC
             @Override
             protected void populateViewHolder(FoodMenuViewHolder foodMenuViewHolder, FoodMenu foodMenu, int i) {
                 setFoodDetails(foodMenuViewHolder, foodMenu);
+                if(lunchProgressBar!=null){
+                    lunchProgressBar.setVisibility(View.GONE);
+                }
 
             }
         };
@@ -273,7 +282,9 @@ public class SubscribedUserTodaysMenu extends Fragment implements View.OnCreateC
             @Override
             protected void populateViewHolder(FoodMenuViewHolder foodMenuViewHolder, FoodMenu foodMenu, int i) {
                 setFoodDetails(foodMenuViewHolder, foodMenu);
-
+                if(breakFastProgressBar!=null){
+                    breakFastProgressBar.setVisibility(View.GONE);
+                }
             }
         };//since it returns day number from 1 to 7
 

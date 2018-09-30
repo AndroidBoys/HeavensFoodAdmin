@@ -26,6 +26,7 @@ import androidboys.com.heavensfoodadmin.Activities.HomeActivity;
 import androidboys.com.heavensfoodadmin.Adapters.SpecialOrderUserListCustomAdapter;
 import androidboys.com.heavensfoodadmin.Models.Address;
 import androidboys.com.heavensfoodadmin.Models.SpecialFood;
+import androidboys.com.heavensfoodadmin.Models.SpecialFoodOrder;
 import androidboys.com.heavensfoodadmin.Models.User;
 import androidboys.com.heavensfoodadmin.R;
 import androidboys.com.heavensfoodadmin.Utils.ProgressUtils;
@@ -173,7 +174,7 @@ public class SpecialOrderUsersListFragment extends Fragment implements AdapterVi
         databaseReference=specialFoodReference.child(specialFoodArrayList.get(position));
         firebaseSpecialUserAdapter=new FirebaseRecyclerAdapter<SpecialFood, SpecialFoodUsersViewHolder>(SpecialFood.class,R.layout.special_order_user_nested_list_row_layout,SpecialFoodUsersViewHolder.class,databaseReference) {
             @Override
-            protected void populateViewHolder(final SpecialFoodUsersViewHolder specialFoodUsersViewHolder, final SpecialFood specialFood, int i) {
+            protected void populateViewHolder(final SpecialFoodUsersViewHolder specialFoodUsersViewHolder, final SpecialFood specialFood, final int i) {
                 firebaseDatabase.getReference("Users").child(firebaseSpecialUserAdapter.getRef(i).getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -203,6 +204,18 @@ public class SpecialOrderUsersListFragment extends Fragment implements AdapterVi
                             firebaseSpecialUserAdapter.notifyDataSetChanged();
                         }
 
+                        FirebaseDatabase.getInstance().getReference("Orders").child("NewSpecialOrders").child(firebaseSpecialUserAdapter.getRef(i).getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                SpecialFoodOrder specialFoodOrder=dataSnapshot.getValue(SpecialFoodOrder.class);
+                                specialFoodUsersViewHolder.mealTimeTextView.setText("MealTime : "+specialFoodOrder.getMealTime());
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {

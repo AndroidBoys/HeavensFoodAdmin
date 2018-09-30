@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -88,6 +89,7 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
     private CheckBox weeklyDinnerCheckBox;
     private String chooseFoodType; //This is used when we edited the food
     private Activity activity;
+    private ProgressBar breakFastProgressBar,lunchProgressBar,dinnerProgressBar;
 
     @Nullable
     @Override
@@ -100,6 +102,9 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
         foodArrayList.add(new Food());
         foodNamesArrayList.add("Select Item");
         foodItemUid.add(" ");
+        breakFastProgressBar=view.findViewById(R.id.breakFastProgressBar);
+        lunchProgressBar=view.findViewById(R.id.lunchProgressBar);
+        dinnerProgressBar=view.findViewById(R.id.dinnerProgressBar);
 
         fetchAllFoodItems();
 
@@ -269,6 +274,9 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
             @Override
             protected void populateViewHolder(FoodMenuViewHolder foodMenuViewHolder, FoodMenu foodMenu, int i) {
                 setFoodDetails(foodMenuViewHolder, foodMenu);
+                if(dinnerProgressBar!=null){
+                    dinnerProgressBar.setVisibility(View.GONE);
+                }
 
             }
         };
@@ -303,6 +311,9 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
             @Override
             protected void populateViewHolder(FoodMenuViewHolder foodMenuViewHolder, FoodMenu foodMenu, int i) {
                 setFoodDetails(foodMenuViewHolder, foodMenu);
+                if(lunchProgressBar!=null){
+                    lunchProgressBar.setVisibility(View.GONE);
+                }
 
             }
         };
@@ -318,7 +329,9 @@ public class WeeklyMenuNestedFragment extends Fragment implements View.OnCreateC
             @Override
             protected void populateViewHolder(FoodMenuViewHolder foodMenuViewHolder, FoodMenu foodMenu, int i) {
                 setFoodDetails(foodMenuViewHolder, foodMenu);
-
+                if(breakFastProgressBar!=null){
+                    breakFastProgressBar.setVisibility(View.GONE);
+                }
             }
         };
         breakFastAdapter.notifyDataSetChanged();
