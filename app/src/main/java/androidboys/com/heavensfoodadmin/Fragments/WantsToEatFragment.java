@@ -66,9 +66,9 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     private DatabaseReference wantsToEatDatabaseReference;
 //    private int maxLimit;
     private ArrayList<Food> foodArrayList=new ArrayList<>();
-    private ArrayList<Food> selectedFoodArrayList=new ArrayList<>();
-    private ArrayList<String> foodNamesArrayList=new ArrayList<>();
-    private ArrayList<String> foodItemUid=new ArrayList<>();
+    private ArrayList<Food> selectedFoodArrayList;
+    private ArrayList<String> foodNamesArrayList;
+    private ArrayList<String> foodItemUid;
 //    private ArrayList<Category> categoryList=new ArrayList<>();
     private ArrayList<String> categoryNameList=new ArrayList<>();
     private HashMap<String,ArrayList<Food>> listFoodChild=new HashMap<>();
@@ -80,7 +80,7 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     private EditText categoryNameEditText;
     private Spinner timeSpinner;
     private ListView foodItemList,selectedItemListView;
-    private ArrayList<String> selectedFoodNameList=new ArrayList<>();
+    private ArrayList<String> selectedFoodNameList;
 
 //    private Uri imageUri;
     private int selectedTime;
@@ -110,7 +110,10 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.wants_to_eat_layout,container,false);
 
-
+selectedFoodArrayList=new ArrayList<>();
+        foodNamesArrayList=new ArrayList<>();
+        foodItemUid=new ArrayList<>();
+        selectedFoodNameList=new ArrayList<>();
         wantsToEatDatabaseReference=FirebaseDatabase.getInstance().getReference("TodayMenu");
 
         context=getContext();
@@ -149,14 +152,14 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
         });
 
 
-        PullRefreshLayout wantsRefreshLayout=view.findViewById(R.id.wantsRefreshLayout);
-        wantsRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                loadWantToEatImages(mealTime);
-            }
-        });
-        wantsRefreshLayout.setColor(R.color.colorPrimary);//set the color of refresh circle.
+//        PullRefreshLayout wantsRefreshLayout=view.findViewById(R.id.wantsRefreshLayout);
+//        wantsRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                loadWantToEatImages(mealTime);
+//            }
+//        });
+//        wantsRefreshLayout.setColor(R.color.colorPrimary);//set the color of refresh circle.
 
 //        wantsSubmitButton.setButtonColor(getActivity().getResources().getColor(R.color.colorPrimary));
 
@@ -376,11 +379,13 @@ public class WantsToEatFragment extends Fragment implements View.OnCreateContext
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 if(selectedFoodArrayList.get(position).byDefault){
                     selectedFoodArrayList.get(position).setByDefault(false);
+                    selectedFoodArrayList.get(position).setMarked(false);
 //                    maxLimit-=1;
 //                    Log.d("maxLimit=",""+maxLimit);
                 }
                 else{
                     selectedFoodArrayList.get(position).setByDefault(true);
+                    selectedFoodArrayList.get(position).setMarked(true);
 //                    maxLimit+=1;
 //                    Log.d("maxLimit=",""+maxLimit);
                 }
