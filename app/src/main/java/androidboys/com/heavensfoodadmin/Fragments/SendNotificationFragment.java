@@ -41,13 +41,14 @@ import androidboys.com.heavensfoodadmin.Models.Category;
 import androidboys.com.heavensfoodadmin.Models.DBnotification;
 import androidboys.com.heavensfoodadmin.Models.Food;
 import androidboys.com.heavensfoodadmin.Models.Order;
-import androidboys.com.heavensfoodadm PullRefreshLayout wantsRefreshLayout=view.findViewById(R.id.wantsRefreshLayout);
-        wantsRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                loadWantToEatImages(mealTime);
-            }
-        });in.Models.Plan;
+//import androidboys.com.heavensfoodadm PullRefreshLayout wantsRefreshLayout=view.findViewById(R.id.wantsRefreshLayout);
+//        wantsRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                loadWantToEatImages(mealTime);
+//            }
+//        });in.Models.Plan;
+import androidboys.com.heavensfoodadmin.Models.Plan;
 import androidboys.com.heavensfoodadmin.Notification.APIService;
 import androidboys.com.heavensfoodadmin.Notification.Common;
 import androidboys.com.heavensfoodadmin.Notification.MyResponse;
@@ -346,13 +347,14 @@ public class SendNotificationFragment extends Fragment {
     }
 
     private void createTimePickerDialog() {
-        Calendar now = Calendar.getInstance(); PullRefreshLayout wantsRefreshLayout=view.findViewById(R.id.wantsRefreshLayout);
-        wantsRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                loadWantToEatImages(mealTime);
-            }
-        });
+        Calendar now = Calendar.getInstance();
+//        PullRefreshLayout wantsRefreshLayout=view.findViewById(R.id.wantsRefreshLayout);
+//        wantsRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                loadWantToEatImages(mealTime);
+//            }
+//        });
         TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {

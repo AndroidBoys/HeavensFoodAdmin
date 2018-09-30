@@ -128,21 +128,27 @@ public class DescriptionActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        checkMenuItem(item);
 
         switch (item.getItemId()){
             case R.id.breakfast:
+
+                checkMenuItem(item);
+
                 WantsToEatFragment wantsToEatFragment1=(WantsToEatFragment)fragmentInForeground;
                 Toast.makeText(this, "breakfast", Toast.LENGTH_SHORT).show();
                 wantsToEatFragment1.loadWantToEatImages("BreakFast");
                 return true;
             case R.id.lunch:
 
+                checkMenuItem(item);
+
                 WantsToEatFragment wantsToEatFragment2=(WantsToEatFragment)fragmentInForeground;
                 wantsToEatFragment2.loadWantToEatImages("Lunch");
                 Toast.makeText(this, "lunch", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.dinner:
+
+                checkMenuItem(item);
 
                 WantsToEatFragment wantsToEatFragment3=(WantsToEatFragment)fragmentInForeground;
                 wantsToEatFragment3.loadWantToEatImages("Dinner");
