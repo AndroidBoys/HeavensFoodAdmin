@@ -28,6 +28,9 @@
         android:id="@+id/addAboutButton"
         android:layout_width="match_parent"
         android:text="Select an Image"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:backgroundTint="@color/colorPrimary"
         android:gravity="center"
         android:layout_height="wrap_content" />
 

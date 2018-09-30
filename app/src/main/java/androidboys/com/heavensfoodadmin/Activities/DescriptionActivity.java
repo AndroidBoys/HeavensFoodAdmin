@@ -1,6 +1,8 @@
 package androidboys.com.heavensfoodadmin.Activities;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -8,6 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
+import com.google.firebase.database.collection.LLRBNode;
 
 import androidboys.com.heavensfoodadmin.Fragments.CallForAssistanceFragment;
 import androidboys.com.heavensfoodadmin.Fragments.FaqFragment;
@@ -25,6 +29,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 public class DescriptionActivity extends AppCompatActivity {
 
+    private  Menu menu;
     private FrameLayout frameLayout;
     private Fragment fragmentInForeground;
     @Override
@@ -112,6 +117,7 @@ public class DescriptionActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu=menu;
         if(fragmentInForeground instanceof WantsToEatFragment){
             getMenuInflater().inflate(R.menu.wants_to_eat_menu,menu);
             return true;
@@ -122,6 +128,8 @@ public class DescriptionActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        checkMenuItem(item);
+
         switch (item.getItemId()){
             case R.id.breakfast:
                 WantsToEatFragment wantsToEatFragment1=(WantsToEatFragment)fragmentInForeground;
@@ -129,11 +137,13 @@ public class DescriptionActivity extends AppCompatActivity {
                 wantsToEatFragment1.loadWantToEatImages("BreakFast");
                 return true;
             case R.id.lunch:
+
                 WantsToEatFragment wantsToEatFragment2=(WantsToEatFragment)fragmentInForeground;
                 wantsToEatFragment2.loadWantToEatImages("Lunch");
                 Toast.makeText(this, "lunch", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.dinner:
+
                 WantsToEatFragment wantsToEatFragment3=(WantsToEatFragment)fragmentInForeground;
                 wantsToEatFragment3.loadWantToEatImages("Dinner");
                 Toast.makeText(this, "dinner", Toast.LENGTH_SHORT).show();
@@ -147,6 +157,16 @@ public class DescriptionActivity extends AppCompatActivity {
                 }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void checkMenuItem(MenuItem item) {
+       MenuItem breakFastItem=menu.findItem(R.id.breakfast);
+        MenuItem lunchItem=menu.findItem(R.id.lunch);
+        MenuItem dinnerItem=menu.findItem(R.id.dinner);
+        breakFastItem.setChecked(false);
+        lunchItem.setChecked(false);
+        dinnerItem.setChecked(false);
+        item.setChecked(true);
     }
 
 
