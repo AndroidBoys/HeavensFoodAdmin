@@ -56,6 +56,7 @@ public class UnsubscribeUserListFragment extends Fragment{
         return view;
     }
 
+
     private void fetchAboutDataFromFirebase() {
 
         generator = ColorGenerator.MATERIAL;//to generate random colors
@@ -99,7 +100,9 @@ public class UnsubscribeUserListFragment extends Fragment{
                            showProfile(user);
                        }
                    });
-
+                   if(user.wantSubscription){
+                       userListViewHolder.wantsSubscriptionImageView.setVisibility(View.VISIBLE);
+                   }
                }
                else
                    userListViewHolder.Layout_hide();

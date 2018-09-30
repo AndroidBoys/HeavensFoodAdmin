@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.nex3z.notificationbadge.NotificationBadge;
+
 import androidboys.com.heavensfoodadmin.Common.Common;
 import androidboys.com.heavensfoodadmin.R;
 import androidx.annotation.NonNull;
@@ -20,13 +22,14 @@ public class UserListViewHolder extends RecyclerView.ViewHolder implements View.
     final LinearLayout.LayoutParams params;
     public ImageView drawableImageView,callImageView;
     public TextView NameTextView,phoneTextView;
+    public ImageView wantsSubscriptionImageView;
    public UserListViewHolder(@NonNull View itemView) {
         super(itemView);
         drawableImageView=itemView.findViewById(R.id.drawableImage);
         NameTextView=itemView.findViewById(R.id.name);
        phoneTextView=itemView.findViewById(R.id.phone);
         callImageView=itemView.findViewById(R.id.callImageView);
-
+        wantsSubscriptionImageView = itemView.findViewById(R.id.want_subscription_dot);
         callImageView.setOnClickListener(this);
        layout = itemView.findViewById(R.id.superLinearLayout);
        params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,

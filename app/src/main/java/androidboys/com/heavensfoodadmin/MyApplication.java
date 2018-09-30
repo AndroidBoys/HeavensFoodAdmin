@@ -8,6 +8,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import androidboys.com.heavensfoodadmin.AsynckTasks.OnlineTimeAsyncTask;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -37,6 +38,10 @@ public class MyApplication extends Application {
 
             }
         });
+
+        //Before this we have to check internet connection
+        OnlineTimeAsyncTask onlineTimeAsyncTask=new OnlineTimeAsyncTask();
+        onlineTimeAsyncTask.execute();
 
     }
 
