@@ -41,7 +41,13 @@ import androidboys.com.heavensfoodadmin.Models.Category;
 import androidboys.com.heavensfoodadmin.Models.DBnotification;
 import androidboys.com.heavensfoodadmin.Models.Food;
 import androidboys.com.heavensfoodadmin.Models.Order;
-import androidboys.com.heavensfoodadmin.Models.Plan;
+import androidboys.com.heavensfoodadm PullRefreshLayout wantsRefreshLayout=view.findViewById(R.id.wantsRefreshLayout);
+        wantsRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadWantToEatImages(mealTime);
+            }
+        });in.Models.Plan;
 import androidboys.com.heavensfoodadmin.Notification.APIService;
 import androidboys.com.heavensfoodadmin.Notification.Common;
 import androidboys.com.heavensfoodadmin.Notification.MyResponse;
@@ -213,17 +219,31 @@ public class SendNotificationFragment extends Fragment {
                             //default order for all users
                             for (int i = 0; i < UserList.userList.size(); i++) {
                                 Plan plan = UserList.userList.get(i).getSubscribedPlan();
-                                if(plan!=null) {
-                                    if (
-                                            ((selectedMeal.equals("BreakFast")) && (plan.includesBreakFast))
-                                                    || ((selectedMeal.equals("Lunch")) && (plan.includesLunch))
-                                                    || ((selectedMeal.equals("Dinner")) && (plan.includesDinner))
-                                            ) {
-                                        Order order = new Order(UserList.userList.get(i), 0, finalOrderedFoodList);
-                                        FirebaseDatabase.getInstance().getReference("Orders").child("NewFoodOrders").child(UserList.usersUid.get(i)).setValue(order);
-                                    } else {
-                                        continue;
-                                    }
+// <<<<<<< 30sept
+//                                 if(plan!=null) {
+//                                     if (
+//                                             ((selectedMeal.equals("BreakFast")) && (plan.includesBreakFast))
+//                                                     || ((selectedMeal.equals("Lunch")) && (plan.includesLunch))
+//                                                     || ((selectedMeal.equals("Dinner")) && (plan.includesDinner))
+//                                             ) {
+//                                         Order order = new Order(UserList.userList.get(i), 0, finalOrderedFoodList);
+//                                         FirebaseDatabase.getInstance().getReference("Orders").child("NewFoodOrders").child(UserList.usersUid.get(i)).setValue(order);
+//                                     } else {
+//                                         continue;
+//                                     }
+// =======
+                                if(plan!=null){
+                                if (
+                                        ((selectedMeal.equals("BreakFast")) && (plan.includesBreakFast))
+                                                || ((selectedMeal.equals("Lunch")) && (plan.includesLunch))
+                                                || ((selectedMeal.equals("Dinner")) && (plan.includesDinner))
+                                        ) {
+                                    Order order = new Order(UserList.userList.get(i), 0, finalOrderedFoodList);
+                                    FirebaseDatabase.getInstance().getReference("Orders").child("NewFoodOrders").child(UserList.usersUid.get(i)).setValue(order);
+                                } else {
+                                    continue;
+// >>>>>>> master
+                                }
                                 }
                             }
 //                        } else {
@@ -260,7 +280,11 @@ public class SendNotificationFragment extends Fragment {
                                     ((selectedMeal.equals("BreakFast")) && (plan.includesBreakFast))
                                             || ((selectedMeal.equals("Lunch")) && (plan.includesLunch))
                                             || ((selectedMeal.equals("Dinner")) && (plan.includesDinner))
-                                    ) {
+// <<<<<<< 30sept
+//                                     ) {
+// =======
+                            ) {
+// >>>>>>> master
                                 FirebaseDatabase.getInstance().getReference("FavouriteFood").child(finalOrderedFoodList.get(j)
                                         .getFoodName()).child(UserList.usersUid.get(i)).setValue(UserList.usersUid.get(i));
                             }
@@ -278,7 +302,7 @@ public class SendNotificationFragment extends Fragment {
 
     private void sendNotification(){
 
-        Notification notification = new Notification(notificationMessageEditText.getText().toString(),"Notification from firebase");
+        Notification notification = new Notification(notificationMessageEditText.getText().toString(),"Choose Your "+selectedMeal);
         Sender content = new Sender("/topics/"+selectedMeal,notification);
         content.setTime_to_live((int)deadLine/1000);
         fcmService.sendNotification(content).enqueue(new Callback<MyResponse>() {
@@ -322,7 +346,13 @@ public class SendNotificationFragment extends Fragment {
     }
 
     private void createTimePickerDialog() {
-        Calendar now = Calendar.getInstance();
+        Calendar now = Calendar.getInstance(); PullRefreshLayout wantsRefreshLayout=view.findViewById(R.id.wantsRefreshLayout);
+        wantsRefreshLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadWantToEatImages(mealTime);
+            }
+        });
         TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {

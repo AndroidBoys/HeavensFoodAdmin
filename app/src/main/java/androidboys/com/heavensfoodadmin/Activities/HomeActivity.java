@@ -20,6 +20,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -73,12 +74,14 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         resolvePermissions();
 
+        FirebaseMessaging.getInstance().subscribeToTopic("admin");
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //Before this we have to check internet connection
-        OnlineTimeAsyncTask onlineTimeAsyncTask=new OnlineTimeAsyncTask();
-        onlineTimeAsyncTask.execute();
+//        //Before this we have to check internet connection
+//        OnlineTimeAsyncTask onlineTimeAsyncTask=new OnlineTimeAsyncTask();
+//        onlineTimeAsyncTask.execute();
 
 
         databaseReference=FirebaseDatabase.getInstance().getReference("Users");
@@ -137,6 +140,7 @@ public class HomeActivity extends AppCompatActivity
                         currentDate= simpleDateFormat.parse(currentDateString);
                         dueDate = simpleDateFormat.parse(dueDateString);
                         final int remainingDays=calculateDayDifference(currentDate,dueDate);
+                        Log.i("remaining days",String.valueOf(remainingDays));
                         //suspense in below condition. either -1 will be or either 0 will be
                         if (remainingDays <= -1) {
                             user.subscribedPlan = null;
@@ -210,9 +214,10 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private int calculateDayDifference(Date startDate,Date endDate){
-        long difference=endDate.getTime()-startDate.getTime();
+        long difference=(endDate.getTime()-startDate.getTime())/(24*60*60*1000);
         Log.i("difference","------------"+difference);
-        return (int)difference/(24*60*60*1000);
+//        Log.i("difference in int",String.valueOf((int)difference/(24*60*60*1000)));
+        return (int)difference;
     }
 
     private void addDifferentFragment(Fragment replacableFragment,String tag){
@@ -335,6 +340,7 @@ public class HomeActivity extends AppCompatActivity
                 .setPositiveButton("Exit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        finishAffinity();
                         finish();
                     }
                 }).show();

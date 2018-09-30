@@ -4,6 +4,7 @@ public class Notification {
 
     public String body;
     public String title;
+    public String sound="default";
 
     public Notification(String body, String title) {
         this.body = body;

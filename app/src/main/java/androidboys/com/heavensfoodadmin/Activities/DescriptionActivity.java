@@ -41,21 +41,6 @@ public class DescriptionActivity extends AppCompatActivity {
         Intent intent=getIntent();
         int viewId=intent.getIntExtra("ID",0);
         selectFragmentByViewId(viewId);
-// <<<<<<< 29-sept
-//
-//        if(ref!=null){
-//            addDifferentFragment(OurPlansFragment.newInstance(ref),null);
-//        }
-//=======
-
-// <<<<<<< arvind150
-//        if(ref!=null){
-//            addDifferentFragment(OurPlansFragment.newInstance(ref),null);
-//        }
-// =======
-// >>>>>>> master
-// >>>>>>> master
-
     }
 
     private void selectFragmentByViewId(int id) {

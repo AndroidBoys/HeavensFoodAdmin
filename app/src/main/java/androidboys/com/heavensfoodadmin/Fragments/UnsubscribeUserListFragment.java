@@ -56,6 +56,7 @@ public class UnsubscribeUserListFragment extends Fragment{
         return view;
     }
 
+
     private void fetchAboutDataFromFirebase() {
 
         generator = ColorGenerator.MATERIAL;//to generate random colors
@@ -99,7 +100,9 @@ public class UnsubscribeUserListFragment extends Fragment{
                            showProfile(user);
                        }
                    });
-
+                   if(user.wantSubscription){
+                       userListViewHolder.wantsSubscriptionImageView.setVisibility(View.VISIBLE);
+                   }
                }
                else
                    userListViewHolder.Layout_hide();
@@ -115,7 +118,7 @@ public class UnsubscribeUserListFragment extends Fragment{
     private void showAlert(final DatabaseReference user) {
     AlertDialog builder=new AlertDialog.Builder(context)
             .setIcon(R.drawable.thali_graphic)
-            .setTitle("Aprove subscription")
+            .setTitle("Approve subscription")
             .setCancelable(false)
             .setMessage("Do you really want to grant this user a plan?")
             .setPositiveButton("Proceed", new DialogInterface.OnClickListener() {
