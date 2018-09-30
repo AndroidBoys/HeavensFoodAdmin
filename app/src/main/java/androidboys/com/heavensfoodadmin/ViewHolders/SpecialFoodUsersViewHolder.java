@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class SpecialFoodUsersViewHolder extends RecyclerView.ViewHolder {
 
-    public TextView specialNestedEmail,specialNestedAddress,specialNestedPhoneNumber,specialNestedQuantity;
+    public TextView specialNestedEmail,specialNestedAddress,specialNestedPhoneNumber,specialNestedQuantity,mealTimeTextView;
 
     public SpecialFoodUsersViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -17,5 +17,6 @@ public class SpecialFoodUsersViewHolder extends RecyclerView.ViewHolder {
         specialNestedAddress=itemView.findViewById(R.id.specialNestedAddress);
         specialNestedPhoneNumber=itemView.findViewById(R.id.specialNestedPhoneNumber);
         specialNestedQuantity=itemView.findViewById(R.id.specialNestedFoodQuantity);
+        mealTimeTextView=itemView.findViewById(R.id.mealTime);
     }
 }
