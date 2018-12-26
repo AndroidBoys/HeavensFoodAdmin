@@ -170,7 +170,7 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
                 }
                 else{
                     passwordVerificationVisible=true;
-                    passwordEditText.setTransformationMethod(null);
+                    passwordVerificationEditText.setTransformationMethod(null);
                     passwordVerificationImageView.setImageResource(R.drawable.ic_visibility_black_24dp);
                     passwordVerificationEditText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 }
