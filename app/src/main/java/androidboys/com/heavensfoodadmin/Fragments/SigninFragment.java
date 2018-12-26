@@ -1,6 +1,11 @@
 package androidboys.com.heavensfoodadmin.Fragments;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +15,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +33,8 @@ import com.labo.kaji.fragmentanimations.PushPullAnimation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import androidboys.com.heavensfoodadmin.Activities.AuthenticationActivity;
 import androidboys.com.heavensfoodadmin.Models.User;
@@ -47,12 +55,19 @@ public class SigninFragment extends Fragment implements View.OnClickListener {
     private FirebaseAuth mAuth;
     private KProgressHUD kProgressHUD;
     private CheckBox rememberMeCheckBox;
+    private boolean rememberMe=false;
 
     private List<User> users;
     private boolean isPhoneNumber;
     private boolean isEmail;
     private String username="Sample@test.com";
+    private String nameOfSharedPreferance="REMEMBERME";
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+    private Context context;
+    private boolean passwordVisible=false;
 
+    private ImageView passwordVisibilityImageView;
     public static SigninFragment newInstance() {
 
         Bundle args = new Bundle();
@@ -62,6 +77,7 @@ public class SigninFragment extends Fragment implements View.OnClickListener {
         return fragment;
     }
 
+    @SuppressLint("CommitPrefEdits")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -69,29 +85,31 @@ public class SigninFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_signin,container,false);
         hostingActivity = (AuthenticationActivity) getActivity();
 
+        passwordVisibilityImageView=view.findViewById(R.id.passwordVisibilityImageView);
+        context=getContext();
+        assert context != null;
+        sharedPreferences=context.getSharedPreferences(nameOfSharedPreferance,Context.MODE_PRIVATE);
+        editor=sharedPreferences.edit();
+
         rememberMeCheckBox=view.findViewById(R.id.rememberLoginCheckBox);
         usernameEditText = view.findViewById(R.id.usernameEdittext);
         passwordEditText = view.findViewById(R.id.passwordEdittext);
         signinButton = view.findViewById(R.id.signinButton);
         signupTextview = view.findViewById(R.id.signupTextview);
         forgotTextview = view.findViewById(R.id.forgotTextview);
-
         signupTextview.setOnClickListener(this);
         signinButton.setOnClickListener(this);
         forgotTextview.setOnClickListener(this);
+        passwordVisibilityImageView.setOnClickListener(this);
 
         rememberMeCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-
-                }
+                rememberMe=isChecked;
             }
         });
 
         mAuth = FirebaseAuth.getInstance();
-
-
 
         return view;
     }
@@ -110,6 +128,26 @@ public class SigninFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.forgotTextview:
                 //recoverPassword();
+                break;
+
+            case R.id.passwordVisibilityImageView:
+
+                //saving cursor's positions
+               int  start =passwordEditText.getSelectionStart();
+                int end=passwordEditText.getSelectionEnd();
+
+                if(passwordVisible){
+                    passwordVisible=false;
+                    passwordVisibilityImageView.setImageResource(R.drawable.ic_visibility_off_black_24dp);
+                    passwordEditText.setTransformationMethod(new PasswordTransformationMethod());
+                }
+                else{
+                    passwordVisible=true;
+                    passwordEditText.setTransformationMethod(null);
+                    passwordVisibilityImageView.setImageResource(R.drawable.ic_visibility_black_24dp);
+                    passwordEditText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                }
+                passwordEditText.setSelection(start, end);
                 break;
 
         }
@@ -148,6 +186,8 @@ public class SigninFragment extends Fragment implements View.OnClickListener {
                         if(task.isSuccessful())
                         {
                             Toast.makeText(hostingActivity, "Signed in sucessfully!", Toast.LENGTH_SHORT).show();
+                            editor.putBoolean("SAVED",rememberMe)
+                                    .apply();
                             hostingActivity.moveToHomeActivity();
                             kProgressHUD.dismiss();
                         }
