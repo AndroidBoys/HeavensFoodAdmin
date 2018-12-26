@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +46,7 @@ public class SigninFragment extends Fragment implements View.OnClickListener {
     private TextView forgotTextview;
     private FirebaseAuth mAuth;
     private KProgressHUD kProgressHUD;
+    private CheckBox rememberMeCheckBox;
 
     private List<User> users;
     private boolean isPhoneNumber;
@@ -66,6 +69,7 @@ public class SigninFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_signin,container,false);
         hostingActivity = (AuthenticationActivity) getActivity();
 
+        rememberMeCheckBox=view.findViewById(R.id.rememberLoginCheckBox);
         usernameEditText = view.findViewById(R.id.usernameEdittext);
         passwordEditText = view.findViewById(R.id.passwordEdittext);
         signinButton = view.findViewById(R.id.signinButton);
@@ -75,6 +79,15 @@ public class SigninFragment extends Fragment implements View.OnClickListener {
         signupTextview.setOnClickListener(this);
         signinButton.setOnClickListener(this);
         forgotTextview.setOnClickListener(this);
+
+        rememberMeCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+
+                }
+            }
+        });
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -128,7 +141,7 @@ public class SigninFragment extends Fragment implements View.OnClickListener {
         if(isPhoneNumber){
             username = getEmailForPhoneNumber();
         }
-        mAuth.signInWithEmailAndPassword(username,passwordEditText.getText().toString().trim())
+        mAuth.signInWithEmailAndPassword(username,passwordEditText.getText().toString())
                 .addOnCompleteListener(hostingActivity, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -235,7 +248,7 @@ public class SigninFragment extends Fragment implements View.OnClickListener {
             return;
         }
 
-        if(passwordEditText.getText().toString().trim().length()<6)
+        if(passwordEditText.getText().toString().length()<6)
         {
             passwordEditText.setError("Password should have atleast 6 characters");
             passwordEditText.requestFocus();
