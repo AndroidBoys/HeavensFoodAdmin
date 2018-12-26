@@ -1,6 +1,8 @@
 package androidboys.com.heavensfoodadmin.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -22,7 +24,10 @@ public class AuthenticationActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         SigninFragment signinFragment = SigninFragment.newInstance();
 
-        if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
+        SharedPreferences sharedPreferences=getSharedPreferences("REMEMBERME",Context.MODE_PRIVATE);
+        boolean rememberMe=sharedPreferences.getBoolean("SAVED",false);
+
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null && rememberMe) {
             moveToHomeActivity();
 
         }
