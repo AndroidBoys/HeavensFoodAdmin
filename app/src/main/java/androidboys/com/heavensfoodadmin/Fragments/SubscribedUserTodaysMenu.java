@@ -72,6 +72,7 @@ public class SubscribedUserTodaysMenu extends Fragment implements View.OnCreateC
         userAbsenceDetailTextView=view.findViewById(R.id.markAbsenceTextView);
         wantToEatTextView=view.findViewById(R.id.wantToEatTextView);
         context=getContext();
+
         breakFastProgressBar=view.findViewById(R.id.breakFastProgressBar);
         lunchProgressBar=view.findViewById(R.id.lunchProgressBar);
         dinnerProgressBar=view.findViewById(R.id.dinnerProgressBar);
@@ -80,7 +81,7 @@ public class SubscribedUserTodaysMenu extends Fragment implements View.OnCreateC
         int day=findTodayDay();
         foodMenuDatabaseReference=FirebaseDatabase.getInstance().getReference("WeeklyMenu").child(weekDays[day-1]);//since it returns day number from 1 to 7
 
-       // linearLayoutManager=new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
+//       linearLayoutManager=new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
         setRecyclerView(breakFastRecyclerView);
         setRecyclerView(lunchRecyclerView);
         setRecyclerView(dinnerRecyclerView);

@@ -271,6 +271,7 @@ public class VerificationFragment extends Fragment implements View.OnClickListen
                 .getReference("Admin")
                 .child(mAuth.getCurrentUser().getUid())
                 .setValue(user);
+        if(kProgressHUD!=null)
         kProgressHUD.dismiss();
 
         Toast.makeText(hostingActivity, "Signed up successfully:Please log in", Toast.LENGTH_SHORT).show();
